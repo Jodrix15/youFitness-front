@@ -53,7 +53,22 @@ export function Screen({
     <View
       style={[
         styles.root,
-        { paddingTop: insets.top, paddingBottom: Math.max(insets.bottom, theme.spacing.md) },
+        {
+          /*
+           * `Math.max` y no el inset a secas: instalada como PWA no hay barra de
+           * navegador, y Android informa de un inset superior de 0 aunque el
+           * reloj y la batería estén ahí arriba. Sin mínimo, el contenido queda
+           * pegado a la barra de estado.
+           *
+           * En móvil nativo el inset ya es de 24 px o más, así que el mínimo no
+           * cambia nada: solo actúa donde hace falta.
+           */
+          paddingTop: Math.max(insets.top, theme.spacing.xl),
+          paddingBottom: Math.max(insets.bottom, theme.spacing.md),
+          // Muescas laterales al girar el móvil.
+          paddingLeft: insets.left,
+          paddingRight: insets.right,
+        },
         isWide && styles.rootWide,
       ]}
     >

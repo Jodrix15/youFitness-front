@@ -61,7 +61,9 @@ export function TabBar({ state, navigation, onRegistroRapido }: BottomTabBarProp
   }
 
   return (
-    <View style={[styles.barra, { paddingBottom: Math.max(insets.bottom, 8) }]}>
+    // Mismo motivo que en `Screen`: instalada como PWA el inset inferior llega a
+    // 0 y las etiquetas quedan rozando la barra de gestos de Android.
+    <View style={[styles.barra, { paddingBottom: Math.max(insets.bottom, 14) }]}>
       {pintar(izquierda)}
 
       <View style={styles.huecoFab}>
