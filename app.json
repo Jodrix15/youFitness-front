@@ -1,0 +1,32 @@
+{
+  "expo": {
+    "name": "YouFitness",
+    "slug": "youfitness",
+    "version": "0.1.0",
+    "orientation": "default",
+    "scheme": "youfitness",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "backgroundColor": "#080b12",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.jordi.youfitness",
+      "requireFullScreen": false
+    },
+    "android": {
+      "package": "com.jordi.youfitness",
+      "adaptiveIcon": {
+        "backgroundColor": "#080b12"
+      }
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "single",
+      "backgroundColor": "#080b12"
+    },
+    "plugins": ["expo-router"],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}

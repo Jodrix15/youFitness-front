@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "outDir": ".test-build",
+    "lib": ["ES2022"],
+    "types": ["node"]
+  },
+  "include": [
+    "src/domain/**/*.ts",
+    "src/platform/almacen.ts",
+    "src/platform/reloj.ts",
+    "src/data/repositories/**/*.ts",
+    "src/data/adapters/local/**/*.ts",
+    "src/application/onboarding/**/*.ts",
+    "src/application/peso/registrarPeso.ts",
+    "src/application/peso/registrarPeso.test.ts",
+    "src/application/checkin/cerrarDia.ts",
+    "src/application/checkin/cerrarDia.test.ts",
+    "src/application/comida/registrarComida.ts",
+    "src/application/comida/registrarComida.test.ts"
+  ]
+}

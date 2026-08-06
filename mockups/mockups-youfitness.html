@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>YouFitness · Mockups v1</title>
+<style>
+:root{
+  --bg:#080b12; --bg2:#0d111b;
+  --panel:#131926; --panel2:#1a2132; --panel3:#212a3f;
+  --line:#28324a; --line2:#354160;
+  --txt:#eaeff9; --dim:#8b95af; --dim2:#5f6884;
+  --acc:#2ee6c8; --acc2:#12b8a0;
+  --xp:#8b5cf6; --xp2:#a78bfa;
+  --gold:#fbbf24; --rose:#f4506e; --green:#4ade80; --blue:#60a5fa; --orange:#fb923c;
+  --r:14px;
+  --font:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:
+   radial-gradient(1100px 600px at 12% -8%,#17203a 0%,transparent 60%),
+   radial-gradient(900px 500px at 92% 4%,#1b1533 0%,transparent 58%),
+   var(--bg);
+  color:var(--txt);font-family:var(--font);-webkit-font-smoothing:antialiased;padding:0 0 80px}
+a{color:inherit}
+
+/* ============ PAGE CHROME ============ */
+.wrap{max-width:1560px;margin:0 auto;padding:0 28px}
+.hero{padding:56px 0 30px;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:14px}
+.logo{width:52px;height:52px;border-radius:15px;background:linear-gradient(150deg,var(--acc),var(--xp));
+  display:grid;place-items:center;font-weight:800;font-size:22px;color:#04121a;box-shadow:0 8px 30px rgba(46,230,200,.25)}
+.hero h1{font-size:34px;letter-spacing:-.6px;font-weight:800}
+.hero h1 span{color:var(--acc)}
+.hero p.sub{color:var(--dim);margin-top:12px;max-width:820px;font-size:15px;line-height:1.65}
+.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
+.tag{font-size:11.5px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;
+  padding:6px 11px;border-radius:99px;background:var(--panel2);border:1px solid var(--line);color:var(--dim)}
+.tag.on{background:rgba(46,230,200,.1);border-color:rgba(46,230,200,.35);color:var(--acc)}
+.hint{margin-top:22px;font-size:13px;color:var(--dim2);display:flex;align-items:center;gap:8px}
+.kbd{background:var(--panel2);border:1px solid var(--line);border-bottom-width:2px;border-radius:6px;padding:2px 7px;font-size:11px;color:var(--dim)}
+
+.secttl{display:flex;align-items:center;gap:14px;margin:52px 0 8px}
+.secttl h2{font-size:14px;text-transform:uppercase;letter-spacing:2.2px;color:var(--dim)}
+.secttl .ln{flex:1;height:1px;background:var(--line)}
+
+/* ============ GRID + CARD ============ */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(316px,1fr));gap:36px 30px;margin-top:30px}
+.card{display:flex;flex-direction:column;gap:14px}
+.cardhead{display:flex;flex-direction:column;gap:5px;padding-left:2px}
+.cardhead .t{display:flex;align-items:center;gap:9px}
+.num{font-size:11px;font-weight:800;color:#04121a;background:var(--acc);border-radius:5px;padding:2px 6px;letter-spacing:.5px}
+.cardhead h3{font-size:15.5px;font-weight:700;letter-spacing:-.2px}
+.cardhead p{font-size:12.5px;color:var(--dim2);line-height:1.5}
+
+/* ============ PHONE ============ */
+.phone{width:316px;height:648px;border-radius:36px;background:#05070c;
+  border:8px solid #171e2e;box-shadow:0 26px 60px -18px rgba(0,0,0,.85),0 0 0 1px rgba(255,255,255,.04) inset;
+  overflow:hidden;position:relative;cursor:zoom-in;transition:transform .18s,box-shadow .18s}
+.phone:hover{transform:translateY(-4px);box-shadow:0 34px 70px -18px rgba(0,0,0,.9),0 0 0 1px rgba(46,230,200,.35)}
+.scr{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--bg2);overflow:hidden}
+.notch{position:absolute;top:7px;left:50%;transform:translateX(-50%);width:82px;height:20px;border-radius:99px;background:#05070c;z-index:9}
+
+/* status bar */
+.sb{height:34px;flex:0 0 34px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 16px;font-size:10.5px;font-weight:700;color:var(--dim);letter-spacing:.3px}
+.sb i{display:inline-block;width:4px;height:4px;border-radius:99px;background:var(--dim);margin-left:3px}
+
+/* app bar */
+.ab{flex:0 0 auto;padding:6px 16px 12px;display:flex;align-items:center;gap:10px}
+.ab h4{font-size:17px;font-weight:800;letter-spacing:-.3px;flex:1}
+.ab .sm{font-size:12px;color:var(--dim)}
+.ic{width:30px;height:30px;border-radius:9px;background:var(--panel2);border:1px solid var(--line);
+  display:grid;place-items:center;font-size:13px;color:var(--dim);flex:0 0 auto}
+.back{font-size:16px;color:var(--acc);cursor:pointer}
+
+/* body scroll */
+.bd{flex:1;overflow-y:auto;padding:0 16px 18px;display:flex;flex-direction:column;gap:12px}
+.bd::-webkit-scrollbar{width:0}
+.bd.pad0{padding:0 0 18px}
+.bd.ctr{justify-content:center;align-items:center;text-align:center;gap:16px;padding:0 26px 26px}
+
+/* generic panels */
+.p{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:13px}
+.p.acc{border-color:rgba(46,230,200,.3);background:linear-gradient(160deg,rgba(46,230,200,.09),var(--panel))}
+.p.xpg{border-color:rgba(139,92,246,.32);background:linear-gradient(160deg,rgba(139,92,246,.14),var(--panel))}
+.p.warn{border-color:rgba(244,80,110,.3);background:linear-gradient(160deg,rgba(244,80,110,.09),var(--panel))}
+.p.gold{border-color:rgba(251,191,36,.3);background:linear-gradient(160deg,rgba(251,191,36,.1),var(--panel))}
+.p.flat{background:var(--panel2)}
+.p.dash{border-style:dashed;border-color:var(--line2);background:transparent}
+.h5{font-size:10.5px;font-weight:800;letter-spacing:1.3px;text-transform:uppercase;color:var(--dim2)}
+.big{font-size:29px;font-weight:800;letter-spacing:-1.2px;line-height:1}
+.big.sm{font-size:22px}
+.unit{font-size:12px;font-weight:600;color:var(--dim);margin-left:3px}
+.lbl{font-size:12px;color:var(--dim)}
+.lbl.b{color:var(--txt);font-weight:600}
+.t13{font-size:13px}.t12{font-size:12px}.t11{font-size:11px}
+.mut{color:var(--dim)}.mut2{color:var(--dim2)}
+.b7{font-weight:700}.b8{font-weight:800}
+.row{display:flex;align-items:center;gap:10px}
+.row.sb2{justify-content:space-between}
+.col{display:flex;flex-direction:column;gap:4px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.sep{height:1px;background:var(--line)}
+.up{color:var(--green);font-size:11.5px;font-weight:700}
+.dn{color:var(--rose);font-size:11.5px;font-weight:700}
+
+/* chips / pills */
+.chips{display:flex;gap:7px;flex-wrap:wrap}
+.chip{font-size:11.5px;font-weight:600;padding:6px 10px;border-radius:99px;background:var(--panel2);
+  border:1px solid var(--line);color:var(--dim);white-space:nowrap}
+.chip.on{background:rgba(46,230,200,.14);border-color:rgba(46,230,200,.45);color:var(--acc)}
+.chip.rose{background:rgba(244,80,110,.13);border-color:rgba(244,80,110,.4);color:#ff8fa3}
+.chip.gold{background:rgba(251,191,36,.13);border-color:rgba(251,191,36,.4);color:var(--gold)}
+.chip.xp{background:rgba(139,92,246,.16);border-color:rgba(139,92,246,.45);color:var(--xp2)}
+
+/* buttons */
+.btn{display:flex;align-items:center;justify-content:center;gap:7px;height:44px;border-radius:12px;
+  font-size:14px;font-weight:700;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#04121a;
+  cursor:pointer;border:0;letter-spacing:-.1px}
+.btn.gh{background:var(--panel2);color:var(--txt);border:1px solid var(--line2)}
+.btn.vio{background:linear-gradient(135deg,var(--xp2),var(--xp));color:#fff}
+.btn.sm2{height:36px;font-size:12.5px;border-radius:10px}
+.btn.wide{width:100%}
+
+/* XP bar */
+.xpb{height:9px;border-radius:99px;background:#0a0f1a;border:1px solid var(--line);overflow:hidden;position:relative}
+.xpb>i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--xp),var(--acc));
+  box-shadow:0 0 12px rgba(139,92,246,.7)}
+.xpb.thin{height:6px}
+.bar{height:7px;border-radius:99px;background:#0a0f1a;overflow:hidden}
+.bar>i{display:block;height:100%;border-radius:99px;background:var(--acc)}
+.bar>i.rose{background:var(--rose)}.bar>i.gold{background:var(--gold)}
+.bar>i.blue{background:var(--blue)}.bar>i.green{background:var(--green)}
+.bar>i.orange{background:var(--orange)}
+
+/* avatar / rank */
+.av{width:56px;height:56px;border-radius:17px;background:linear-gradient(150deg,var(--xp),var(--acc));
+  display:grid;place-items:center;font-size:23px;flex:0 0 auto;position:relative}
+.av .lv{position:absolute;bottom:-6px;right:-6px;background:#05070c;border:1.5px solid var(--gold);
+  color:var(--gold);font-size:9.5px;font-weight:800;border-radius:99px;padding:2px 6px}
+.med{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-size:20px;
+  background:var(--panel2);border:1px solid var(--line)}
+.med.on{background:linear-gradient(150deg,rgba(251,191,36,.3),rgba(251,191,36,.06));border-color:rgba(251,191,36,.55)}
+.med.lock{opacity:.35;filter:grayscale(1)}
+
+/* list rows */
+.li{display:flex;align-items:center;gap:11px;padding:10px 0}
+.li+.li{border-top:1px solid var(--line)}
+.li .ico{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:15px;
+  background:var(--panel2);border:1px solid var(--line);flex:0 0 auto}
+.li .gr{flex:1;min-width:0}
+.li .gr b{font-size:13px;font-weight:600;display:block}
+.li .gr span{font-size:11px;color:var(--dim2)}
+.li .rt{font-size:12px;font-weight:700;color:var(--dim);text-align:right;flex:0 0 auto}
+.tick{width:22px;height:22px;border-radius:7px;border:1.5px solid var(--line2);display:grid;place-items:center;font-size:11px;color:transparent;flex:0 0 auto}
+.tick.on{background:var(--acc);border-color:var(--acc);color:#04121a}
+
+/* tab bar */
+.tb{flex:0 0 58px;display:flex;align-items:center;background:rgba(10,14,22,.96);
+  border-top:1px solid var(--line);backdrop-filter:blur(8px)}
+.tb a{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;
+  color:var(--dim2);font-weight:600;text-decoration:none;cursor:pointer}
+.tb a .i{font-size:16px;line-height:1}
+.tb a.on{color:var(--acc)}
+.tb .fab{flex:0 0 52px;display:grid;place-items:center}
+.tb .fab i{width:44px;height:44px;border-radius:15px;background:linear-gradient(135deg,var(--acc),var(--xp));
+  display:grid;place-items:center;font-size:21px;color:#04121a;font-style:normal;box-shadow:0 6px 20px rgba(46,230,200,.35);margin-top:-14px}
+
+/* misc */
+.ring{width:74px;height:74px;flex:0 0 auto}
+.tt{font-size:10px;color:var(--dim2);text-align:center}
+.sheet{margin-top:auto;background:var(--panel);border:1px solid var(--line);border-radius:20px 20px 0 0;padding:16px;display:flex;flex-direction:column;gap:12px}
+.grab{width:38px;height:4px;border-radius:99px;background:var(--line2);margin:0 auto 4px}
+.toast{background:linear-gradient(135deg,rgba(139,92,246,.28),rgba(46,230,200,.18));
+  border:1px solid rgba(139,92,246,.5);border-radius:12px;padding:11px 13px;display:flex;align-items:center;gap:10px}
+.kv{display:flex;justify-content:space-between;font-size:12px;padding:6px 0}
+.kv+.kv{border-top:1px solid var(--line)}
+.kv b{font-weight:700}
+.stepper{display:flex;align-items:center;gap:9px}
+.stepper .sq{width:32px;height:32px;border-radius:9px;background:var(--panel2);border:1px solid var(--line2);
+  display:grid;place-items:center;font-size:16px;font-weight:700;color:var(--acc)}
+.stepper .vl{font-size:19px;font-weight:800;min-width:34px;text-align:center}
+.inp{height:40px;border-radius:11px;background:var(--panel2);border:1px solid var(--line);
+  display:flex;align-items:center;padding:0 12px;font-size:13px;color:var(--dim)}
+.inp.tall{height:auto;padding:11px 12px;align-items:flex-start;line-height:1.5}
+.seg{display:flex;background:var(--panel2);border:1px solid var(--line);border-radius:11px;padding:3px;gap:3px}
+.seg span{flex:1;text-align:center;font-size:11.5px;font-weight:700;padding:6px 0;border-radius:8px;color:var(--dim)}
+.seg span.on{background:var(--panel3);color:var(--txt)}
+.sw{width:38px;height:22px;border-radius:99px;background:var(--line2);position:relative;flex:0 0 auto}
+.sw:after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:99px;background:#8b95af}
+.sw.on{background:var(--acc)}
+.sw.on:after{left:auto;right:2px;background:#04121a}
+.emo{display:flex;justify-content:space-between;gap:5px}
+.emo span{flex:1;aspect-ratio:1;border-radius:11px;background:var(--panel2);border:1px solid var(--line);
+  display:grid;place-items:center;font-size:19px}
+.emo span.on{border-color:var(--acc);background:rgba(46,230,200,.14);transform:scale(1.06)}
+.streak{display:flex;gap:4px}
+.streak i{flex:1;height:26px;border-radius:6px;background:var(--panel2);border:1px solid var(--line);
+  display:grid;place-items:center;font-size:9px;font-style:normal;color:var(--dim2);font-weight:700}
+.streak i.on{background:rgba(251,191,36,.18);border-color:rgba(251,191,36,.5);color:var(--gold)}
+.hl{position:relative}
+.rankline{display:flex;flex-direction:column;gap:0}
+.rk{display:flex;gap:11px;align-items:flex-start}
+.rk .dot{width:11px;height:11px;border-radius:99px;background:var(--panel3);border:2px solid var(--line2);margin-top:5px;flex:0 0 auto;position:relative}
+.rk .dot:after{content:"";position:absolute;left:50%;top:100%;transform:translateX(-50%);width:2px;height:26px;background:var(--line)}
+.rk:last-child .dot:after{display:none}
+.rk.done .dot{background:var(--acc);border-color:var(--acc)}
+.rk.cur .dot{background:var(--gold);border-color:var(--gold);box-shadow:0 0 0 4px rgba(251,191,36,.18)}
+.rk .tx{padding-bottom:22px;flex:1}
+.rk .tx b{font-size:13px;display:block}
+.rk .tx span{font-size:11px;color:var(--dim2)}
+
+/* ============ LIGHTBOX ============ */
+.lb{position:fixed;inset:0;background:rgba(3,5,9,.92);backdrop-filter:blur(10px);z-index:99;
+  display:none;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:26px}
+.lb.on{display:flex}
+.lb .phone{cursor:default;transform:scale(1.12);transform-origin:center}
+.lb .phone:hover{transform:scale(1.12)}
+.lbbar{display:flex;align-items:center;gap:14px}
+.nb{width:40px;height:40px;border-radius:12px;background:var(--panel2);border:1px solid var(--line2);
+  display:grid;place-items:center;font-size:16px;cursor:pointer;color:var(--txt)}
+.nb:hover{border-color:var(--acc);color:var(--acc)}
+.lbttl{font-size:14px;font-weight:700;min-width:250px;text-align:center}
+.lbttl span{display:block;font-size:11.5px;color:var(--dim2);font-weight:400;margin-top:3px}
+.xbtn{position:fixed;top:22px;right:26px;font-size:22px;color:var(--dim);cursor:pointer}
+.xbtn:hover{color:var(--txt)}
+.pulse{animation:pl 1.1s ease-out 2}
+@keyframes pl{0%,100%{box-shadow:0 0 0 0 rgba(46,230,200,0)}50%{box-shadow:0 0 0 7px rgba(46,230,200,.5)}}
+[data-go]{cursor:pointer}
+.foot{margin-top:60px;padding-top:26px;border-top:1px solid var(--line);color:var(--dim2);font-size:12.5px;line-height:1.7}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <div class="brand">
+    <div class="logo">YF</div>
+    <div>
+      <h1>You<span>Fitness</span> · Mockups v1</h1>
+      <div class="t12 mut2" style="margin-top:4px">Prototipo navegable · 20 pantallas · tema oscuro gaming/RPG</div>
+    </div>
+  </div>
+  <p class="sub">App de registro de salud con gamificación: peso, alimentación (incluidos los deslices y su contexto), progresión de fuerza, check-in mental y hábitos. Todo alimenta una única barra de experiencia con rangos que suben.</p>
+  <div class="badges">
+    <span class="tag on">Peso &amp; composición</span>
+    <span class="tag on">Nutrición &amp; deslices</span>
+    <span class="tag on">Series &amp; reps</span>
+    <span class="tag on">XP · rangos · logros</span>
+    <span class="tag on">Objetivos personalizables</span>
+    <span class="tag">Mental &amp; sueño</span>
+  </div>
+  <div class="hint">
+    <span>Haz clic en cualquier pantalla para ampliarla · usa</span><span class="kbd">←</span><span class="kbd">→</span>
+    <span>para pasar · los botones y la barra inferior navegan de verdad</span>
+  </div>
+</header>
+
+<div class="secttl"><h2>Entrada &amp; configuración</h2><div class="ln"></div></div>
+<div class="grid" id="g1">
+
+  <!-- 01 · SPLASH / LOGIN -->
+  <article class="card">
+    <div class="cardhead"><div class="t"><span class="num">01</span><h3>Bienvenida</h3></div>
+      <p>Primera impresión: promete progreso, no dieta. Entrada sin fricción y opción de probar sin cuenta.</p></div>
+    <div class="phone" data-id="splash"><div class="notch"></div><div class="scr">
+      <div class="sb"><span>9:41</span><span>▮▮▮ <i></i><i></i><i></i></span></div>
+      <div class="bd ctr">
+        <div class="av" style="width:88px;height:88px;border-radius:26px;font-size:34px">⚔️</div>
+        <div>
+          <div style="font-size:26px;font-weight:800;letter-spacing:-.8px">YouFitness</div>
+          <div class="t13 mut" style="margin-top:8px;line-height:1.6">Sube de nivel tu salud.<br>Registra, gana XP, escala rangos.</div>
+        </div>
+        <div class="p xpg" style="width:100%">
+          <div class="row sb2"><span class="t11 b8" style="color:var(--xp2)">NIVEL 1 · INICIADO</span><span class="t11 mut">0 / 300 XP</span></div>
+          <div class="xpb" style="margin-top:8px"><i style="width:4%"></i></div>
+          <div class="t11 mut2" style="margin-top:8px">Tu primer registro ya te da 25 XP</div>
+        </div>
+        <div style="width:100%;display:flex;flex-direction:column;gap:9px">
+          <div class="btn wide" data-go="onb1">Crear mi personaje</div>
+          <div class="btn gh wide">Continuar con Apple / Google</div>
+          <div class="t12 mut2" data-go="home" style="text-decoration:underline">Explorar sin cuenta</div>
+        </div>
+      </div>
+    </div></div>
+  </article>
+
+  <!-- 02 · ONBOARDING PERFIL -->
+  <article class="card">
+    <div class="cardhead"><div class="t"><span class="num">02</span><h3>Onboarding · perfil</h3></div>
+      <p>Paso 1 de 3. Sólo lo mínimo para calcular calorías, proteína objetivo y estimaciones de 1RM.</p></div>
+    <div class="phone" data-id="onb1"><div class="notch"></div><div class="scr">
+      <div class="sb"><span>9:41</span><span>▮▮▮ <i></i><i></i><i></i></span></div>
+      <div class="ab"><span class="back" data-go="splash">←</span><h4 class="t13">Paso 1 de 3</h4><span class="sm">Saltar</span></div>
+      <div style="padding:0 16px 12px"><div class="bar"><i style="width:33%"></i></div></div>
+      <div class="bd">
+        <div class="big sm" style="letter-spacing:-.6px">Hablemos de ti</div>
+        <div class="t12 mut" style="margin-bottom:4px">Puedes cambiarlo todo después.</div>
+        <div class="g2">
+          <div class="p"><div class="h5">Edad</div><div class="big sm" style="margin-top:6px">34<span class="unit">años</span></div></div>
+          <div class="p"><div class="h5">Altura</div><div class="big sm" style="margin-top:6px">178<span class="unit">cm</span></div></div>
+        </div>
+        <div class="p"><div class="h5">Peso actual</div>
+          <div class="row sb2" style="margin-top:8px"><div class="big">82,4<span class="unit">kg</span></div>
+            <div class="stepper"><div class="sq">−</div><div class="sq">+</div></div></div></div>
+        <div class="p"><div class="h5">Sexo biológico <span class="mut2">(para estimar metabolismo)</span></div>
+          <div class="seg" style="margin-top:9px"><span class="on">Hombre</span><span>Mujer</span><span>Prefiero no decirlo</span></div></div>
+        <div class="p"><div class="h5">Nivel de actividad</div>
+          <div class="chips" style="margin-top:9px">
+            <span class="chip">Sedentario</span><span class="chip on">Ligero</span><span class="chip">Activo</span><span class="chip">Atleta</span></div></div>
+        <div class="btn wide" data-go="onb2" style="margin-top:6px">Continuar</div>
+      </div>
+    </div></div>
+  </article>
+
+  <!-- 03 · ONBOARDING OBJETIVOS -->
+  <article class="card">
+    <div class="cardhead"><div class="t"><span class="num">03</span><h3>Onboarding · objetivos</h3></div>
+      <p>Paso 2 de 3. Elige qué quieres seguir; cada bloque activado añade su propia fuente de XP y sus pantallas.</p></div>
+    <div class="phone" data-id="onb2"><div class="notch"></div><div class="scr">
+      <div class="sb"><span>9:41</span><span>▮▮▮ <i></i><i></i><i></i></span></div>
+      <div class="ab"><span class="back" data-go="onb1">←</span><h4 class="t13">Paso 2 de 3</h4><span class="sm">Saltar</span></div>
+      <div style="padding:0 16px 12px"><div class="bar"><i style="width:66%"></i></div></div>
+      <div class="bd">
+        <div class="big sm">¿Qué quieres conseguir?</div>
+        <div class="t12 mut" style="margin-bottom:2px">Marca todo lo que aplique.</div>
+        <div class="p acc"><div class="li" style="padding-top:2px;border:0">
+          <div class="ico" style="background:rgba(46,230,200,.15);border-color:rgba(46,230,200,.4)">⚖️</div>
+          <div class="gr"><b>Bajar grasa</b><span>Peso · cintura · calorías</span></div><div class="tick on">✓</div></div></div>
+        <div class="p acc"><div class="li" style="padding-top:2px;border:0">
+          <div class="ico" style="background:rgba(46,230,200,.15);border-color:rgba(46,230,200,.4)">💪</div>
+          <div class="gr"><b>Ganar fuerza</b><span>Series · reps · carga · 1RM</span></div><div class="tick on">✓</div></div></div>
+        <div class="p acc"><div class="li" style="padding-top:2px;border:0">
+          <div class="ico" style="background:rgba(46,230,200,.15);border-color:rgba(46,230,200,.4)">🍎</div>
+          <div class="gr"><b>Comer mejor</b><span>Comidas · deslices · antojos</span></div><div class="tick on">✓</div></div></div>
+        <div class="p"><div class="li" style="padding-top:2px;border:0">
+          <div class="ico">🧠</div><div class="gr"><b>Salud mental</b><span>Ánimo · estrés · meditación</span></div><div class="tick"></div></div></div>
+        <div class="p"><div class="li" style="padding-top:2px;border:0">
+          <div class="ico">😴</div><div class="gr"><b>Dormir mejor</b><span>Horas · calidad · hora de acostarse</span></div><div class="tick"></div></div></div>
+        <div class="btn wide" data-go="goals" style="margin-top:6px">Definir mi primer objetivo</div>
+      </div>
+    </div></div>
+  </article>
+
+</div>
+
+<div class="secttl"><h2>Núcleo diario</h2><div class="ln"></div></div>
+<div class="grid" id="g2">
+
+  <!-- 04 · DASHBOARD -->
+  <article class="card">
+    <div class="cardhead"><div class="t"><span class="num">04</span><h3>Inicio (dashboard)</h3></div>
+      <p>La pantalla que se abre 5 veces al día. Estado del personaje arriba, acciones a un toque, misiones diarias abajo.</p></div>
+    <div class="phone" data-id="home"><div class="notch"></div><div class="scr">
+      <div class="sb"><span>9:41</span><span>▮▮▮ <i></i><i></i><i></i></span></div>
+      <div class="ab">
+        <div class="av" style="width:38px;height:38px;border-radius:12px;font-size:17px" data-go="profile">🦾<span class="lv">7</span></div>
+        <div style="flex:1"><div class="t13 b7">Hola, Jordi</div><div class="t11 mut2">Miércoles · día 12 de racha</div></div>
+        <div class="chip gold">🔥 12</div><div class="ic" data-go="achv">🔔</div>
+      </div>
+      <div class="bd">
+        <div class="p xpg" data-go="ranks">
+          <div class="row sb2"><div class="row" style="gap:7px">
+            <span style="font-size:15px">🛡️</span>
+            <span class="t12 b8" style="color:var(--xp2);letter-spacing:.6px">NIVEL 7 · GUERRERO DE HIERRO</span></div>
+            <span class="t11 mut">78%</span></div>
+          <div class="xpb" style="margin-top:9px"><i style="width:78%"></i></div>
+          <div class="row sb2" style="margin-top:7px">
+            <span class="t11 mut2">2.340 / 3.000 XP</span>
+            <span class="t11 b7" style="color:var(--gold)">660 XP → Veterano</span></div>
+        </div>
+
+        <div class="streak">
+          <i class="on">L</i><i class="on">M</i><i class="on">X</i><i class="on">J</i><i class="on">V</i><i class="on">S</i><i>D</i>
+        </div>
+
+        <div class="p">
+          <div class="row sb2"><div class="h5">Hoy</div><div class="t11 mut2">+145 XP</div></div>
+          <div class="row" style="margin-top:11px;justify-content:space-around;align-items:flex-start">
+            <div class="col" style="align-items:center;gap:6px">
+              <svg class="ring" viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.5" fill="none" stroke="#0a0f1a" stroke-width="4"/>
+                <circle cx="18" cy="18" r="15.5" fill="none" stroke="#2ee6c8" stroke-width="4" stroke-linecap="round"
+                  stroke-dasharray="97.4" stroke-dashoffset="29" transform="rotate(-90 18 18)"/>
+                <text x="18" y="17.5" text-anchor="middle" font-size="7.5" font-weight="800" fill="#eaeff9">1640</text>
+                <text x="18" y="23" text-anchor="middle" font-size="4.2" fill="#8b95af">/2150</text></svg>
+              <span class="tt">kcal</span></div>
+            <div class="col" style="align-items:center;gap:6px">
+              <svg class="ring" viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.5" fill="none" stroke="#0a0f1a" stroke-width="4"/>
+                <circle cx="18" cy="18" r="15.5" fill="none" stroke="#8b5cf6" stroke-width="4" stroke-linecap="round"
+                  stroke-dasharray="97.4" stroke-dashoffset="41" transform="rotate(-90 18 18)"/>
+                <text x="18" y="17.5" text-anchor="middle" font-size="7.5" font-weight="800" fill="#eaeff9">92g</text>
+                <text x="18" y="23" text-anchor="middle" font-size="4.2" fill="#8b95af">/150g</text></svg>
+              <span class="tt">proteína</span></div>
+            <div class="col" style="align-items:center;gap:6px">
+              <svg class="ring" viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.5" fill="none" stroke="#0a0f1a" stroke-width="4"/>
+                <circle cx="18" cy="18" r="15.5" fill="none" stroke="#60a5fa" stroke-width="4" stroke-linecap="round"
+                  stroke-dasharray="97.4" stroke-dashoffset="19" transform="rotate(-90 18 18)"/>
+                <text x="18" y="17.5" text-anchor="middle" font-size="7.5" font-weight="800" fill="#eaeff9">1,8L</text>
+                <text x="18" y="23" text-anchor="middle" font-size="4.2" fill="#8b95af">/2,3L</text></svg>
+              <span class="tt">agua</span></div>
+          </div>
+        </div>
+
+        <div class="h5">Registro rápido</div>
+        <div class="g4">
+          <div class="p flat" data-go="weight" style="padding:10px 6px;text-align:center"><div style="font-size:19px">⚖️</div><div class="t11 mut" style="margin-top:5px">Peso</div></div>
+          <div class="p flat" data-go="food" style="padding:10px 6px;text-align:center"><div style="font-size:19px">🍽️</div><div class="t11 mut" style="margin-top:5px">Comida</div></div>
+          <div class="p flat" data-go="session" style="padding:10px 6px;text-align:center"><div style="font-size:19px">🏋️</div><div class="t11 mut" style="margin-top:5px">Entreno</div></div>
+          <div class="p flat" data-go="mind" style="padding:10px 6px;text-align:center"><div style="font-size:19px">🧠</div><div class="t11 mut" style="margin-top:5px">Ánimo</div></div>
+        </div>
+
+        <div class="row sb2"><div class="h5">Misiones de hoy</div><span class="t11 b7" style="color:var(--acc)" data-go="goals">Editar</span></div>
+        <div class="p" style="padding:6px 13px">
+          <div class="li"><div class="tick on">✓</div><div class="gr"><b>Registrar el peso</b><span>Completado a las 7:12</span></div><div class="rt" style="color:var(--acc)">+25 XP</div></div>
+          <div class="li"><div class="tick on">✓</div><div class="gr"><b>150 g de proteína</b><span>92 g · faltan 58 g</span></div><div class="rt">+40 XP</div></div>
+          <div class="li"><div class="tick"></div><div class="gr"><b>8.000 pasos</b><span>5.410 pasos</span></div><div class="rt">+30 XP</div></div>
+          <div class="li"><div class="tick"></div><div class="gr"><b>Entreno de empuje</b><span>Programado hoy</span></div><div class="rt">+80 XP</div></div>
+        </div>
+
+        <div class="p warn" data-go="slip">
+          <div class="row"><span style="font-size:16px">🍩</span><div class="gr" style="flex:1">
+            <div class="t12 b7">¿Se te ha escapado algo?</div>
+            <div class="t11 mut2" style="margin-top:2px">Registrarlo también da XP. Sin culpa, sólo datos.</div></div>
+            <span class="t11 b8" style="color:#ff8fa3">Anotar →</span></div>
+        </div>
+
+        <div class="p"><div class="row sb2"><div class="h5">Peso · 30 días</div><span class="up">−1,8 kg ↓</span></div>
+          <svg viewBox="0 0 240 60" style="width:100%;height:56px;margin-top:8px">
+            <polyline fill="none" stroke="#2ee6c8" stroke-width="2" stroke-linecap="round"
+              points="4,10 24,14 44,11 64,20 84,18 104,26 124,24 144,33 164,30 184,38 204,36 232,42"/>
+            <polyline fill="url(#gd)" stroke="none" points="4,10 24,14 44,11 64,20 84,18 104,26 124,24 144,33 164,30 184,38 204,36 232,42 232,60 4,60"/>
+            <defs><linearGradient id="gd" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#2ee6c8" stop-opacity=".28"/><stop offset="100%" stop-color="#2ee6c8" stop-opacity="0"/></linearGradient></defs>
+            <circle cx="232" cy="42" r="3.4" fill="#2ee6c8"/>
+          </svg></div>
+      </div>
+      <nav class="tb">
+        <a class="on" data-go="home"><span class="i">◈</span>Inicio</a>
+        <a data-go="food"><span class="i">🍽</span>Comida</a>
+        <div class="fab" data-go="quick"><i>+</i></div>
+        <a data-go="train"><span class="i">🏋</span>Entreno</a>
+        <a data-go="progress"><span class="i">📈</span>Progreso</a>
+      </nav>
+    </div></div>
+  </article>
+
+  <!-- 05 · REGISTRO RÁPIDO (FAB) -->
+  <article class="card">
+    <div class="cardhead"><div class="t"><span class="num">05</span><h3>Registro rápido (FAB)</h3></div>
+      <p>Hoja inferior del botón central. Todo registrable en 2 toques; el XP visible es el gancho.</p></div>
+    <div class="phone" data-id="quick"><div class="notch"></div><div class="scr" style="background:rgba(8,11,18,.6)">
+      <div class="sb"><span>9:41</span><span>▮▮▮ <i></i><i></i><i></i></span></div>
+      <div class="bd" style="opacity:.25;filter:blur(1.2px)">
+        <div class="p xpg"><div class="xpb"><i style="width:78%"></i></div></div>
+        <div class="p" style="height:120px"></div><div class="p" style="height:80px"></div><div class="p" style="height:100px"></div>
+      </div>
+      <div class="sheet">
+        <div class="grab"></div>
+        <div class="row sb2"><div class="t13 b8">¿Qué quieres registrar?</div><span class="t11 mut2" data-go="home">Cerrar</span></div>
+        <div class="g2">
+          <div class="p flat" data-go="weight" style="text-align:center;padding:15px 8px"><div style="font-size:23px">⚖️</div>
+            <div class="t12 b7" style="margin-top:7px">Peso</div><div class="t11" style="color:var(--acc)">+25 XP</div></div>
+          <div class="p flat" data-go="food" style="text-align:center;padding:15px 8px"><div style="font-size:23px">🍽️</div>
+            <div class="t12 b7" style="margin-top:7px">Comida</div><div class="t11" style="color:var(--acc)">+20 XP</div></div>
+          <div class="p flat" data-go="session" style="text-align:center;padding:15px 8px"><div style="font-size:23px">🏋️</div>
+            <div class="t12 b7" style="margin-top:7px">Entreno</div><div class="t11" style="color:var(--acc)">+80 XP</div></div>
+          <div class="p flat" data-go="mind" style="text-align:center;padding:15px 8px"><div style="font-size:23px">🧠</div>
+            <div class="t12 b7" style="margin-top:7px">Check-in</div><div class="t11" style="color:var(--acc)">+30 XP</div></div>
+          <div class="p flat" data-go="slip" style="text-align:center;padding:15px 8px"><div style="font-size:23px">🍩</div>
+            <div class="t12 b7" style="margin-top:7px">Desliz</div><div class="t11" style="color:var(--acc)">+15 XP</div></div>
+          <div class="p flat" data-go="habits" style="text-align:center;padding:15px 8px"><div style="font-size:23px">💧</div>
+            <div class="t12 b7" style="margin-top:7px">Agua / hábito</div><div class="t11" style="color:var(--acc)">+5 XP</div></div>
+        </div>
+        <div class="p dash"><div class="row"><span style="font-size:15px">📸</span>
+          <span class="t12 mut" style="flex:1">Foto del plato · estimación automática</span><span class="chip xp">Beta</span></div></div>
+      </div>
+    </div></div>
+  </article>
+
+  <!-- 06 · PESO -->
+  <article class="card">
+    <div class="cardhead"><div class="t"><span class="num">06</span><h3>Peso &amp; composición</h3></div>
+      <p>Media móvil de 7 días como línea protagonista para que el ruido diario no desmotive. Cintura y grasa opcionales.</p></div>
+    <div class="phone" data-id="weight"><div class="notch"></div><div class="scr">
+      <div class="sb"><span>9:41</span><span>▮▮▮ <i></i><i></i><i></i></span></div>
+      <div class="ab"><span class="back" data-go="home">←</span><h4>Peso</h4><div class="ic">⋯</div></div>
+      <div class="bd">
+        <div class="p acc">
+          <div class="row sb2"><div><div class="h5">Hoy · 07:12</div>
+            <div class="big" style="margin-top:6px">80,6<span class="unit">kg</span></div></div>
+            <div class="col" style="align-items:flex-end;gap:5px"><span class="up">−0,4 kg vs ayer</span>
+              <span class="t11 mut2">media 7d: 81,0 kg</span></div></div>
+          <div class="row" style="gap:9px;margin-top:12px">
+            <div class="stepper" style="flex:1"><div class="sq">−</div><div class="vl">80,6</div><div class="sq">+</div></div>
+            <div class="btn sm2" style="flex:1">Guardar +25 XP</div></div>
+        </div>
+
+        <div class="p">
+          <div class="row sb2"><div class="h5">Evolución</div>
+            <div class="seg" style="width:150px"><span>1M</span><span class="on">3M</span><span>1A</span></div></div>
+          <svg viewBox="0 0 250 110" style="width:100%;height:118px;margin-top:10px">
+            <line x1="0" y1="20" x2="250" y2="20" stroke="#28324a" stroke-width=".7" stroke-dasharray="3 4"/>
+            <line x1="0" y1="55" x2="250" y2="55" stroke="#28324a" stroke-width=".7" stroke-dasharray="3 4"/>
+            <line x1="0" y1="90" x2="250" y2="90" stroke="#f4506e" stroke-width=".9" stroke-dasharray="5 4" opacity=".7"/>
+            <text x="248" y="86" text-anchor="end" font-size="6.5" fill="#f4506e">meta 76 kg</text>
+            <text x="2" y="16" font-size="6.5" fill="#5f6884">84</text>
+            <text x="2" y="51" font-size="6.5" fill="#5f6884">80</text>
+            <g fill="#354160">
+              <circle cx="10" cy="16" r="1.7"/><circle cx="30" cy="24" r="1.7"/><circle cx="50" cy="18" r="1.7"/>
+              <circle cx="70" cy="30" r="1.7"/><circle cx="90" cy="26" r="1.7"/><circle cx="110" cy="38" r="1.7"/>
+              <circle cx="130" cy="33" r="1.7"/><circle cx="150" cy="46" r="1.7"/><circle cx="170" cy="41" r="1.7"/>
+              <circle cx="190" cy="52" r="1.7"/><circle cx="210" cy="48" r="1.7"/><circle cx="238" cy="58" r="1.7"/></g>
+            <polyline fill="none" stroke="#2ee6c8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"
+              points="10,19 30,21 50,22 70,26 90,28 110,32 130,34 150,39 170,42 190,46 210,49 238,54"/>
+            <circle cx="238" cy="54" r="3.6" fill="#2ee6c8"/>
+          </svg>
+          <div class="row" style="gap:14px;margin-top:6px">
+            <span class="t11 mut2">● registros diarios</span><span class="t11" style="color:var(--acc)">— media 7 días</span></div>
+        </div>
+
+        <div class="g3">
+          <div class="p flat" style="text-align:center"><div class="h5">Inicio</div><div class="b8 t13" style="margin-top:5px">88,2</div></div>
+          <div class="p flat" style="text-align:center"><div class="h5">Perdido</div><div class="b8 t13" style="margin-top:5px;color:var(--acc)">−7,6</div></div>
+          <div class="p flat" style="text-align:center"><div class="h5">Restante</div><div class="b8 t13" style="margin-top:5px">4,6</div></div>
+        </div>
+
+        <div class="h5">Otras medidas <span class="mut2">(opcional, 1×/semana)</span></div>
+        <div class="p" style="padding:6px 13px">
+          <div class="li"><div class="ico">📏</div><div class="gr"><b>Cintura</b><span>Mejor indicador de grasa visceral</span></div><div class="rt">88 cm</div></div>
+          <div class="li"><div class="ico">💧</div><div class="gr"><b>% grasa corporal</b><span>Báscula bioimpedancia</span></div><div class="rt">21,4 %</div></div>
+          <div class="li"><div class="ico">📸</div><div class="gr"><b>Foto de progreso</b><span>Cada 2 semanas · sólo local</span></div><div class="rt" style="color:var(--acc)">Añadir</div></div>
+        </div>
+      </div>
+      <nav class="tb">
+        <a data-go="home"><span class="i">◈</span>Inicio</a>
+        <a data-go="food"><span class="i">🍽</span>Comida</a>
+        <div class="fab" data-go="quick"><i>+</i></div>
+        <a data-go="train"><span class="i">🏋</span>Entreno</a>
+        <a data-go="progress"><span class="i">📈</span>Progreso</a>
+      </nav>
+    </div></div>
+  </article>
+
+  <!-- 07 · DIARIO DE COMIDAS -->
+  <article class="card">
+    <div class="cardhead"><div class="t"><span class="num">07</span><h3>Diario de comidas</h3></div>
+      <p>Timeline del día con macros y semáforo de calidad. Registro por favoritos/recientes antes que por búsqueda.</p></div>
+    <div class="phone" data-id="food"><div class="notch"></div><div class="scr">
+      <div class="sb"><span>9:41</span><span>▮▮▮ <i></i><i></i><i></i></span></div>
+      <div class="ab"><span class="back" data-go="home">←</span><h4>Comida</h4><div class="ic">📅</div></div>
+      <div class="bd">
+        <div class="seg"><span>Ayer</span><span class="on">Hoy</span><span class="mut2">Mañana</span></div>
+        <div class="p">
+          <div class="row sb2"><div><div class="h5">Consumido</div>
+            <div class="big" style="margin-top:5px">1.640<span class="unit">/ 2.150 kcal</span></div></div>
+            <div class="chip on">510 libres</div></div>
+          <div class="bar" style="margin-top:10px"><i style="width:76%"></i></div>
+          <div class="g3" style="margin-top:12px">
+            <div><div class="row sb2"><span class="t11 mut">Proteína</span><span class="t11 b7">92g</span></div>
+              <div class="bar" style="margin-top:4px"><i class="blue" style="width:61%"></i></div></div>
+            <div><div class="row sb2"><span class="t11 mut">Carbos</span><span class="t11 b7">168g</span></div>
+              <div class="bar" style="margin-top:4px"><i class="gold" style="width:78%"></i></div></div>
+            <div><div class="row sb2"><span class="t11 mut">Grasa</span><span class="t11 b7">54g</span></div>
+              <div class="bar" style="margin-top:4px"><i class="orange" style="width:71%"></i></div></div>
+          </div>
+          <div class="sep" style="margin:11px 0"></div>
+          <div class="row sb2"><span class="t11 mut">Fibra 22 g · Azúcar 41 g · Sodio 1,9 g</span>
+            <span class="t11 b7" style="color:var(--green)">Calidad B+</span></div>
+        </div>
+
+        <div class="row sb2"><div class="h5">Desayuno · 412 kcal</div><span class="t11" style="color:var(--acc)">+</span></div>
+        <div class="p" style="padding:6px 13px">
+          <div class="li"><div class="ico">🥣</div><div class="gr"><b>Avena con plátano</b><span>80 g · casero</span></div><div class="rt">318</div></div>
+          <div class="li"><div class="ico">☕</div><div class="gr"><b>Café con leche</b><span>200 ml</span></div><div class="rt">94</div></div>
+        </div>
+
+        <div class="row sb2"><div class="h5">Comida · 780 kcal</div><span class="t11" style="color:var(--acc)">+</span></div>
+        <div class="p" style="padding:6px 13px">
+          <div class="li"><div class="ico">🍗</div><div class="gr"><b>Pollo a la plancha</b><span>200 g · 46 g proteína</span></div><div class="rt">330</div></div>
+          <div class="li"><div class="ico">🍚</div><div class="gr"><b>Arroz integral</b><span>150 g cocido</span></div><div class="rt">195</div></div>
+          <div class="li"><div class="ico">🥗</div><div class="gr"><b>Ensalada mixta + aceite</b><span>1 bol</span></div><div class="rt">255</div></div>
+        </div>
+
+        <div class="row sb2"><div class="h5">Merienda · 448 kcal</div><span class="t11" style="color:var(--acc)">+</span></div>
+        <div class="p warn" style="padding:6px 13px">
+          <div class="li" style="border:0"><div class="ico" style="background:rgba(244,80,110,.15);border-color:rgba(244,80,110,.4)">🍩</div>
+            <div class="gr"><b>Donut de chocolate <span class="chip rose" style="padding:2px 7px;margin-left:4px">desliz</span></b>
+              <span>Registrado a las 17:40 · aburrimiento</span></div><div class="rt">448</div></div>
+        </div>
+
+        <div class="p dash"><div class="row"><span style="font-size:15px">🌙</span>
+          <span class="t12 mut" style="flex:1">Cena · sin registrar</span><span class="t11 b7" style="color:var(--acc)">Añadir →</span></div></div>
+
+        <div class="h5">Recientes</div>
+        <div class="chips">
+          <span class="chip">🥚 Huevos 2 ud</span><span class="chip">🐟 Salmón 150 g</span>
+          <span class="chip">🥛 Batido proteína</span><span class="chip">🍞 Tostada integral</span>
+          <span class="chip">🥜 Nueces 30 g</span></div>
+      </div>
+      <nav class="tb">
+        <a data-go="home"><span class="i">◈</span>Inicio</a>
+        <a class="on" data-go="food"><span class="i">🍽</span>Comida</a>
+        <div class="fab" data-go="quick"><i>+</i></div>
+        <a data-go="train"><span class="i">🏋</span>Entreno</a>
+        <a data-go="progress"><span class="i">📈</span>Progreso</a>
+      </nav>
+    </div></div>
+  </article>
+
+  <!-- 08 · REGISTRAR DESLIZ -->
+  <article class="card">
+    <div class="cardhead"><div class="t"><span class="num">08</span><h3>Registrar un desliz</h3></div>
+      <p>La pantalla más delicada: captura el <b>contexto</b> (disparador, emoción, hora, compañía) sin juzgar. Da XP por honestidad.</p></div>
+    <div class="phone" data-id="slip"><div class="notch"></div><div class="scr">
+      <div class="sb"><span>9:41</span><span>▮▮▮ <i></i><i></i><i></i></span></div>
+      <div class="ab"><span class="back" data-go="food">←</span><h4 class="t13">Anotar desliz</h4><span class="sm">Cancelar</span></div>
+      <div class="bd">
+        <div class="p"><div class="t12" style="line-height:1.6">Esto no resta XP ni rompe nada.
+          <b style="color:var(--acc)">Sirve para encontrar patrones</b> y anticiparte la próxima vez.</div></div>
+
+        <div class="h5">¿Qué has comido?</div>
+        <div class="inp">Donut de chocolate · 1 ud</div>
+        <div class="chips"><span class="chip">🍫 Dulce</span><span class="chip on">🍩 Bollería</span>
+          <span class="chip">🍟 Ultraprocesado</span><span class="chip">🍺 Alcohol</span><span class="chip">🥤 Refresco</span></div>
+
+        <div class="h5">¿Cuánto?</div>
+        <div class="seg"><span>Un bocado</span><span class="on">Ración normal</span><span>Me pasé</span></div>
+
+        <div class="h5">¿Qué lo disparó?</div>
+        <div class="chips">
+          <span class="chip">😰 Estrés</span><span class="chip on">🥱 Aburrimiento</span><span class="chip">😴 Poco sueño</span>
+          <span class="chip">🍽️ Hambre real</span><span class="chip">🎉 Evento social</span><span class="chip">😔 Bajón</span>
+          <span class="chip">🏠 Estaba a mano</span></div>
+
+        <div class="h5">¿Cómo te sientes ahora?</div>
+        <div class="emo"><span>😞</span><span>😕</span><span class="on">😐</span><span>🙂</span><span>😄</span></div>
+
+        <div class="h5">Contexto</div>
+        <div class="g2">
+          <div class="p flat"><div class="t11 mut2">Hora</div><div class="t13 b7" style="margin-top:3px">17:40</div></div>
+          <div class="p flat"><div class="t11 mut2">Dónde</div><div class="t13 b7" style="margin-top:3px">Oficina</div></div>
+        </div>
+        <div class="inp tall t12">Nota: llevaba 3 h delante del ordenador sin descanso…</div>
+
+        <div class="p gold"><div class="row"><span style="font-size:15px">💡</span>
+          <div class="t11" style="flex:1;line-height:1.55"><b>Patrón detectado:</b> 6 de tus 9 deslices ocurren entre 17:00 y 18:30 en días de poco sueño.
+          <span style="color:var(--gold)">¿Programar un snack de proteína a las 16:45?</span></div></div></div>
+
+        <div class="btn wide" data-go="food">Guardar · +15 XP por honestidad</div>
+        <div class="t11 mut2" style="text-align:center;padding-bottom:6px">Tu racha de días limpios se reinicia, pero la de registro continúa.</div>
+      </div>
+    </div></div>
+  </article>
+
+  <!-- 09 · CHECK-IN MENTAL -->
+  <article class="card">
+    <div class="cardhead"><div class="t"><span class="num">09</span><h3>Check-in diario (mental)</h3></div>
+      <p>30 segundos por la noche. Ánimo, energía, estrés, sueño y una línea de diario. Es lo que da sentido al resto de datos.</p></div>
+    <div class="phone" data-id="mind"><div class="notch"></div><div class="scr">
+      <div class="sb"><span>9:41</span><span>▮▮▮ <i></i><i></i><i></i></span></div>
+      <div class="ab"><span class="back" data-go="home">←</span><h4 class="t13">Check-in de hoy</h4><span class="sm">30 s</span></div>
+      <div class="bd">
+        <div class="h5">Ánimo</div>
+        <div class="emo"><span>😣</span><span>😕</span><span>😐</span><span class="on">🙂</span><span>🤩</span></div>
+
+        <div class="h5">Energía</div>
+        <div class="p flat"><div class="row sb2"><span class="t12 mut">Baja</span><span class="t13 b8" style="color:var(--acc)">7/10</span><span class="t12 mut">Alta</span></div>
+          <div class="bar" style="margin-top:8px"><i style="width:70%"></i></div></div>
+
+        <div class="h5">Estrés</div>
+        <div class="p flat"><div class="row sb2"><span class="t12 mut">Calma</span><span class="t13 b8" style="color:var(--orange)">4/10</span><span class="t12 mut">Al límite</span></div>
+          <div class="bar" style="margin-top:8px"><i class="orange" style="width:40%"></i></div></div>
+
+        <div class="h5">Sueño de anoche</div>
+        <div class="g2">
+          <div class="p flat"><div class="t11 mut2">Duración</div><div class="t13 b8" style="margin-top:3px">6 h 40 m</div></div>
+          <div class="p flat"><div class="t11 mut2">Calidad</div><div class="t13 b8" style="margin-top:3px">★★★☆☆</div></div>
+        </div>
+
+        <div class="h5">Hoy he hecho…</div>
+        <div class="chips">
+          <span class="chip on">🧘 Meditar 10 min</span><span class="chip on">☀️ Salir a la luz</span>
+          <span class="chip">📵 Sin pantallas 1 h antes</span><span class="chip on">👥 Ver a alguien</span>
+          <span class="chip">📖 Leer</span><span class="chip">🙏 Gratitud</span></div>
+
+        <div class="h5">Una línea sobre el día</div>
+        <div class="inp tall t12">El entreno me ha subido el ánimo aunque he dormido poco…</div>
+
+        <div class="p xpg"><div class="row"><span style="font-size:15px">🔗</span>
+          <div class="t11" style="flex:1;line-height:1.55"><b>Correlación:</b> los días que duermes &lt; 7 h tu adherencia a la dieta baja un
+          <span style="color:var(--xp2)">38 %</span> y levantas 5 % menos peso.</div></div></div>
+
+        <div class="btn vio wide" data-go="home">Cerrar el día · +30 XP</div>
+      </div>
+    </div></div>
+  </article>
+
+</div>
+
+<div class="secttl"><h2>Entrenamiento</h2><div class="ln"></div></div>
+<div class="grid" id="g3">
+
+  <!-- 10 · ENTRENAMIENTOS -->
+  <article class="card">
+    <div class="cardhead"><div class="t"><span class="num">10</span><h3>Entrenamientos</h3></div>
+      <p>Rutinas como "mazmorras": cada una tiene su recompensa de XP. Semana visible arriba para no romper la cadena.</p></div>
+    <div class="phone" data-id="train"><div class="notch"></div><div class="scr">
+      <div class="sb"><span>9:41</span><span>▮▮▮ <i></i><i></i><i></i></span></div>
+      <div class="ab"><h4>Entreno</h4><div class="ic">📅</div><div class="ic">＋</div></div>
+      <div class="bd">
+        <div class="p"><div class="row sb2"><div class="h5">Esta semana</div><span class="t11 b7" style="color:var(--acc)">3 / 4 sesiones</span></div>
+          <div class="streak" style="margin-top:9px">
+            <i class="on">L</i><i>M</i><i class="on">X</i><i>J</i><i class="on">V</i><i>S</i><i>D</i></div>
+          <div class="row sb2" style="margin-top:9px"><span class="t11 mut2">Volumen 14.820 kg</span><span class="up">+8 % vs semana pasada</span></div></div>
+
+        <div class="p acc">
+          <div class="row sb2"><div class="h5">Hoy toca</div><span class="chip on">+80 XP</span></div>
+          <div class="t13 b8" style="margin-top:7px;font-size:16px">Empuje A · Pecho / hombro / tríceps</div>
+          <div class="t11 mut2" style="margin-top:4px">5 ejercicios · ~52 min · última vez hace 4 días</div>
+          <div class="row" style="gap:8px;margin-top:11px">
+            <div class="btn sm2" style="flex:1" data-go="session">Empezar sesión</div>
+            <div class="btn gh sm2" style="flex:0 0 90px">Ver plan</div></div>
+        </div>
+
+        <div class="h5">Mis rutinas</div>
+        <div class="p" style="padding:6px 13px">
+          <div class="li" data-go="session"><div class="ico">🏋️</div><div class="gr"><b>Empuje A</b><span>Banca · press militar · fondos</span></div><div class="rt">80 XP</div></div>
+          <div class="li"><div class="ico">🪝</div><div class="gr"><b>Tirón B</b><span>Dominadas · remo · curl</span></div><div class="rt">80 XP</div></div>
+          <div class="li"><div class="ico">🦵</div><div class="gr"><b>Pierna C</b><span>Sentadilla · peso muerto · gemelo</span></div><div class="rt">95 XP</div></div>
+          <div class="li"><div class="ico">🏃</div><div class="gr"><b>Cardio zona 2</b><span>40 min · pulso 130-145</span></div><div class="rt">50 XP</div></div>
+          <div class="li"><div class="ico">🧘</div><div class="gr"><b>Movilidad express</b><span>12 min · para días de descanso</span></div><div class="rt">20 XP</div></div>
+        </div>
+
+        <div class="h5">Récords recientes</div>
+        <div class="p gold" style="padding:6px 13px">
+          <div class="li" style="border:0" data-go="exercise"><div class="ico" style="background:rgba(251,191,36,.15);border-color:rgba(251,191,36,.4)">🏆</div>
+            <div class="gr"><b>Press banca · 5×80 kg</b><span>Hace 4 días · +2,5 kg</span></div><div class="rt" style="color:var(--gold)">PR</div></div>
+          <div class="li"><div class="ico" style="background:rgba(251,191,36,.15);border-color:rgba(251,191,36,.4)">🏆</div>
+            <div class="gr"><b>Dominadas · 12 reps</b><span>Hace 6 días · +2 reps</span></div><div class="rt" style="color:var(--gold)">PR</div></div>
+        </div>
+
+        <div class="p dash"><div class="row"><span style="font-size:15px">🧩</span>
+          <span class="t12 mut" style="flex:1">Crear rutina desde cero o importar plantilla</span><span class="t11 b7" style="color:var(--acc)">→</span></div></div>
+      </div>
+      <nav class="tb">
+        <a data-go="home"><span class="i">◈</span>Inicio</a>
+        <a data-go="food"><span class="i">🍽</span>Comida</a>
+        <div class="fab" data-go="quick"><i>+</i></div>
+        <a class="on" data-go="train"><span class="i">🏋</span>Entreno</a>
+        <a data-go="progress"><span class="i">📈</span>Progreso</a>
+      </nav>
+    </div></div>
+  </article>
+
+  <!-- 11 · SESIÓN ACTIVA -->
+  <article class="card">
+    <div class="cardhead"><div class="t"><span class="num">11</span><h3>Sesión activa</h3></div>
+      <p>Pantalla de combate. Series con objetivo sugerido vs. última vez, temporizador de descanso y aviso de PR en vivo.</p></div>
+    <div class="phone" data-id="session"><div class="notch"></div><div class="scr">
+      <div class="sb"><span>9:41</span><span>▮▮▮ <i></i><i></i><i></i></span></div>
+      <div class="ab"><span class="back" data-go="train">←</span>
+        <div style="flex:1"><div class="t13 b7">Empuje A</div><div class="t11" style="color:var(--acc)">⏱ 24:18 · ejercicio 2/5</div></div>
+        <div class="chip">Pausar</div></div>
+      <div style="padding:0 16px 10px"><div class="xpb thin"><i style="width:38%"></i></div></div>
+      <div class="bd">
+        <div class="p acc">
+          <div class="row sb2"><div class="t13 b8" style="font-size:15px" data-go="exercise">Press banca</div><span class="chip on">3ª serie</span></div>
+          <div class="t11 mut2" style="margin-top:4px">Objetivo: 4×6 @ 80 kg · RIR 2</div>
+          <div class="sep" style="margin:11px 0"></div>
+          <div class="row sb2" style="padding-bottom:6px"><span class="t11 mut2" style="flex:0 0 26px">#</span>
+            <span class="t11 mut2" style="flex:1">Peso</span><span class="t11 mut2" style="flex:1">Reps</span>
+            <span class="t11 mut2" style="flex:0 0 44px;text-align:right">RIR</span><span style="flex:0 0 26px"></span></div>
+          <div class="row sb2" style="padding:5px 0;border-top:1px solid var(--line)">
+            <span class="t12 b7" style="flex:0 0 26px">1</span><span class="t13 b7" style="flex:1">80 kg</span>
+            <span class="t13 b7" style="flex:1">6</span><span class="t12 mut" style="flex:0 0 44px;text-align:right">2</span>
+            <div class="tick on" style="flex:0 0 26px">✓</div></div>
+          <div class="row sb2" style="padding:5px 0;border-top:1px solid var(--line)">
+            <span class="t12 b7" style="flex:0 0 26px">2</span><span class="t13 b7" style="flex:1">80 kg</span>
+            <span class="t13 b7" style="flex:1">6</span><span class="t12 mut" style="flex:0 0 44px;text-align:right">1</span>
+            <div class="tick on" style="flex:0 0 26px">✓</div></div>
+          <div class="row sb2" style="padding:7px 0;border-top:1px solid var(--line);background:rgba(46,230,200,.06)">
+            <span class="t12 b8" style="flex:0 0 26px;color:var(--acc)">3</span>
+            <div class="inp" style="flex:1;height:32px;margin-right:6px;color:var(--txt);font-weight:700">80</div>
+            <div class="inp" style="flex:1;height:32px;margin-right:6px;color:var(--dim2)">6</div>
+            <span class="t12 mut2" style="flex:0 0 44px;text-align:right">—</span>
+            <div class="tick" style="flex:0 0 26px"></div></div>
+          <div class="row sb2" style="padding:5px 0;border-top:1px solid var(--line);opacity:.45">
+            <span class="t12 b7" style="flex:0 0 26px">4</span><span class="t13" style="flex:1">80 kg</span>
+            <span class="t13" style="flex:1">6</span><span class="t12 mut" style="flex:0 0 44px;text-align:right">—</span>
+            <div class="tick" style="flex:0 0 26px"></div></div>
+          <div class="row" style="gap:8px;margin-top:11px">
+            <div class="btn sm2" style="flex:1">Registrar serie</div>
+            <div class="btn gh sm2" style="flex:0 0 96px">+ Serie</div></div>
+        </div>
+
+        <div class="p flat"><div class="row sb2"><div class="h5">La última vez</div><span class="t11 mut2">hace 4 días</span></div>
+          <div class="row" style="gap:6px;margin-top:8px"><span class="chip">77,5×6</span><span class="chip">77,5×6</span>
+            <span class="chip">77,5×5</span><span class="chip">77,5×5</span></div>
+          <div class="t11" style="margin-top:8px;color:var(--acc)">↑ Vas +2,5 kg por serie. Volumen +6,8 %.</div></div>
+
+        <div class="toast"><span style="font-size:19px">⚡</span>
+          <div style="flex:1"><div class="t12 b8">¡Nuevo récord de volumen!</div>
+            <div class="t11 mut">1.920 kg en este ejercicio · +120 XP bonus</div></div></div>
+
+        <div class="p"><div class="row sb2"><div class="h5">Descanso</div><span class="t11 mut2">2:30 objetivo</span></div>
+          <div class="row" style="margin-top:9px;gap:12px;align-items:center">
+            <div class="big" style="color:var(--acc)">1:12</div>
+            <div style="flex:1"><div class="bar"><i style="width:52%"></i></div>
+              <div class="row sb2" style="margin-top:6px"><span class="t11 mut2">−15 s</span><span class="t11 mut2">Saltar</span><span class="t11 mut2">+15 s</span></div></div></div></div>
+
+        <div class="h5">Resto de la sesión</div>
+        <div class="p" style="padding:6px 13px">
+          <div class="li" style="opacity:.55"><div class="ico">✅</div><div class="gr"><b>Calentamiento movilidad</b><span>Hecho</span></div><div class="rt">—</div></div>
+          <div class="li"><div class="ico">3</div><div class="gr"><b>Press militar</b><span>3×8 @ 45 kg</span></div><div class="rt">Pendiente</div></div>
+          <div class="li"><div class="ico">4</div><div class="gr"><b>Aperturas polea</b><span>3×12 @ 15 kg</span></div><div class="rt">Pendiente</div></div>
+          <div class="li"><div class="ico">5</div><div class="gr"><b>Fondos en paralelas</b><span>3× al fallo</span></div><div class="rt">Pendiente</div></div>
+        </div>
+        <div class="btn vio wide" data-go="train">Terminar entreno</div>
+      </div>
+    </div></div>
+  </article>
+
+  <!-- 12 · PROGRESIÓN DE EJERCICIO -->
+  <article class="card">
+    <div class="cardhead"><div class="t"><span class="num">12</span><h3>Progresión de un ejercicio</h3></div>
+      <p>El corazón del seguimiento de fuerza: 1RM estimado, volumen por sesión, historial de series y sugerencia de siguiente carga.</p></div>
+    <div class="phone" data-id="exercise"><div class="notch"></div><div class="scr">
+      <div class="sb"><span>9:41</span><span>▮▮▮ <i></i><i></i><i></i></span></div>
+      <div class="ab"><span class="back" data-go="train">←</span><h4 class="t13">Press banca</h4><div class="ic">⋯</div></div>
+      <div class="bd">
+        <div class="g3">
+          <div class="p flat" style="text-align:center"><div class="h5">1RM est.</div>
+            <div class="b8" style="font-size:17px;margin-top:5px">95<span class="unit">kg</span></div><div class="up">+11 %</div></div>
+          <div class="p flat" style="text-align:center"><div class="h5">Mejor serie</div>
+            <div class="b8" style="font-size:17px;margin-top:5px">80×6</div><div class="t11 mut2">hace 4 d</div></div>
+          <div class="p flat" style="text-align:center"><div class="h5">Vol. sesión</div>
+            <div class="b8" style="font-size:17px;margin-top:5px">1.920</div><div class="up">+6,8 %</div></div>
+        </div>
+
+        <div class="p">
+          <div class="row sb2"><div class="h5">Carga máxima por sesión</div>
+            <div class="seg" style="width:132px"><span>3M</span><span class="on">6M</span><span>1A</span></div></div>
+          <svg viewBox="0 0 250 110" style="width:100%;height:116px;margin-top:10px">
+            <line x1="0" y1="25" x2="250" y2="25" stroke="#28324a" stroke-width=".7" stroke-dasharray="3 4"/>
+            <line x1="0" y1="60" x2="250" y2="60" stroke="#28324a" stroke-width=".7" stroke-dasharray="3 4"/>
+            <line x1="0" y1="95" x2="250" y2="95" stroke="#28324a" stroke-width=".7" stroke-dasharray="3 4"/>
+            <text x="2" y="22" font-size="6.5" fill="#5f6884">85</text>
+            <text x="2" y="57" font-size="6.5" fill="#5f6884">75</text>
+            <text x="2" y="92" font-size="6.5" fill="#5f6884">65</text>
+            <g fill="#8b5cf6" opacity=".8">
+              <rect x="18" y="88" width="8" height="18" rx="2"/><rect x="38" y="84" width="8" height="22" rx="2"/>
+              <rect x="58" y="86" width="8" height="20" rx="2"/><rect x="78" y="76" width="8" height="30" rx="2"/>
+              <rect x="98" y="72" width="8" height="34" rx="2"/><rect x="118" y="74" width="8" height="32" rx="2"/>
+              <rect x="138" y="64" width="8" height="42" rx="2"/><rect x="158" y="58" width="8" height="48" rx="2"/>
+              <rect x="178" y="60" width="8" height="46" rx="2"/><rect x="198" y="50" width="8" height="56" rx="2"/>
+              <rect x="218" y="46" width="8" height="60" rx="2"/><rect x="236" y="40" width="8" height="66" rx="2"/></g>
+            <polyline fill="none" stroke="#2ee6c8" stroke-width="2" stroke-linecap="round"
+              points="22,90 42,86 62,88 82,78 102,74 122,76 142,66 162,60 182,62 202,52 222,48 240,42"/>
+            <circle cx="240" cy="42" r="3.2" fill="#2ee6c8"/>
+          </svg>
+          <div class="row" style="gap:14px;margin-top:4px">
+            <span class="t11" style="color:var(--xp2)">▮ volumen</span><span class="t11" style="color:var(--acc)">— carga máx.</span></div>
+        </div>
+
+        <div class="p gold"><div class="row"><span style="font-size:16px">🎯</span>
+          <div style="flex:1"><div class="t12 b8">Sugerencia para la próxima</div>
+            <div class="t11 mut" style="margin-top:3px;line-height:1.5">Has cerrado 4×6 con RIR 2. Sube a <b style="color:var(--gold)">82,5 kg × 4×5</b> o mantén el peso y busca 4×8.</div></div></div></div>
+
+        <div class="row sb2"><div class="h5">Historial de series</div><span class="t11 mut2">últimas 6 sesiones</span></div>
+        <div class="p" style="padding:6px 13px">
+          <div class="li"><div class="ico">🥇</div><div class="gr"><b>1 ago · 80 kg</b><span>6 · 6 · 5 · 5 reps &nbsp;·&nbsp; RIR 2-1</span></div><div class="rt" style="color:var(--gold)">PR</div></div>
+          <div class="li"><div class="ico">–</div><div class="gr"><b>28 jul · 77,5 kg</b><span>6 · 6 · 5 · 5 reps &nbsp;·&nbsp; RIR 2-0</span></div><div class="rt">1.798</div></div>
+          <div class="li"><div class="ico">–</div><div class="gr"><b>24 jul · 77,5 kg</b><span>6 · 5 · 5 · 4 reps</span></div><div class="rt">1.550</div></div>
+          <div class="li"><div class="ico">–</div><div class="gr"><b>21 jul · 75 kg</b><span>6 · 6 · 6 · 5 reps</span></div><div class="rt">1.725</div></div>
+          <div class="li"><div class="ico">⚠️</div><div class="gr"><b>17 jul · 75 kg</b><span>5 · 4 · 4 reps · sesión corta</span></div><div class="rt">975</div></div>
+          <div class="li"><div class="ico">–</div><div class="gr"><b>14 jul · 72,5 kg</b><span>8 · 7 · 6 · 6 reps</span></div><div class="rt">1.958</div></div>
+        </div>
+
+        <div class="p"><div class="h5">Récords personales</div>
+          <div class="kv" style="border:0"><span class="mut">Más peso (1 rep)</span><b>92,5 kg · 12 jun</b></div>
+          <div class="kv"><span class="mut">Más reps a 80 kg</span><b>6 reps · 1 ago</b></div>
+          <div class="kv"><span class="mut">Mejor volumen sesión</span><b>1.920 kg · 1 ago</b></div>
+          <div class="kv"><span class="mut">Racha sin fallar</span><b>7 sesiones</b></div>
+        </div>
+      </div>
+    </div></div>
+  </article>
+
+</div>
+
+<div class="secttl"><h2>Progreso &amp; gamificación</h2><div class="ln"></div></div>
+<div class="grid" id="g4">
+
+  <!-- 13 · PROGRESO -->
+  <article class="card">
+    <div class="cardhead"><div class="t"><span class="num">13</span><h3>Progreso &amp; correlaciones</h3></div>
+      <p>Vista semanal/mensual. Lo diferencial: cruzar métricas (sueño↔adherencia, entreno↔ánimo) en vez de mostrar gráficas aisladas.</p></div>
+    <div class="phone" data-id="progress"><div class="notch"></div><div class="scr">
+      <div class="sb"><span>9:41</span><span>▮▮▮ <i></i><i></i><i></i></span></div>
+      <div class="ab"><h4>Progreso</h4><div class="ic">⤓</div></div>
+      <div class="bd">
+        <div class="seg"><span>Semana</span><span class="on">Mes</span><span>Año</span></div>
+
+        <div class="p xpg"><div class="row sb2"><div class="h5">XP en julio</div><span class="chip xp">Mejor mes</span></div>
+          <div class="big" style="margin-top:6px">3.180<span class="unit">XP</span></div>
+          <svg viewBox="0 0 250 46" style="width:100%;height:46px;margin-top:8px">
+            <g fill="#8b5cf6"><rect x="4" y="20" width="6" height="26" rx="2"/><rect x="14" y="14" width="6" height="32" rx="2"/>
+              <rect x="24" y="26" width="6" height="20" rx="2"/><rect x="34" y="8" width="6" height="38" rx="2"/>
+              <rect x="44" y="18" width="6" height="28" rx="2"/><rect x="54" y="34" width="6" height="12" rx="2"/>
+              <rect x="64" y="40" width="6" height="6" rx="2"/><rect x="74" y="16" width="6" height="30" rx="2"/>
+              <rect x="84" y="12" width="6" height="34" rx="2"/><rect x="94" y="22" width="6" height="24" rx="2"/>
+              <rect x="104" y="10" width="6" height="36" rx="2"/><rect x="114" y="28" width="6" height="18" rx="2"/>
+              <rect x="124" y="38" width="6" height="8" rx="2"/><rect x="134" y="20" width="6" height="26" rx="2"/>
+              <rect x="144" y="6" width="6" height="40" rx="2"/><rect x="154" y="18" width="6" height="28" rx="2"/>
+              <rect x="164" y="24" width="6" height="22" rx="2"/><rect x="174" y="14" width="6" height="32" rx="2"/>
+              <rect x="184" y="30" width="6" height="16" rx="2"/><rect x="194" y="36" width="6" height="10" rx="2"/>
+              <rect x="204" y="12" width="6" height="34" rx="2"/><rect x="214" y="8" width="6" height="38" rx="2"/>
+              <rect x="224" y="20" width="6" height="26" rx="2"/><rect x="234" y="16" width="6" height="30" rx="2"/></g>
+          </svg></div>
+
+        <div class="g2">
+          <div class="p"><div class="h5">Peso</div><div class="b8" style="font-size:19px;margin-top:5px">80,6 kg</div><div class="up">−1,8 este mes</div></div>
+          <div class="p"><div class="h5">Volumen total</div><div class="b8" style="font-size:19px;margin-top:5px">58,4 t</div><div class="up">+12 %</div></div>
+          <div class="p"><div class="h5">Adherencia</div><div class="b8" style="font-size:19px;margin-top:5px">84 %</div><div class="t11 mut2">26/31 días</div></div>
+          <div class="p"><div class="h5">Deslices</div><div class="b8" style="font-size:19px;margin-top:5px">9</div><div class="up">−4 vs junio</div></div>
+        </div>
+
+        <div class="p"><div class="h5">Adherencia por día de la semana</div>
+          <div class="row" style="align-items:flex-end;gap:6px;height:76px;margin-top:11px">
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px"><div style="width:100%;height:62px;background:linear-gradient(180deg,#2ee6c8,#12b8a0);border-radius:5px"></div><span class="tt">L</span></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px"><div style="width:100%;height:56px;background:linear-gradient(180deg,#2ee6c8,#12b8a0);border-radius:5px"></div><span class="tt">M</span></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px"><div style="width:100%;height:58px;background:linear-gradient(180deg,#2ee6c8,#12b8a0);border-radius:5px"></div><span class="tt">X</span></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px"><div style="width:100%;height:48px;background:linear-gradient(180deg,#2ee6c8,#12b8a0);border-radius:5px"></div><span class="tt">J</span></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px"><div style="width:100%;height:28px;background:linear-gradient(180deg,#fb923c,#ea7c22);border-radius:5px"></div><span class="tt">V</span></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px"><div style="width:100%;height:20px;background:linear-gradient(180deg,#f4506e,#c93a54);border-radius:5px"></div><span class="tt">S</span></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px"><div style="width:100%;height:34px;background:linear-gradient(180deg,#fb923c,#ea7c22);border-radius:5px"></div><span class="tt">D</span></div>
+          </div>
+          <div class="t11 mut" style="margin-top:9px;line-height:1.5">Los <b style="color:var(--rose)">sábados</b> son tu punto débil. Prueba a planificar la cena del sábado el viernes.</div></div>
+
+        <div class="h5">Qué está conectado con qué</div>
+        <div class="p flat"><div class="row sb2"><span class="t12 b7">😴 Sueño → 🍽️ Adherencia</span><span class="chip on">fuerte</span></div>
+          <div class="bar" style="margin-top:8px"><i style="width:78%"></i></div>
+          <div class="t11 mut2" style="margin-top:6px">Con &lt;7 h duermes mal y comes peor el día siguiente</div></div>
+        <div class="p flat"><div class="row sb2"><span class="t12 b7">🏋️ Entreno → 🙂 Ánimo</span><span class="chip on">fuerte</span></div>
+          <div class="bar" style="margin-top:8px"><i class="green" style="width:71%"></i></div>
+          <div class="t11 mut2" style="margin-top:6px">+1,4 puntos de ánimo los días que entrenas</div></div>
+        <div class="p flat"><div class="row sb2"><span class="t12 b7">😰 Estrés → 🍩 Deslices</span><span class="chip rose">moderada</span></div>
+          <div class="bar" style="margin-top:8px"><i class="rose" style="width:54%"></i></div>
+          <div class="t11 mut2" style="margin-top:6px">5 de 9 deslices en días de estrés ≥ 6/10</div></div>
+
+        <div class="p dash"><div class="row"><span style="font-size:15px">📄</span>
+          <span class="t12 mut" style="flex:1">Exportar informe mensual en PDF / CSV</span><span class="t11 b7" style="color:var(--acc)">→</span></div></div>
+      </div>
+      <nav class="tb">
+        <a data-go="home"><span class="i">◈</span>Inicio</a>
+        <a data-go="food"><span class="i">🍽</span>Comida</a>
+        <div class="fab" data-go="quick"><i>+</i></div>
+        <a data-go="train"><span class="i">🏋</span>Entreno</a>
+        <a class="on" data-go="progress"><span class="i">📈</span>Progreso</a>
+      </nav>
+    </div></div>
+  </article>
+
+  <!-- 14 · OBJETIVOS -->
+  <article class="card">
+    <div class="cardhead"><div class="t"><span class="num">14</span><h3>Objetivos personalizables</h3></div>
+      <p>Constructor genérico: <i>métrica + operador + valor + periodo + XP</i>. Con eso el usuario inventa cualquier objetivo sin que tú lo programes.</p></div>
+    <div class="phone" data-id="goals"><div class="notch"></div><div class="scr">
+      <div class="sb"><span>9:41</span><span>▮▮▮ <i></i><i></i><i></i></span></div>
+      <div class="ab"><span class="back" data-go="home">←</span><h4>Objetivos</h4><div class="ic">＋</div></div>
+      <div class="bd">
+        <div class="h5">Activos · 5</div>
+        <div class="p acc"><div class="row sb2"><div class="t13 b7">Llegar a 76 kg</div><span class="chip on">+500 XP</span></div>
+          <div class="bar" style="margin-top:9px"><i style="width:62%"></i></div>
+          <div class="row sb2" style="margin-top:6px"><span class="t11 mut2">80,6 → 76,0 kg</span><span class="t11 mut2">62 % · ~9 semanas</span></div></div>
+
+        <div class="p"><div class="row sb2"><div class="t13 b7">150 g de proteína al día</div><span class="chip">+40 XP/día</span></div>
+          <div class="bar" style="margin-top:9px"><i class="blue" style="width:61%"></i></div>
+          <div class="row sb2" style="margin-top:6px"><span class="t11 mut2">92 g hoy · 5/7 días esta semana</span><span class="t11 mut2">Diario</span></div></div>
+
+        <div class="p"><div class="row sb2"><div class="t13 b7">4 entrenos por semana</div><span class="chip">+60 XP</span></div>
+          <div class="bar" style="margin-top:9px"><i class="green" style="width:75%"></i></div>
+          <div class="row sb2" style="margin-top:6px"><span class="t11 mut2">3 de 4 · queda el viernes</span><span class="t11 mut2">Semanal</span></div></div>
+
+        <div class="p"><div class="row sb2"><div class="t13 b7">Press banca 100 kg × 1</div><span class="chip gold">+750 XP</span></div>
+          <div class="bar" style="margin-top:9px"><i class="gold" style="width:80%"></i></div>
+          <div class="row sb2" style="margin-top:6px"><span class="t11 mut2">1RM estimado 95 kg</span><span class="t11 mut2">Sin fecha</span></div></div>
+
+        <div class="p"><div class="row sb2"><div class="t13 b7">Máx. 2 deslices por semana</div><span class="chip">+70 XP</span></div>
+          <div class="bar" style="margin-top:9px"><i class="rose" style="width:50%"></i></div>
+          <div class="row sb2" style="margin-top:6px"><span class="t11 mut2">1 de 2 usados</span><span class="t11 mut2">Semanal</span></div></div>
+
+        <div class="sep" style="margin:4px 0"></div>
+        <div class="h5">Crear objetivo</div>
+        <div class="p dash" style="display:flex;flex-direction:column;gap:9px">
+          <div><div class="t11 mut2" style="margin-bottom:5px">1 · Métrica</div>
+            <div class="chips"><span class="chip on">Proteína</span><span class="chip">Peso</span><span class="chip">Pasos</span>
+              <span class="chip">Sueño</span><span class="chip">Agua</span><span class="chip">Volumen</span><span class="chip">Deslices</span>
+              <span class="chip">Meditación</span></div></div>
+          <div><div class="t11 mut2" style="margin-bottom:5px">2 · Condición</div>
+            <div class="seg"><span class="on">≥ al menos</span><span>≤ como máx.</span><span>= exacto</span></div></div>
+          <div class="row" style="gap:9px">
+            <div style="flex:1"><div class="t11 mut2" style="margin-bottom:5px">3 · Valor</div>
+              <div class="stepper"><div class="sq">−</div><div class="vl">150</div><div class="sq">+</div><span class="t12 mut">g</span></div></div>
+            <div style="flex:1"><div class="t11 mut2" style="margin-bottom:5px">4 · Periodo</div>
+              <div class="inp">Cada día</div></div></div>
+          <div><div class="t11 mut2" style="margin-bottom:5px">5 · Recompensa</div>
+            <div class="row sb2"><span class="t12">XP al cumplir</span><span class="chip xp">+40 XP</span></div>
+            <div class="row sb2" style="margin-top:7px"><span class="t12">Recordatorio</span><div class="sw on"></div></div></div>
+          <div class="btn wide sm2">Crear objetivo</div>
+        </div>
+
+        <div class="h5">Plantillas sugeridas</div>
+        <div class="chips">
+          <span class="chip">🥗 5 raciones fruta/verdura</span><span class="chip">🚶 8.000 pasos</span>
+          <span class="chip">😴 7 h de sueño</span><span class="chip">🚭 0 alcohol L-J</span>
+          <span class="chip">🧘 10 min meditación</span><span class="chip">☀️ 15 min de sol</span>
+          <span class="chip">📵 Sin móvil en la cama</span></div>
+      </div>
+    </div></div>
+  </article>
+
+  <!-- 15 · RANGOS -->
+  <article class="card">
+    <div class="cardhead"><div class="t"><span class="num">15</span><h3>Rangos &amp; niveles</h3></div>
+      <p>Camino de progresión visible. Los rangos se ganan por XP acumulada, así que nunca dependen de la báscula.</p></div>
+    <div class="phone" data-id="ranks"><div class="notch"></div><div class="scr">
+      <div class="sb"><span>9:41</span><span>▮▮▮ <i></i><i></i><i></i></span></div>
+      <div class="ab"><span class="back" data-go="home">←</span><h4>Rangos</h4><div class="ic">?</div></div>
+      <div class="bd">
+        <div class="p xpg" style="text-align:center;padding:18px 13px">
+          <div class="av" style="margin:0 auto;width:74px;height:74px;border-radius:23px;font-size:31px">🛡️<span class="lv">7</span></div>
+          <div class="b8" style="font-size:18px;margin-top:12px">Guerrero de Hierro</div>
+          <div class="t11 mut" style="margin-top:4px">Nivel 7 · 12.340 XP totales</div>
+          <div class="xpb" style="margin-top:13px"><i style="width:78%"></i></div>
+          <div class="row sb2" style="margin-top:7px"><span class="t11 mut2">2.340 / 3.000</span>
+            <span class="t11 b7" style="color:var(--gold)">660 XP para subir</span></div>
+        </div>
+
+        <div class="g3">
+          <div class="p flat" style="text-align:center"><div class="h5">Racha</div><div class="b8 t13" style="margin-top:5px;color:var(--gold)">🔥 12 d</div></div>
+          <div class="p flat" style="text-align:center"><div class="h5">Mejor racha</div><div class="b8 t13" style="margin-top:5px">28 d</div></div>
+          <div class="p flat" style="text-align:center"><div class="h5">Multiplic.</div><div class="b8 t13" style="margin-top:5px;color:var(--acc)">×1,3</div></div>
+        </div>
+
+        <div class="h5">Camino de rangos</div>
+        <div class="p rankline">
+          <div class="rk done"><div class="dot"></div><div class="tx"><b>🌱 Iniciado <span class="mut2 t11">· Nv 1-2</span></b><span>0 XP · desbloqueado</span></div></div>
+          <div class="rk done"><div class="dot"></div><div class="tx"><b>🥉 Aprendiz <span class="mut2 t11">· Nv 3-4</span></b><span>1.500 XP · gráficas avanzadas</span></div></div>
+          <div class="rk done"><div class="dot"></div><div class="tx"><b>🥈 Constante <span class="mut2 t11">· Nv 5-6</span></b><span>5.000 XP · temas de color</span></div></div>
+          <div class="rk cur"><div class="dot"></div><div class="tx"><b>🛡️ Guerrero de Hierro <span class="mut2 t11">· Nv 7-8</span></b>
+            <span style="color:var(--gold)">10.000 XP · estás aquí · rutinas ilimitadas</span></div></div>
+          <div class="rk"><div class="dot"></div><div class="tx"><b>⚔️ Veterano <span class="mut2 t11">· Nv 9-11</span></b><span>18.000 XP · informes con IA</span></div></div>
+          <div class="rk"><div class="dot"></div><div class="tx"><b>🏅 Élite <span class="mut2 t11">· Nv 12-15</span></b><span>32.000 XP · avatar dorado</span></div></div>
+          <div class="rk"><div class="dot"></div><div class="tx"><b>👑 Leyenda <span class="mut2 t11">· Nv 16+</span></b><span>60.000 XP · marco animado</span></div></div>
+        </div>
+
+        <div class="p"><div class="h5">De dónde sale tu XP</div>
+          <div class="kv" style="border:0"><span class="mut">🍽️ Registro de comidas</span><b>4.120</b></div>
+          <div class="kv"><span class="mut">🏋️ Entrenos y PRs</span><b>3.980</b></div>
+          <div class="kv"><span class="mut">⚖️ Peso y medidas</span><b>1.740</b></div>
+          <div class="kv"><span class="mut">🎯 Objetivos cumplidos</span><b>1.560</b></div>
+          <div class="kv"><span class="mut">🧠 Check-ins</span><b>640</b></div>
+          <div class="kv"><span class="mut">🔥 Bonus de racha</span><b>300</b></div>
+        </div>
+        <div class="btn gh wide" data-go="achv">Ver mis logros</div>
+      </div>
+    </div></div>
+  </article>
+
+  <!-- 16 · LOGROS -->
+  <article class="card">
+    <div class="cardhead"><div class="t"><span class="num">16</span><h3>Logros</h3></div>
+      <p>Mezcla de logros de constancia, de hito y secretos. Los bloqueados se muestran para crear tirón, con la pista visible.</p></div>
+    <div class="phone" data-id="achv"><div class="notch"></div><div class="scr">
+      <div class="sb"><span>9:41</span><span>▮▮▮ <i></i><i></i><i></i></span></div>
+      <div class="ab"><span class="back" data-go="ranks">←</span><h4>Logros</h4><span class="chip gold">18 / 64</span></div>
+      <div class="bd">
+        <div class="toast"><span style="font-size:22px">🏆</span>
+          <div style="flex:1"><div class="t12 b8">¡Desbloqueado hoy!</div>
+            <div class="t11 mut">“Semana de hierro” · 7 días registrando sin fallo · +150 XP</div></div></div>
+
+        <div class="seg"><span class="on">Todos</span><span>Conseguidos</span><span>Cerca</span></div>
+
+        <div class="h5">Constancia</div>
+        <div class="g4">
+          <div class="col" style="align-items:center;gap:5px"><div class="med on">🔥</div><span class="tt">7 días</span></div>
+          <div class="col" style="align-items:center;gap:5px"><div class="med on">📆</div><span class="tt">30 días</span></div>
+          <div class="col" style="align-items:center;gap:5px"><div class="med lock">💯</div><span class="tt">100 días</span></div>
+          <div class="col" style="align-items:center;gap:5px"><div class="med lock">🗓️</div><span class="tt">1 año</span></div>
+        </div>
+
+        <div class="h5">Fuerza</div>
+        <div class="g4">
+          <div class="col" style="align-items:center;gap:5px"><div class="med on">💪</div><span class="tt">Primer PR</span></div>
+          <div class="col" style="align-items:center;gap:5px"><div class="med on">🏋️</div><span class="tt">10 t/mes</span></div>
+          <div class="col" style="align-items:center;gap:5px"><div class="med on">🪝</div><span class="tt">10 domin.</span></div>
+          <div class="col" style="align-items:center;gap:5px"><div class="med lock">🐘</div><span class="tt">100 kg</span></div>
+        </div>
+
+        <div class="h5">Alimentación</div>
+        <div class="g4">
+          <div class="col" style="align-items:center;gap:5px"><div class="med on">🥗</div><span class="tt">30 días veg</span></div>
+          <div class="col" style="align-items:center;gap:5px"><div class="med on">🧾</div><span class="tt">100 comidas</span></div>
+          <div class="col" style="align-items:center;gap:5px"><div class="med on">🙋</div><span class="tt">Honestidad</span></div>
+          <div class="col" style="align-items:center;gap:5px"><div class="med lock">🚫🍩</div><span class="tt">14 d limpio</span></div>
+        </div>
+
+        <div class="h5">Mente &amp; descanso</div>
+        <div class="g4">
+          <div class="col" style="align-items:center;gap:5px"><div class="med on">🧘</div><span class="tt">10 medit.</span></div>
+          <div class="col" style="align-items:center;gap:5px"><div class="med lock">😴</div><span class="tt">7h × 14 d</span></div>
+          <div class="col" style="align-items:center;gap:5px"><div class="med lock">📵</div><span class="tt">Detox</span></div>
+          <div class="col" style="align-items:center;gap:5px"><div class="med lock">☀️</div><span class="tt">Madrugador</span></div>
+        </div>
+
+        <div class="h5">A punto de caer</div>
+        <div class="p" style="padding:6px 13px">
+          <div class="li"><div class="ico">🚫🍩</div><div class="gr"><b>Racha limpia · 14 días</b>
+            <div class="bar" style="margin-top:5px"><i class="rose" style="width:57%"></i></div></div><div class="rt">8/14</div></div>
+          <div class="li"><div class="ico">🐘</div><div class="gr"><b>Club de los 100 kg en banca</b>
+            <div class="bar" style="margin-top:5px"><i class="gold" style="width:95%"></i></div></div><div class="rt">95 kg</div></div>
+          <div class="li"><div class="ico">🚶</div><div class="gr"><b>Un millón de pasos</b>
+            <div class="bar" style="margin-top:5px"><i style="width:81%"></i></div></div><div class="rt">812 k</div></div>
+        </div>
+
+        <div class="p flat"><div class="row"><span style="font-size:15px">🔒</span>
+          <div class="t11 mut" style="flex:1;line-height:1.5"><b>Logro secreto:</b> registra algo un 29 de febrero… <i>3 logros ocultos por descubrir.</i></div></div></div>
+      </div>
+    </div></div>
+  </article>
+
+  <!-- 17 · RETOS -->
+  <article class="card">
+    <div class="cardhead"><div class="t"><span class="num">17</span><h3>Retos &amp; liga (opcional)</h3></div>
+      <p>Capa social desactivable. Retos con uno mismo primero; ligas con amigos sólo si el usuario lo pide, para no generar presión.</p></div>
+    <div class="phone" data-id="challenges"><div class="notch"></div><div class="scr">
+      <div class="sb"><span>9:41</span><span>▮▮▮ <i></i><i></i><i></i></span></div>
+      <div class="ab"><span class="back" data-go="home">←</span><h4>Retos</h4><div class="ic">＋</div></div>
+      <div class="bd">
+        <div class="seg"><span class="on">En curso</span><span>Disponibles</span><span>Liga</span></div>
+
+        <div class="p acc"><div class="row sb2"><div class="t13 b8">Agosto sin bollería</div><span class="chip on">+400 XP</span></div>
+          <div class="t11 mut2" style="margin-top:4px">Reto contra ti mismo · 31 días</div>
+          <div class="streak" style="margin-top:10px">
+            <i class="on">1</i><i class="on">2</i><i class="on">3</i><i class="on">4</i><i>5</i><i>6</i><i>7</i></div>
+          <div class="row sb2" style="margin-top:8px"><span class="t11 mut2">4 de 31 días</span><span class="t11 b7" style="color:var(--acc)">1 comodín restante</span></div></div>
+
+        <div class="p"><div class="row sb2"><div class="t13 b8">100 km caminando en agosto</div><span class="chip">+300 XP</span></div>
+          <div class="bar" style="margin-top:9px"><i class="blue" style="width:23%"></i></div>
+          <div class="row sb2" style="margin-top:6px"><span class="t11 mut2">23,4 / 100 km</span><span class="t11 mut2">Vas 1,2 km por delante</span></div></div>
+
+        <div class="h5">Duelo con un amigo</div>
+        <div class="p gold"><div class="row sb2"><div class="t13 b8">Más entrenos esta semana</div><span class="chip gold">Vas ganando</span></div>
+          <div class="row" style="margin-top:12px;gap:12px;align-items:center">
+            <div class="col" style="align-items:center;gap:5px;flex:1"><div class="av" style="width:40px;height:40px;border-radius:13px;font-size:18px">🦾</div>
+              <span class="t11 b7">Tú</span><span class="t13 b8" style="color:var(--gold)">3</span></div>
+            <span class="t12 mut2">VS</span>
+            <div class="col" style="align-items:center;gap:5px;flex:1"><div class="av" style="width:40px;height:40px;border-radius:13px;font-size:18px;background:linear-gradient(150deg,#60a5fa,#8b5cf6)">🐺</div>
+              <span class="t11 b7">Marta</span><span class="t13 b8">2</span></div>
+          </div>
+          <div class="t11 mut2" style="margin-top:11px;text-align:center">Termina el domingo · el ganador elige el reto siguiente</div></div>
+
+        <div class="h5">Liga semanal <span class="mut2">· grupo Sin Excusas</span></div>
+        <div class="p" style="padding:6px 13px">
+          <div class="li"><div class="ico" style="color:var(--gold)">1</div><div class="gr"><b>Marta</b><span>Nivel 9 · Veterana</span></div><div class="rt">1.240 XP</div></div>
+          <div class="li" style="background:rgba(46,230,200,.06)"><div class="ico" style="color:var(--acc)">2</div>
+            <div class="gr"><b>Tú</b><span>Nivel 7 · Guerrero de Hierro</span></div><div class="rt" style="color:var(--acc)">1.180 XP</div></div>
+          <div class="li"><div class="ico">3</div><div class="gr"><b>Diego</b><span>Nivel 6 · Constante</span></div><div class="rt">960 XP</div></div>
+          <div class="li"><div class="ico">4</div><div class="gr"><b>Ana</b><span>Nivel 8 · Guerrera de Hierro</span></div><div class="rt">720 XP</div></div>
+          <div class="li"><div class="ico">5</div><div class="gr"><b>Luis</b><span>Nivel 4 · Aprendiz</span></div><div class="rt">410 XP</div></div>
+        </div>
+        <div class="p flat"><div class="row sb2"><span class="t12">Participar en ligas</span><div class="sw on"></div></div>
+          <div class="t11 mut2" style="margin-top:7px">Sólo se comparte tu XP, nunca tu peso, comidas ni deslices.</div></div>
+      </div>
+    </div></div>
+  </article>
+
+  <!-- 18 · HÁBITOS -->
+  <article class="card">
+    <div class="cardhead"><div class="t"><span class="num">18</span><h3>Hábitos diarios</h3></div>
+      <p>Checklist de una pasada con vista de rejilla mensual. Los hábitos pequeños son los que sostienen la racha en días malos.</p></div>
+    <div class="phone" data-id="habits"><div class="notch"></div><div class="scr">
+      <div class="sb"><span>9:41</span><span>▮▮▮ <i></i><i></i><i></i></span></div>
+      <div class="ab"><span class="back" data-go="home">←</span><h4>Hábitos</h4><div class="ic">＋</div></div>
+      <div class="bd">
+        <div class="p acc"><div class="row sb2"><div class="h5">Hoy</div><span class="chip on">5 / 8 · +40 XP</span></div>
+          <div class="bar" style="margin-top:9px"><i style="width:62%"></i></div></div>
+
+        <div class="p" style="padding:6px 13px">
+          <div class="li"><div class="ico">💧</div><div class="gr"><b>2,3 L de agua</b>
+            <div class="row" style="gap:3px;margin-top:5px">
+              <span style="width:11px;height:14px;border-radius:3px;background:var(--blue)"></span>
+              <span style="width:11px;height:14px;border-radius:3px;background:var(--blue)"></span>
+              <span style="width:11px;height:14px;border-radius:3px;background:var(--blue)"></span>
+              <span style="width:11px;height:14px;border-radius:3px;background:var(--blue)"></span>
+              <span style="width:11px;height:14px;border-radius:3px;background:var(--blue)"></span>
+              <span style="width:11px;height:14px;border-radius:3px;background:var(--blue)"></span>
+              <span style="width:11px;height:14px;border-radius:3px;background:var(--panel3)"></span>
+              <span style="width:11px;height:14px;border-radius:3px;background:var(--panel3)"></span></div></div>
+            <div class="rt">1,8 L</div></div>
+          <div class="li"><div class="tick on">✓</div><div class="gr"><b>8.000 pasos</b><span>5.410 · sigue</span></div><div class="rt">68 %</div></div>
+          <div class="li"><div class="tick on">✓</div><div class="gr"><b>Verdura en 2 comidas</b><span>Hecho</span></div><div class="rt">+5 XP</div></div>
+          <div class="li"><div class="tick on">✓</div><div class="gr"><b>Vitamina D + omega 3</b><span>Con el desayuno</span></div><div class="rt">+5 XP</div></div>
+          <div class="li"><div class="tick on">✓</div><div class="gr"><b>15 min de luz natural</b><span>Paseo de media mañana</span></div><div class="rt">+5 XP</div></div>
+          <div class="li"><div class="tick"></div><div class="gr"><b>Sin pantallas 1 h antes de dormir</b><span>Pendiente</span></div><div class="rt">+10 XP</div></div>
+          <div class="li"><div class="tick"></div><div class="gr"><b>Estiramientos 5 min</b><span>Pendiente</span></div><div class="rt">+5 XP</div></div>
+          <div class="li"><div class="tick"></div><div class="gr"><b>Nada de cafeína después de las 15 h</b><span>Vigilando…</span></div><div class="rt">+5 XP</div></div>
+        </div>
+
+        <div class="p"><div class="row sb2"><div class="h5">Últimos 28 días</div><span class="t11 mut2">💧 agua</span></div>
+          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:10px">
+            <span style="aspect-ratio:1;border-radius:4px;background:#2ee6c8"></span><span style="aspect-ratio:1;border-radius:4px;background:#2ee6c8"></span>
+            <span style="aspect-ratio:1;border-radius:4px;background:#12b8a0"></span><span style="aspect-ratio:1;border-radius:4px;background:#212a3f"></span>
+            <span style="aspect-ratio:1;border-radius:4px;background:#2ee6c8"></span><span style="aspect-ratio:1;border-radius:4px;background:#12b8a0"></span>
+            <span style="aspect-ratio:1;border-radius:4px;background:#212a3f"></span>
+            <span style="aspect-ratio:1;border-radius:4px;background:#2ee6c8"></span><span style="aspect-ratio:1;border-radius:4px;background:#2ee6c8"></span>
+            <span style="aspect-ratio:1;border-radius:4px;background:#2ee6c8"></span><span style="aspect-ratio:1;border-radius:4px;background:#12b8a0"></span>
+            <span style="aspect-ratio:1;border-radius:4px;background:#2ee6c8"></span><span style="aspect-ratio:1;border-radius:4px;background:#212a3f"></span>
+            <span style="aspect-ratio:1;border-radius:4px;background:#12b8a0"></span>
+            <span style="aspect-ratio:1;border-radius:4px;background:#2ee6c8"></span><span style="aspect-ratio:1;border-radius:4px;background:#12b8a0"></span>
+            <span style="aspect-ratio:1;border-radius:4px;background:#2ee6c8"></span><span style="aspect-ratio:1;border-radius:4px;background:#2ee6c8"></span>
+            <span style="aspect-ratio:1;border-radius:4px;background:#2ee6c8"></span><span style="aspect-ratio:1;border-radius:4px;background:#2ee6c8"></span>
+            <span style="aspect-ratio:1;border-radius:4px;background:#12b8a0"></span>
+            <span style="aspect-ratio:1;border-radius:4px;background:#2ee6c8"></span><span style="aspect-ratio:1;border-radius:4px;background:#2ee6c8"></span>
+            <span style="aspect-ratio:1;border-radius:4px;background:#2ee6c8"></span><span style="aspect-ratio:1;border-radius:4px;background:#12b8a0"></span>
+            <span style="aspect-ratio:1;border-radius:4px;background:#2ee6c8"></span><span style="aspect-ratio:1;border-radius:4px;background:#2ee6c8"></span>
+            <span style="aspect-ratio:1;border-radius:4px;border:1px solid var(--acc);background:transparent"></span>
+          </div>
+          <div class="row sb2" style="margin-top:9px"><span class="t11 mut2">24 de 28 días</span><span class="t11 b7" style="color:var(--acc)">86 %</span></div></div>
+
+        <div class="p dash"><div class="row"><span style="font-size:15px">🔗</span>
+          <span class="t12 mut" style="flex:1">Encadenar un hábito nuevo a uno existente</span><span class="t11 b7" style="color:var(--acc)">→</span></div></div>
+      </div>
+    </div></div>
+  </article>
+
+</div>
+
+<div class="secttl"><h2>Cuenta</h2><div class="ln"></div></div>
+<div class="grid" id="g5">
+
+  <!-- 19 · PERFIL -->
+  <article class="card">
+    <div class="cardhead"><div class="t"><span class="num">19</span><h3>Perfil</h3></div>
+      <p>Resumen del personaje: identidad, estadísticas de vida y acceso a rangos, logros y retos. Es la pantalla "trofeo".</p></div>
+    <div class="phone" data-id="profile"><div class="notch"></div><div class="scr">
+      <div class="sb"><span>9:41</span><span>▮▮▮ <i></i><i></i><i></i></span></div>
+      <div class="ab"><span class="back" data-go="home">←</span><h4>Perfil</h4><div class="ic" data-go="settings">⚙</div></div>
+      <div class="bd">
+        <div class="p xpg" style="text-align:center;padding:18px 13px">
+          <div class="av" style="margin:0 auto;width:78px;height:78px;border-radius:24px;font-size:33px">🦾<span class="lv">Nv 7</span></div>
+          <div class="b8" style="font-size:17px;margin-top:13px">Jordi</div>
+          <div class="t11" style="margin-top:3px;color:var(--xp2);font-weight:700">🛡️ Guerrero de Hierro</div>
+          <div class="xpb" style="margin-top:13px"><i style="width:78%"></i></div>
+          <div class="t11 mut2" style="margin-top:6px">2.340 / 3.000 XP para Veterano</div>
+          <div class="chips" style="justify-content:center;margin-top:12px">
+            <span class="chip gold">🔥 12 días</span><span class="chip xp">🏆 18 logros</span><span class="chip on">⚡ ×1,3</span></div>
+        </div>
+
+        <div class="g2">
+          <div class="p"><div class="h5">Días activo</div><div class="b8" style="font-size:19px;margin-top:5px">147</div></div>
+          <div class="p"><div class="h5">Registros</div><div class="b8" style="font-size:19px;margin-top:5px">1.284</div></div>
+          <div class="p"><div class="h5">Entrenos</div><div class="b8" style="font-size:19px;margin-top:5px">86</div></div>
+          <div class="p"><div class="h5">Peso movido</div><div class="b8" style="font-size:19px;margin-top:5px">312 t</div></div>
+        </div>
+
+        <div class="p" style="padding:6px 13px">
+          <div class="li" data-go="ranks"><div class="ico">🛡️</div><div class="gr"><b>Rangos y niveles</b><span>Ver el camino completo</span></div><div class="rt">›</div></div>
+          <div class="li" data-go="achv"><div class="ico">🏆</div><div class="gr"><b>Logros</b><span>18 de 64 desbloqueados</span></div><div class="rt">›</div></div>
+          <div class="li" data-go="challenges"><div class="ico">⚔️</div><div class="gr"><b>Retos y liga</b><span>2 activos · 2º en tu grupo</span></div><div class="rt">›</div></div>
+          <div class="li" data-go="goals"><div class="ico">🎯</div><div class="gr"><b>Objetivos</b><span>5 activos</span></div><div class="rt">›</div></div>
+          <div class="li" data-go="habits"><div class="ico">✅</div><div class="gr"><b>Hábitos</b><span>8 en seguimiento</span></div><div class="rt">›</div></div>
+        </div>
+
+        <div class="h5">Insignias destacadas</div>
+        <div class="g4">
+          <div class="col" style="align-items:center;gap:5px"><div class="med on">🔥</div><span class="tt">30 días</span></div>
+          <div class="col" style="align-items:center;gap:5px"><div class="med on">💪</div><span class="tt">Primer PR</span></div>
+          <div class="col" style="align-items:center;gap:5px"><div class="med on">🙋</div><span class="tt">Honestidad</span></div>
+          <div class="col" style="align-items:center;gap:5px"><div class="med on">🪝</div><span class="tt">10 domin.</span></div>
+        </div>
+
+        <div class="p flat"><div class="row"><span style="font-size:15px">📖</span>
+          <div class="t11 mut" style="flex:1;line-height:1.5"><b>Tu historia:</b> 147 días, −7,6 kg, +22,5 kg en banca y 9 deslices anotados con total honestidad.</div>
+          <span class="t11 b7" style="color:var(--acc)">Ver →</span></div></div>
+      </div>
+      <nav class="tb">
+        <a data-go="home"><span class="i">◈</span>Inicio</a>
+        <a data-go="food"><span class="i">🍽</span>Comida</a>
+        <div class="fab" data-go="quick"><i>+</i></div>
+        <a data-go="train"><span class="i">🏋</span>Entreno</a>
+        <a data-go="progress"><span class="i">📈</span>Progreso</a>
+      </nav>
+    </div></div>
+  </article>
+
+  <!-- 20 · AJUSTES -->
+  <article class="card">
+    <div class="cardhead"><div class="t"><span class="num">20</span><h3>Ajustes</h3></div>
+      <p>Control de la intensidad de la gamificación (clave: hay días en que las notificaciones motivan y días en que agobian) y de la privacidad.</p></div>
+    <div class="phone" data-id="settings"><div class="notch"></div><div class="scr">
+      <div class="sb"><span>9:41</span><span>▮▮▮ <i></i><i></i><i></i></span></div>
+      <div class="ab"><span class="back" data-go="profile">←</span><h4>Ajustes</h4></div>
+      <div class="bd">
+        <div class="h5">Gamificación</div>
+        <div class="p" style="padding:6px 13px">
+          <div class="li"><div class="gr"><b>Intensidad</b><span>Cuánto insiste la app</span></div></div>
+          <div style="padding:0 0 10px"><div class="seg"><span>Suave</span><span class="on">Normal</span><span>Modo bestia</span></div></div>
+          <div class="li"><div class="gr"><b>Animaciones de subida de nivel</b></div><div class="sw on"></div></div>
+          <div class="li"><div class="gr"><b>Mostrar XP en cada acción</b></div><div class="sw on"></div></div>
+          <div class="li"><div class="gr"><b>Perder racha me estresa</b><span>Activa comodines automáticos</span></div><div class="sw"></div></div>
+          <div class="li"><div class="gr"><b>Modo compasivo</b><span>Sin números de peso, sólo tendencias</span></div><div class="sw"></div></div>
+        </div>
+
+        <div class="h5">Recordatorios</div>
+        <div class="p" style="padding:6px 13px">
+          <div class="li"><div class="ico">⚖️</div><div class="gr"><b>Pesarme</b><span>Cada día · 07:00</span></div><div class="sw on"></div></div>
+          <div class="li"><div class="ico">🍽️</div><div class="gr"><b>Registrar comidas</b><span>14:30 y 21:30</span></div><div class="sw on"></div></div>
+          <div class="li"><div class="ico">🥜</div><div class="gr"><b>Snack anti-desliz</b><span>16:45 · según tu patrón</span></div><div class="sw on"></div></div>
+          <div class="li"><div class="ico">🧠</div><div class="gr"><b>Check-in nocturno</b><span>22:30</span></div><div class="sw on"></div></div>
+          <div class="li"><div class="ico">🏋️</div><div class="gr"><b>Días de entreno</b><span>L · X · V · S</span></div><div class="sw on"></div></div>
+        </div>
+
+        <div class="h5">Unidades y objetivos</div>
+        <div class="p" style="padding:6px 13px">
+          <div class="li"><div class="gr"><b>Peso</b></div><div class="rt">kg</div></div>
+          <div class="li"><div class="gr"><b>Calorías objetivo</b><span>Recalculado con tu peso</span></div><div class="rt">2.150</div></div>
+          <div class="li"><div class="gr"><b>Proteína objetivo</b><span>1,8 g/kg</span></div><div class="rt">150 g</div></div>
+          <div class="li"><div class="gr"><b>Primer día de la semana</b></div><div class="rt">Lunes</div></div>
+        </div>
+
+        <div class="h5">Datos y privacidad</div>
+        <div class="p" style="padding:6px 13px">
+          <div class="li"><div class="ico">📱</div><div class="gr"><b>Todo en el dispositivo</b><span>Sin nube por defecto</span></div><div class="sw on"></div></div>
+          <div class="li"><div class="ico">⌚</div><div class="gr"><b>Salud / Google Fit</b><span>Pasos, pulso y sueño</span></div><div class="sw on"></div></div>
+          <div class="li"><div class="ico">⚖️</div><div class="gr"><b>Báscula Bluetooth</b><span>No conectada</span></div><div class="rt" style="color:var(--acc)">Conectar</div></div>
+          <div class="li"><div class="ico">⤓</div><div class="gr"><b>Exportar mis datos</b><span>CSV · JSON</span></div><div class="rt">›</div></div>
+          <div class="li"><div class="ico">🗑️</div><div class="gr"><b>Borrar todo</b><span>Irreversible</span></div><div class="rt" style="color:var(--rose)">›</div></div>
+        </div>
+
+        <div class="t11 mut2" style="text-align:center;padding:6px 0 10px">YouFitness v1.0 · mockup</div>
+      </div>
+    </div></div>
+  </article>
+
+</div>
+
+<div class="foot">
+  <b style="color:var(--txt)">Notas de diseño.</b><br>
+  · Una sola barra de XP global: cada registro (peso, comida, serie, check-in, hábito) otorga XP; los deslices <i>no</i> restan XP, sólo rompen multiplicadores — registrar siempre debe premiarse.<br>
+  · Rangos por umbral de XP acumulada, no por peso perdido: así el progreso nunca se estanca aunque la báscula sí.<br>
+  · Los objetivos son plantillas editables (métrica + operador + valor + periodo), lo que permite crear retos propios sin tocar código.<br>
+  · Todo registro se puede hacer en menos de 3 toques desde el FAB central.
+</div>
+</div>
+
+<div class="lb" id="lb">
+  <div class="xbtn" id="xbtn">✕</div>
+  <div class="phone" id="lbphone"></div>
+  <div class="lbbar">
+    <div class="nb" id="prev">←</div>
+    <div class="lbttl" id="lbttl"></div>
+    <div class="nb" id="next">→</div>
+  </div>
+</div>
+
+<script>
+const SCREENS = {};
+document.querySelectorAll('.card').forEach(c=>{
+  const ph = c.querySelector('.phone');
+  SCREENS[ph.dataset.id] = {html:ph.innerHTML, title:c.querySelector('h3').textContent, desc:c.querySelector('.cardhead p').textContent, el:ph};
+});
+const IDS = Object.keys(SCREENS);
+let cur = null;
+const lb=document.getElementById('lb'), lbp=document.getElementById('lbphone'), lbt=document.getElementById('lbttl');
+
+function open(id){
+  if(!SCREENS[id]) return;
+  cur=id; lbp.innerHTML=SCREENS[id].html;
+  lbt.innerHTML=SCREENS[id].title+'<span>'+SCREENS[id].desc+'</span>';
+  lb.classList.add('on'); document.body.style.overflow='hidden';
+}
+function close(){lb.classList.remove('on');document.body.style.overflow='';cur=null;}
+function step(d){if(!cur)return;let i=IDS.indexOf(cur);open(IDS[(i+d+IDS.length)%IDS.length]);}
+
+document.addEventListener('click',e=>{
+  const go=e.target.closest('[data-go]');
+  if(go){
+    e.stopPropagation();
+    const id=go.dataset.go;
+    if(lb.classList.contains('on')){open(id);}
+    else{
+      const t=SCREENS[id];
+      if(t){t.el.scrollIntoView({behavior:'smooth',block:'center'});t.el.classList.remove('pulse');void t.el.offsetWidth;t.el.classList.add('pulse');}
+    }
+    return;
+  }
+  const ph=e.target.closest('.card .phone');
+  if(ph){open(ph.dataset.id);}
+});
+document.getElementById('xbtn').onclick=close;
+document.getElementById('prev').onclick=e=>{e.stopPropagation();step(-1)};
+document.getElementById('next').onclick=e=>{e.stopPropagation();step(1)};
+lb.addEventListener('click',e=>{if(e.target===lb)close()});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape')close();
+  if(e.key==='ArrowRight')step(1);
+  if(e.key==='ArrowLeft')step(-1);
+});
+</script>
+</body>
+</html>
