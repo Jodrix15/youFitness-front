@@ -67,13 +67,15 @@ export function DiarioScreen({
             {esHoy ? fechaLarga(new Date(dia.fecha)) : `↩ ${fechaLarga(new Date(dia.fecha))}`}
           </Text>
         </View>
-        <BotonIcono icono="📖" etiqueta="Mis recetas" onPress={onRecetas} />
-        <BotonIcono
-          icono="📅"
-          etiqueta="Elegir día"
-          onPress={() => setCalendarioAbierto(true)}
-          activo={!esHoy}
-        />
+        <View style={styles.iconos}>
+          <BotonIcono icono="📖" etiqueta="Mis recetas" onPress={onRecetas} />
+          <BotonIcono
+            icono="📅"
+            etiqueta="Elegir día"
+            onPress={() => setCalendarioAbierto(true)}
+            activo={!esHoy}
+          />
+        </View>
       </View>
 
       <SelectorFecha
@@ -254,10 +256,12 @@ const useStyles = makeStyles((t) =>
     cabecera: {
       flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'space-between',
       gap: t.spacing.md,
     },
-    titulo: { gap: 2 },
+    // El título se come el espacio sobrante para que los dos iconos queden
+    // juntos a la derecha. Con `space-between` el primero se iba al centro.
+    titulo: { flex: 1, gap: 2 },
+    iconos: { flexDirection: 'row', gap: t.spacing.sm },
     filaTitulo: {
       flexDirection: 'row',
       alignItems: 'center',
