@@ -11,6 +11,7 @@ sin servidor no hay sincronización, así que cada instalación es independiente
 
 - Especificación funcional: [`docs/YouFitness-especificacion.md`](docs/YouFitness-especificacion.md)
 - Decisiones técnicas: [`docs/ARQUITECTURA.md`](docs/ARQUITECTURA.md)
+- Desplegar en Vercel: [`docs/DESPLIEGUE.md`](docs/DESPLIEGUE.md)
 - Mockups: [`mockups/`](mockups/)
 
 ---
