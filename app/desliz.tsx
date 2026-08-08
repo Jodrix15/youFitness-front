@@ -8,7 +8,7 @@ import { DeslizScreen } from '../src/ui/screens/comida/DeslizScreen';
 
 export default function DeslizRoute() {
   const { perfil, cargando } = useSesion();
-  const estado = useComidas(perfil?.usuarioId ?? null);
+  const estado = useComidas(perfil?.usuarioId ?? null, perfil?.objetivoVerduraRaciones);
   const [guardando, setGuardando] = useState(false);
   const [mensaje, setMensaje] = useState<string | null>(null);
 

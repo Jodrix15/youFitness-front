@@ -17,12 +17,16 @@
     "src/platform/reloj.ts",
     "src/data/repositories/**/*.ts",
     "src/data/adapters/local/**/*.ts",
+    "src/data/copia.ts",
+    "src/data/copia.test.ts",
     "src/application/onboarding/**/*.ts",
     "src/application/peso/registrarPeso.ts",
     "src/application/peso/registrarPeso.test.ts",
     "src/application/checkin/cerrarDia.ts",
     "src/application/checkin/cerrarDia.test.ts",
     "src/application/comida/registrarComida.ts",
-    "src/application/comida/registrarComida.test.ts"
+    "src/application/comida/registrarComida.test.ts",
+    "src/application/entreno/sesion.ts",
+    "src/application/entreno/sesion.test.ts"
   ]
 }

@@ -53,11 +53,16 @@ export function CabeceraInicio({ nombre, subtitulo, nivel, diasDeRacha, onPerfil
         </View>
       ) : null}
 
+      {/*
+        La campana está apagada: los recordatorios necesitan notificaciones
+        nativas, que no existen en la versión web. Ajustes no vive aquí — se abre
+        desde el engranaje del Perfil, como en el mockup.
+      */}
       <View
         accessibilityRole="button"
         accessibilityLabel="Avisos, aún no disponible"
         accessibilityState={{ disabled: true }}
-        style={[styles.icono, { opacity: 0.45 }]}
+        style={[styles.icono, styles.apagado]}
       >
         <Text variant="caption" tone="muted">
           🔔
@@ -94,5 +99,7 @@ const useStyles = makeStyles((t) =>
       alignItems: 'center',
       justifyContent: 'center',
     },
+    pulsado: { backgroundColor: t.colors.surfaceHigh },
+    apagado: { opacity: 0.45 },
   }),
 );

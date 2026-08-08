@@ -9,7 +9,7 @@ import { DiarioScreen } from '../../src/ui/screens/comida/DiarioScreen';
 
 export default function ComidaRoute() {
   const { perfil, cargando } = useSesion();
-  const estado = useComidas(perfil?.usuarioId ?? null);
+  const estado = useComidas(perfil?.usuarioId ?? null, perfil?.objetivoVerduraRaciones);
   const { tendencia } = usePeso(perfil?.usuarioId ?? null, perfil?.pesoInicialKg ?? null);
   const { recargar } = estado;
 

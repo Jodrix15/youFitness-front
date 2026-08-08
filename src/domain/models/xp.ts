@@ -15,6 +15,11 @@ import type { Entidad, FechaISO, Uuid } from './comunes';
  * Un evento NUNCA se edita. Si un registro se deshace, se escribe un evento
  * compensatorio con signo contrario.
  */
+/**
+ * Los tipos `habito_*` corresponden a una función retirada de la app. Se
+ * mantienen porque el log de XP es inmutable: una copia de seguridad anterior
+ * los contiene, y al restaurarla el desglose tiene que saber etiquetarlos.
+ */
 export type TipoXpEvento =
   | 'peso_registrado'
   | 'comida_registrada'

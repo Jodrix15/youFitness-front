@@ -38,7 +38,7 @@ Para el móvil sin simulador, instalar **Expo Go** y escanear el QR.
 
 ```bash
 npm run typecheck   # TypeScript en modo strict
-npm test            # 30 pruebas de dominio y de la capa de datos
+npm test            # 192 pruebas de dominio y de la capa de datos
 ```
 
 ---
@@ -60,7 +60,7 @@ npm test            # 30 pruebas de dominio y de la capa de datos
 | # | Pantalla | Estado |
 |---|---|---|
 | — | Navegación de 4 pestañas + botón central | ✅ |
-| 06 | Inicio | ✅ anillos de ejemplo hasta que existan sus bloques |
+| 06 | Inicio | ✅ anillo de comidas real; el de pasos, de ejemplo |
 | 07 | Inicio · día 1 | ✅ estado vacío con un solo camino |
 | 08 | Registro rápido | ✅ las acciones de bloques futuros salen apagadas |
 | 09 | Peso | ✅ media de 7 días, gráfica, resumen y cintura |
@@ -69,9 +69,9 @@ npm test            # 30 pruebas de dominio y de la capa de datos
 Registrar el peso o cerrar el día escribe un evento en el log de XP; el nivel,
 el rango y la racha se derivan de ahí. Nada de eso se guarda como contador.
 
-Quedan de ejemplo los anillos de pasos y hábitos, pintados apagados y con la
-etiqueta a la vista. Viven en `src/ui/screens/inicio/datosDeEjemplo.ts` y **ese
-fichero se borra** cuando existan la build nativa y el Bloque 4.
+Queda de ejemplo el anillo de pasos, pintado apagado y con la etiqueta a la
+vista. Vive en `src/ui/screens/inicio/datosDeEjemplo.ts` y **ese fichero se
+borra** cuando exista la lectura real de pasos, que necesita build nativa.
 
 **Bloque 3 · Alimentación — implementado.**
 
@@ -84,6 +84,59 @@ fichero se borra** cuando existan la build nativa y el Bloque 4.
 
 Sin calorías ni macros en gramos. Se registra la **forma del plato** en raciones
 medidas con la mano, que es la única unidad que se sostiene a los seis meses.
+
+**Bloque 4 · Entrenamiento — implementado.**
+
+| # | Pantalla | Estado |
+|---|---|---|
+| 21 | Biblioteca de ejercicios | ✅ empieza vacía, tú das de alta lo que haces |
+| — | Constructor de rutinas | ✅ ejercicios, series y objetivos |
+| 15 | Entrenamientos | ✅ semana, rutinas, récords y últimas sesiones |
+| 16 y 17 | Sesión activa | ✅ una pantalla para los cinco tipos |
+| 18 | Resumen de sesión | ✅ desglose de XP y récords |
+| 19 | Progresión por ejercicio | ✅ mejor serie, volumen, 1RM e historial |
+| 20 | Escaleras de progresión | ✅ criterio explícito, ascenso que confirmas tú |
+
+Cada tipo de ejercicio calcula el volumen a su manera, y el peso corporal queda
+**congelado** en la sesión: adelgazar el año que viene no reescribe el volumen
+de las dominadas de hoy.
+
+**Bloque 5 · Historial y cuenta — en curso.**
+
+| # | Pantalla | Estado |
+|---|---|---|
+| 36 | Perfil | ✅ rango, camino, de dónde sale tu XP y totales de por vida |
+| 37 | Ajustes | ✅ modo estricto, presupuesto y copias de seguridad |
+| 31 | Historial · un día | ✅ |
+| 32 | Historial · mes | ✅ calendario navegable sin límite |
+| 33 | Historial · año | ✅ mapa de calor de 365 días |
+| 34 | Historial · todo | ✅ totales de por vida |
+| 22 a 24 | Progreso, objetivos y su constructor | ⬜ |
+| 25 a 29 | Tabla de XP, subida de nivel, logros y retos | ⬜ fase 2 |
+| 35 | Peso · histórico multiaño | ⬜ |
+
+El historial vive en la pestaña de Progreso. Nada se archiva ni se comprime: un
+día de hace tres años se ve con el mismo detalle que el de ayer.
+
+**Semáforo por temas.** El historial se puede filtrar por comidas, entrenos o los
+dos juntos, y cada día se pinta según cuántos temas tuvieron desliz: verde
+ninguno, amarillo uno, rojo los dos. Dos reglas que evitan que el color mienta:
+
+- **Un día sin datos no es verde, es neutro.** Verde significa «comprobado y
+  limpio»; no haber registrado nada es no saberlo. Pintarlo de verde convertiría
+  el olvido en recompensa.
+- **Un día de descanso planificado no es un entreno fallado.** Solo cuenta como
+  desliz si ese día tocaba una rutina —las rutinas llevan días asignados— y no
+  registraste sesión. Una rutina sin días marcados nunca penaliza.
+
+**La copia de seguridad ya funciona.** Exporta un JSON legible sin la app y
+puede restaurarse. Hay además una copia automática semanal dentro del propio
+dispositivo, que protege de un fallo de la app pero **no** de perder el móvil:
+para eso hay que descargar el fichero y guardarlo en otro sitio.
+
+**La función de hábitos se retiró** por decisión de producto. Los tipos de evento
+`habito_*` siguen en el modelo de XP a propósito: una copia de seguridad anterior
+los contiene, y al restaurarla el total tiene que seguir sumándolos bien.
 
 ---
 
@@ -110,12 +163,18 @@ rediseñar la app no pueda romper la lógica.
 
 ## Siguiente paso
 
-Bloque 2 · Núcleo diario: Inicio de verdad, registro rápido, peso y check-in
-nocturno. Ahí entran el registro de eventos de XP y la media móvil de 7 días,
-que es cuando toca añadir el adaptador SQLite.
+Lo que queda del bloque 5:
+
+- **Progreso y objetivos** (22 a 24): XP del mes, adherencia por día de la
+  semana y el constructor genérico de objetivos.
+- **Peso histórico multiaño** (35), con anotaciones sobre la gráfica.
+- **Fase 2** (25 a 29): tabla completa de XP, subida de nivel animada, logros y
+  retos. Necesitan meses de datos para no estar vacíos.
+
+Y cuando quieras salir del navegador: **build nativa con EAS**, que es lo que
+desbloquea la lectura de pasos y las notificaciones fiables.
 
 ## Aviso
 
 Los rangos de peso, los ritmos de pérdida y las referencias de cintura son
 valores de referencia general, no consejo médico personalizado.
-# youFitness-front

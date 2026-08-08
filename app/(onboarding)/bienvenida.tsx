@@ -10,5 +10,7 @@ import { BienvenidaScreen } from '../../src/ui/screens/onboarding/BienvenidaScre
  * nada más.
  */
 export default function BienvenidaRoute() {
-  return <BienvenidaScreen onContinuar={() => router.push('/perfil')} />;
+  // `/tus-datos`, no `/perfil`: esa ruta la ocupa la pantalla de cuenta, y dos
+  // ficheros con el mismo destino hacen que expo-router resuelva uno al azar.
+  return <BienvenidaScreen onContinuar={() => router.push('/tus-datos')} />;
 }

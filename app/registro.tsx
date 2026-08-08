@@ -7,7 +7,7 @@ export default function RegistroRapidoRoute() {
     <RegistroRapidoScreen
       onCerrar={() => router.back()}
       onElegir={(ruta) =>
-        router.replace(ruta as '/peso' | '/checkin' | '/comida-nueva' | '/desliz')
+        router.replace(ruta as '/peso' | '/checkin' | '/comida-nueva' | '/desliz' | '/entreno')
       }
     />
   );

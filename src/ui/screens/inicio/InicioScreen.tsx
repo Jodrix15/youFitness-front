@@ -17,7 +17,7 @@ import {
 } from '../../components';
 import { diaSemana, entero } from '../../format';
 import { makeStyles, useTheme } from '../../theme';
-import { ANILLOS_EJEMPLO } from './datosDeEjemplo';
+import { PASOS_EJEMPLO } from './datosDeEjemplo';
 
 type Props = {
   nombre: string;
@@ -25,6 +25,9 @@ type Props = {
   onPeso: () => void;
   onCheckin: () => void;
   onComida: () => void;
+  onPerfil: () => void;
+  /** Abre un día concreto en el historial. */
+  onDia: (fecha: string) => void;
   /** Bloque extra al final. Hoy solo lo usan los atajos de desarrollo. */
   pie?: ReactNode;
 };
@@ -37,12 +40,27 @@ type Props = {
  * una etiqueta que dice de qué bloque dependen. Un dato inventado sin avisar
  * rompería el principio de que lo que se ve siempre es real.
  */
-export function InicioScreen({ nombre, estado, onPeso, onCheckin, onComida, pie }: Props) {
+export function InicioScreen({
+  nombre,
+  estado,
+  onPeso,
+  onCheckin,
+  onComida,
+  onPerfil,
+  onDia,
+  pie,
+}: Props) {
   const styles = useStyles();
   const theme = useTheme();
-  const { nivel, proximoRango, racha, semana, xpHoy, misiones, comidasDeHoy: comidas } = estado;
-
-  const color = { accent: theme.colors.accent, info: theme.colors.info, success: theme.colors.success };
+  const {
+    nivel,
+    proximoRango,
+    racha,
+    semana,
+    xpHoy,
+    misiones,
+    comidasDeHoy: comidas,
+  } = estado;
 
   return (
     <Screen>
@@ -50,6 +68,7 @@ export function InicioScreen({ nombre, estado, onPeso, onCheckin, onComida, pie 
         nombre={nombre}
         nivel={nivel.nivel}
         diasDeRacha={racha.actual}
+        onPerfil={onPerfil}
         subtitulo={
           racha.actual > 0
             ? `${diaSemana(new Date())} · día ${entero(racha.actual)} de racha`
@@ -60,7 +79,7 @@ export function InicioScreen({ nombre, estado, onPeso, onCheckin, onComida, pie 
       <XpBar estado={nivel} proximoRango={proximoRango} />
 
       <View style={styles.bloqueRacha}>
-        <TiraRacha dias={semana} />
+        <TiraRacha dias={semana} onDia={onDia} />
         {!racha.incluyeHoy && racha.actual > 0 ? (
           <Text variant="small" tone="warning">
             Hoy aún no has registrado nada. Tu racha de {entero(racha.actual)} días
@@ -86,22 +105,19 @@ export function InicioScreen({ nombre, estado, onPeso, onCheckin, onComida, pie 
             centro={`${comidas.principalesRegistradas}/3`}
             color={theme.colors.accent}
           />
-          {ANILLOS_EJEMPLO.map((a) => (
-            <Anillo
-              key={a.clave}
-              valor={a.valor}
-              etiqueta={a.etiqueta}
-              centro={a.centro}
-              centroSecundario={a.centroSecundario}
-              color={color[a.color]}
-              ejemplo
-            />
-          ))}
+          <Anillo
+            valor={PASOS_EJEMPLO.valor}
+            etiqueta={PASOS_EJEMPLO.etiqueta}
+            centro={PASOS_EJEMPLO.centro}
+            centroSecundario={PASOS_EJEMPLO.centroSecundario}
+            color={theme.colors.info}
+            ejemplo
+          />
         </View>
 
         <Text variant="small" tone="faint" center>
-          Pasos y hábitos siguen siendo de ejemplo. Serán reales con la build
-          nativa y el Bloque 4.
+          Los pasos siguen siendo de ejemplo: leerlos de verdad necesita una
+          build nativa.
         </Text>
       </Card>
 

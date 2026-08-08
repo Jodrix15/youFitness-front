@@ -23,9 +23,8 @@ export type AccionRapida = {
 export const ACCIONES: readonly AccionRapida[] = [
   { clave: 'comida', icono: '🍽️', etiqueta: 'Comida', xp: XP.registrarComida, ruta: '/comida-nueva' },
   { clave: 'peso', icono: '⚖️', etiqueta: 'Peso', xp: XP.registrarPeso, ruta: '/peso' },
-  { clave: 'entreno', icono: '🏋️', etiqueta: 'Entreno', xp: XP.completarEntreno, ruta: null },
+  { clave: 'entreno', icono: '🏋️', etiqueta: 'Entreno', xp: XP.completarEntreno, ruta: '/entreno' },
   { clave: 'desliz', icono: '🍩', etiqueta: 'Desliz', xp: XP.registrarDesliz, ruta: '/desliz' },
-  { clave: 'habito', icono: '💧', etiqueta: 'Hábito', xp: XP.habitoBueno, ruta: null },
   { clave: 'checkin', icono: '🧠', etiqueta: 'Check-in', xp: XP.cerrarDia, ruta: '/checkin' },
 ];
 

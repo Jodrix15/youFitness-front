@@ -17,6 +17,8 @@ import type { Perfil } from '../../../domain/models/perfil';
 import type { Medida, PesoRegistro, TipoMedida } from '../../../domain/models/peso';
 import type { FechaISO } from '../../../domain/models/comunes';
 import type { Checkin, NuevoCheckin } from '../../../domain/models/checkin';
+import type { Ejercicio, Rutina, Sesion } from '../../../domain/models/entreno';
+import type { Escalera } from '../../../domain/models/escalera';
 import type {
   Comida,
   DeslizDetalle,
@@ -34,6 +36,8 @@ import type {
   CheckinRepository,
   ComidaRepository,
   DatosNuevoPerfil,
+  EjercicioRepository,
+  EscaleraRepository,
   MedidaRepository,
   ModuloRepository,
   ObjetivoRepository,
@@ -41,6 +45,8 @@ import type {
   PesoRepository,
   RecetaRepository,
   Repositorios,
+  RutinaRepository,
+  SesionRepository,
   XpRepository,
 } from '../../repositories';
 
@@ -54,6 +60,10 @@ const CLAVES = {
   comidas: 'comidas',
   deslices: 'deslices_detalle',
   recetas: 'recetas',
+  ejercicios: 'ejercicios',
+  rutinas: 'rutinas',
+  sesiones: 'sesiones',
+  escaleras: 'escaleras',
   xp: 'xp_eventos',
   onboarding: 'ajustes:onboarding_completado',
 } as const;
@@ -416,6 +426,122 @@ export function crearRepositoriosLocales(almacen: Almacen, ids: FuenteDeIds): Re
     },
   };
 
+  /**
+   * Ayudante para colecciones con el mismo ciclo de vida: leer, crear,
+   * actualizar y borrar lógicamente, todo filtrado por usuario.
+   *
+   * Aparece a partir del bloque de entrenamiento porque ahí ya son tres
+   * repositorios idénticos salvo por el tipo. Repetirlo tres veces más era
+   * garantizar que uno de ellos olvidara el `borradoEn`.
+   */
+  function coleccion<T extends { id: string; usuarioId: string; borradoEn: string | null; creadoEn: string; actualizadoEn: string }>(
+    clave: string,
+  ) {
+    const todos = async (): Promise<T[]> => (await almacen.leer<T[]>(clave)) ?? [];
+
+    return {
+      async listar(usuarioId: string): Promise<T[]> {
+        return (await todos()).filter((x) => x.usuarioId === usuarioId && x.borradoEn == null);
+      },
+
+      async crear(usuarioId: string, datos: object): Promise<T> {
+        const lista = await todos();
+        const t = ahora();
+        const registro = {
+          ...datos,
+          id: nuevoId(),
+          usuarioId,
+          creadoEn: t,
+          actualizadoEn: t,
+          borradoEn: null,
+        } as T;
+        await almacen.escribir(clave, [...lista, registro]);
+        return registro;
+      },
+
+      async actualizar(usuarioId: string, id: string, cambios: object): Promise<T> {
+        const lista = await todos();
+        const previo = lista.find((x) => x.id === id && x.usuarioId === usuarioId);
+        if (!previo) throw new Error(`No existe el registro ${id} en ${clave}`);
+
+        const registro = { ...previo, ...cambios, actualizadoEn: ahora() } as T;
+        await almacen.escribir(clave, [...lista.filter((x) => x.id !== id), registro]);
+        return registro;
+      },
+
+      async borrar(usuarioId: string, id: string): Promise<void> {
+        const lista = await todos();
+        const t = ahora();
+        await almacen.escribir(
+          clave,
+          lista.map((x) =>
+            x.id === id && x.usuarioId === usuarioId ? { ...x, borradoEn: t, actualizadoEn: t } : x,
+          ),
+        );
+      },
+    };
+  }
+
+  const baseEjercicios = coleccion<Ejercicio>(CLAVES.ejercicios);
+  const ejercicios: EjercicioRepository = {
+    async listar(usuarioId) {
+      const lista = await baseEjercicios.listar(usuarioId);
+      return lista.sort((a, b) => a.nombre.localeCompare(b.nombre));
+    },
+    crear: (usuarioId, datos) => baseEjercicios.crear(usuarioId, datos),
+    actualizar: (usuarioId, id, cambios) => baseEjercicios.actualizar(usuarioId, id, cambios),
+    borrar: (usuarioId, id) => baseEjercicios.borrar(usuarioId, id),
+  };
+
+  const baseRutinas = coleccion<Rutina>(CLAVES.rutinas);
+  const rutinas: RutinaRepository = {
+    async listar(usuarioId) {
+      const lista = await baseRutinas.listar(usuarioId);
+      return lista.sort((a, b) => b.vecesUsada - a.vecesUsada || a.nombre.localeCompare(b.nombre));
+    },
+    crear: (usuarioId, datos) => baseRutinas.crear(usuarioId, { vecesUsada: 0, ...datos }),
+    actualizar: (usuarioId, id, cambios) => baseRutinas.actualizar(usuarioId, id, cambios),
+    borrar: (usuarioId, id) => baseRutinas.borrar(usuarioId, id),
+    async registrarUso(usuarioId, id) {
+      const lista = await baseRutinas.listar(usuarioId);
+      const previa = lista.find((r) => r.id === id);
+      if (!previa) throw new Error('No existe esa rutina');
+      return baseRutinas.actualizar(usuarioId, id, { vecesUsada: previa.vecesUsada + 1 });
+    },
+  };
+
+  const baseSesiones = coleccion<Sesion>(CLAVES.sesiones);
+  const sesiones: SesionRepository = {
+    async listar(usuarioId) {
+      return ordenarPorFecha(await baseSesiones.listar(usuarioId));
+    },
+    async obtener(usuarioId, id) {
+      const lista = await baseSesiones.listar(usuarioId);
+      return lista.find((s) => s.id === id) ?? null;
+    },
+    async enCurso(usuarioId) {
+      const lista = await baseSesiones.listar(usuarioId);
+      // Solo puede haber una a la vez; si hubiera varias por un fallo, gana la
+      // más reciente y las demás quedan ahí sin estorbar.
+      return lista.filter((s) => !s.terminada).sort((a, b) => (a.creadoEn < b.creadoEn ? 1 : -1))[0] ?? null;
+    },
+    crear: (usuarioId, datos) => baseSesiones.crear(usuarioId, datos),
+    actualizar: (usuarioId, id, cambios) => baseSesiones.actualizar(usuarioId, id, cambios),
+    borrar: (usuarioId, id) => baseSesiones.borrar(usuarioId, id),
+    async seriesHistoricas(usuarioId) {
+      const lista = await baseSesiones.listar(usuarioId);
+      return lista.filter((s) => s.terminada).flatMap((s) => s.series);
+    },
+  };
+
+  const baseEscaleras = coleccion<Escalera>(CLAVES.escaleras);
+  const escaleras: EscaleraRepository = {
+    listar: (usuarioId) => baseEscaleras.listar(usuarioId),
+    crear: (usuarioId, datos) => baseEscaleras.crear(usuarioId, datos),
+    actualizar: (usuarioId, id, cambios) => baseEscaleras.actualizar(usuarioId, id, cambios),
+    borrar: (usuarioId, id) => baseEscaleras.borrar(usuarioId, id),
+  };
+
   const checkins: CheckinRepository = {
     async listar(usuarioId) {
       const lista = (await almacen.leer<Checkin[]>(CLAVES.checkins)) ?? [];
@@ -512,6 +638,10 @@ export function crearRepositoriosLocales(almacen: Almacen, ids: FuenteDeIds): Re
     medidas,
     comidas,
     recetas,
+    ejercicios,
+    rutinas,
+    sesiones,
+    escaleras,
     checkins,
     xp,
     ajustes,

@@ -15,6 +15,13 @@ type Props = {
   /** Mes visible, controlado desde fuera para poder navegar sin perder la selección. */
   mesVisible: FechaISO;
   onCambiarMes: (nuevoMes: FechaISO) => void;
+  /**
+   * Color de fondo de cada día. Devolver `undefined` deja el día neutro.
+   *
+   * Se pasa como función de color y no como estado del dominio para que el
+   * calendario siga sin saber nada de deslices ni de semáforos.
+   */
+  colorDe?: (fecha: FechaISO) => string | undefined;
 };
 
 const INICIALES = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
@@ -35,6 +42,7 @@ export function CalendarioMes({
   onSeleccionar,
   mesVisible,
   onCambiarMes,
+  colorDe,
 }: Props) {
   const styles = useStyles();
 
@@ -123,6 +131,7 @@ export function CalendarioMes({
               <View
                 style={[
                   styles.dia,
+                  colorDe?.(fecha) ? { backgroundColor: colorDe(fecha) } : null,
                   esHoy && styles.hoy,
                   esSeleccionada && styles.seleccionado,
                   esFuturo && styles.futuro,

@@ -7,7 +7,7 @@ import { RecetasScreen } from '../src/ui/screens/comida/RecetasScreen';
 
 export default function RecetasRoute() {
   const { perfil, cargando } = useSesion();
-  const estado = useComidas(perfil?.usuarioId ?? null);
+  const estado = useComidas(perfil?.usuarioId ?? null, perfil?.objetivoVerduraRaciones);
 
   if (cargando || estado.cargando || !perfil) {
     return (

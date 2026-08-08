@@ -50,7 +50,11 @@ export type EstadoComidas = {
   recargar: () => Promise<void>;
 };
 
-export function useComidas(usuarioId: Uuid | null): EstadoComidas {
+export function useComidas(
+  usuarioId: Uuid | null,
+  /** Objetivo de verdura del perfil. Configurable desde Ajustes. */
+  objetivoVerdura?: number,
+): EstadoComidas {
   const repos = useRepositorios();
   const [cargando, setCargando] = useState(true);
   const [todas, setTodas] = useState<Comida[]>([]);
@@ -147,7 +151,10 @@ export function useComidas(usuarioId: Uuid | null): EstadoComidas {
     fecha,
     irADia: setFecha,
     todas,
-    dia: useMemo(() => componerDia(todas, fecha), [todas, fecha]),
+    dia: useMemo(
+      () => componerDia(todas, fecha, objetivoVerdura),
+      [todas, fecha, objetivoVerdura],
+    ),
     rachaCompletos: useMemo(() => rachaDiasCompletos(todas, hoy()), [todas]),
     presupuesto: useMemo(() => presupuestoDeLaSemana(todas, fecha), [todas, fecha]),
     analisis: useMemo(() => analizarDeslices(todas, detalles), [todas, detalles]),

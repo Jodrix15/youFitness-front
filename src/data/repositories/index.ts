@@ -21,6 +21,16 @@ import type {
   Receta,
 } from '../../domain/models/comida';
 import type { FechaISO, Uuid } from '../../domain/models/comunes';
+import type {
+  Ejercicio,
+  NuevaRutina,
+  NuevaSesion,
+  NuevoEjercicio,
+  Rutina,
+  Serie,
+  Sesion,
+} from '../../domain/models/entreno';
+import type { Escalera, NuevaEscalera } from '../../domain/models/escalera';
 import type { ClaveModulo, Modulo } from '../../domain/models/modulo';
 import type { NuevoObjetivo, Objetivo } from '../../domain/models/objetivo';
 import type { Perfil } from '../../domain/models/perfil';
@@ -95,6 +105,40 @@ export interface RecetaRepository {
   registrarUso(usuarioId: Uuid, id: Uuid): Promise<Receta>;
 }
 
+export interface EjercicioRepository {
+  listar(usuarioId: Uuid): Promise<Ejercicio[]>;
+  crear(usuarioId: Uuid, datos: NuevoEjercicio): Promise<Ejercicio>;
+  actualizar(usuarioId: Uuid, id: Uuid, cambios: Partial<NuevoEjercicio>): Promise<Ejercicio>;
+  borrar(usuarioId: Uuid, id: Uuid): Promise<void>;
+}
+
+export interface RutinaRepository {
+  listar(usuarioId: Uuid): Promise<Rutina[]>;
+  crear(usuarioId: Uuid, datos: NuevaRutina): Promise<Rutina>;
+  actualizar(usuarioId: Uuid, id: Uuid, cambios: Partial<NuevaRutina>): Promise<Rutina>;
+  borrar(usuarioId: Uuid, id: Uuid): Promise<void>;
+  registrarUso(usuarioId: Uuid, id: Uuid): Promise<Rutina>;
+}
+
+export interface SesionRepository {
+  listar(usuarioId: Uuid): Promise<Sesion[]>;
+  obtener(usuarioId: Uuid, id: Uuid): Promise<Sesion | null>;
+  /** Sesión empezada y sin terminar, si la hay. Solo puede haber una. */
+  enCurso(usuarioId: Uuid): Promise<Sesion | null>;
+  crear(usuarioId: Uuid, datos: NuevaSesion): Promise<Sesion>;
+  actualizar(usuarioId: Uuid, id: Uuid, cambios: Partial<NuevaSesion>): Promise<Sesion>;
+  borrar(usuarioId: Uuid, id: Uuid): Promise<void>;
+  /** Todas las series de sesiones TERMINADAS. Es la base de los récords. */
+  seriesHistoricas(usuarioId: Uuid): Promise<Serie[]>;
+}
+
+export interface EscaleraRepository {
+  listar(usuarioId: Uuid): Promise<Escalera[]>;
+  crear(usuarioId: Uuid, datos: NuevaEscalera): Promise<Escalera>;
+  actualizar(usuarioId: Uuid, id: Uuid, cambios: Partial<NuevaEscalera>): Promise<Escalera>;
+  borrar(usuarioId: Uuid, id: Uuid): Promise<void>;
+}
+
 export interface CheckinRepository {
   listar(usuarioId: Uuid): Promise<Checkin[]>;
   obtenerPorFecha(usuarioId: Uuid, fecha: FechaISO): Promise<Checkin | null>;
@@ -135,6 +179,10 @@ export type Repositorios = {
   medidas: MedidaRepository;
   comidas: ComidaRepository;
   recetas: RecetaRepository;
+  ejercicios: EjercicioRepository;
+  rutinas: RutinaRepository;
+  sesiones: SesionRepository;
+  escaleras: EscaleraRepository;
   checkins: CheckinRepository;
   xp: XpRepository;
   ajustes: AjustesRepository;

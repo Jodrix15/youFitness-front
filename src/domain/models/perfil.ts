@@ -27,6 +27,18 @@ export type Perfil = Entidad & {
   modoEstricto: boolean;
   intensidadGamificacion: IntensidadGamificacion;
   presupuestoDeslicesSemana: number;
+  /** Raciones de verdura al día que se consideran objetivo. */
+  objetivoVerduraRaciones: number;
+  /**
+   * Oculta el número del peso y deja solo la tendencia.
+   *
+   * Para quien la cifra diaria le hace más daño que bien: la media de 7 días
+   * sigue estando, que además es la que dice la verdad. La app no pierde nada,
+   * porque el número suelto nunca fue la señal.
+   */
+  modoCompasivo: boolean;
+  /** Instantánea semanal automática dentro del propio dispositivo. */
+  copiaAutomatica: boolean;
 };
 
 export type BorradorPerfil = {
@@ -43,7 +55,16 @@ export const PERFIL_POR_DEFECTO = {
   modoEstricto: false,
   intensidadGamificacion: 'normal' as IntensidadGamificacion,
   presupuestoDeslicesSemana: 2,
+  objetivoVerduraRaciones: 4,
+  modoCompasivo: false,
+  copiaAutomatica: true,
 } as const;
+
+export const INTENSIDADES: readonly { valor: IntensidadGamificacion; etiqueta: string }[] = [
+  { valor: 'discreta', etiqueta: 'Suave' },
+  { valor: 'normal', etiqueta: 'Normal' },
+  { valor: 'alta', etiqueta: 'Modo bestia' },
+];
 
 /** Límites de cordura. No son consejo médico: descartan datos imposibles. */
 export const LIMITES = {

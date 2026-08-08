@@ -24,7 +24,7 @@ export default function ComidaNuevaRoute() {
     id?: string;
   }>();
   const { perfil, cargando } = useSesion();
-  const estado = useComidas(perfil?.usuarioId ?? null);
+  const estado = useComidas(perfil?.usuarioId ?? null, perfil?.objetivoVerduraRaciones);
   const [guardando, setGuardando] = useState(false);
   const [mensaje, setMensaje] = useState<string | null>(null);
 

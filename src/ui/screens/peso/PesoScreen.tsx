@@ -140,9 +140,15 @@ export function PesoScreen({ perfil, estado, onAtras }: Props) {
                   Comparativa semanal en unos días
                 </Text>
               )}
-              <Text variant="small" tone="faint">
-                {`último pesaje ${kg(tendencia.ultimoPeso)} kg`}
-              </Text>
+              {/*
+                Con modo compasivo se oculta el pesaje suelto y queda solo la
+                media, que además es la que dice la verdad. No se pierde señal.
+              */}
+              {!perfil.modoCompasivo ? (
+                <Text variant="small" tone="faint">
+                  {`último pesaje ${kg(tendencia.ultimoPeso)} kg`}
+                </Text>
+              ) : null}
             </View>
           </View>
         </Card>
@@ -171,7 +177,18 @@ export function PesoScreen({ perfil, estado, onAtras }: Props) {
           ) : null}
         </View>
 
-        <NumberField label="Peso" value={entrada} onChangeText={setEntrada} unidad="kg" destacado />
+        <NumberField
+          label="Peso"
+          value={entrada}
+          onChangeText={setEntrada}
+          unidad="kg"
+          destacado={!perfil.modoCompasivo}
+          ayuda={
+            perfil.modoCompasivo
+              ? 'Con el modo compasivo el número solo aparece aquí, al anotarlo. En el resto de la app queda la tendencia.'
+              : undefined
+          }
+        />
 
         <Button
           label={pesajeDeHoy ? 'Actualizar' : `Guardar · +${entero(XP.registrarPeso)} XP`}
@@ -199,7 +216,7 @@ export function PesoScreen({ perfil, estado, onAtras }: Props) {
         </Card>
       ) : null}
 
-      {resumen ? (
+      {resumen && !perfil.modoCompasivo ? (
         <View style={styles.tresColumnas}>
           <Card variant="flat" style={styles.columna}>
             <Text variant="overline" tone="faint">

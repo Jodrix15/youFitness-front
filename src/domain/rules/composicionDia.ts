@@ -41,7 +41,12 @@ export type ComposicionDia = {
   deslices: number;
 };
 
-export function componerDia(comidas: readonly Comida[], fecha: FechaISO): ComposicionDia {
+export function componerDia(
+  comidas: readonly Comida[],
+  fecha: FechaISO,
+  /** Objetivo de verdura configurable desde Ajustes. */
+  objetivoVerdura: number = OBJETIVO_DIARIO.verduraRaciones,
+): ComposicionDia {
   const delDia = comidas.filter((c) => c.fecha === fecha && c.borradoEn == null);
   const normales = delDia.filter((c) => !c.esDesliz);
 
@@ -68,7 +73,7 @@ export function componerDia(comidas: readonly Comida[], fecha: FechaISO): Compos
       progreso: recortar(conProteina / OBJETIVO_DIARIO.comidasConProteina),
       detalle: `${conProteina} de ${OBJETIVO_DIARIO.comidasConProteina} comidas`,
     },
-    verdura: grupo(suma('verdPorciones'), OBJETIVO_DIARIO.verduraRaciones),
+    verdura: grupo(suma('verdPorciones'), objetivoVerdura),
     hidratos: grupo(suma('hidrPorciones'), OBJETIVO_DIARIO.hidratosRaciones),
     grasa: grupo(suma('grasPorciones'), 3),
     deslices: delDia.filter((c) => c.esDesliz).length,

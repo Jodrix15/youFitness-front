@@ -18,7 +18,7 @@ import { InicioScreen } from '../../src/ui/screens/inicio/InicioScreen';
 export default function InicioRoute() {
   const repos = useRepositorios();
   const { perfil, cargando: cargandoSesion, recargar: recargarSesion } = useSesion();
-  const estado = useInicio(perfil?.usuarioId ?? null);
+  const estado = useInicio(perfil?.usuarioId ?? null, perfil?.objetivoVerduraRaciones);
   const { recargar } = estado;
 
   // Al volver de registrar algo, el XP y las misiones tienen que estar al día.
@@ -95,6 +95,8 @@ export default function InicioRoute() {
       onPeso={irAPeso}
       onCheckin={irACheckin}
       onComida={() => router.push('/comida')}
+      onPerfil={() => router.push('/perfil')}
+      onDia={(fecha) => router.push(`/progreso?fecha=${fecha}`)}
       pie={atajosDesarrollo}
     />
   );

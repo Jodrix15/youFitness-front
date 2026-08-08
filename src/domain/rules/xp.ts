@@ -122,6 +122,11 @@ export const XP = {
   registrarPeso: 25,
   registrarComida: 20,
   registrarDesliz: 15,
+  /**
+   * Los hábitos se retiraron de la app, pero su XP se queda documentado: una
+   * copia de seguridad anterior a la retirada contiene eventos de este tipo, y
+   * el total tiene que seguir sumándolos bien al restaurarla.
+   */
   marcarMalHabito: 2,
   habitoBueno: 5,
   cerrarDia: 30,

@@ -41,7 +41,10 @@ export type EstadoInicio = {
  * Nivel, rango y racha son SIEMPRE derivados del log de eventos. No hay ningún
  * contador guardado que pueda quedar desincronizado con la realidad.
  */
-export function useInicio(usuarioId: Uuid | null): EstadoInicio {
+export function useInicio(
+  usuarioId: Uuid | null,
+  objetivoVerdura?: number,
+): EstadoInicio {
   const repos = useRepositorios();
   const [cargando, setCargando] = useState(true);
   const [eventos, setEventos] = useState<XpEvento[]>([]);
@@ -97,7 +100,10 @@ export function useInicio(usuarioId: Uuid | null): EstadoInicio {
         }),
       [objetivos, pesajeHoy, checkinHoy],
     ),
-    comidasDeHoy: useMemo(() => componerDia(comidas, fechaHoy), [comidas, fechaHoy]),
+    comidasDeHoy: useMemo(
+      () => componerDia(comidas, fechaHoy, objetivoVerdura),
+      [comidas, fechaHoy, objetivoVerdura],
+    ),
     pesajeRegistradoHoy: pesajeHoy,
     checkinCerradoHoy: checkinHoy,
     esDiaUno: eventos.length === 0,
