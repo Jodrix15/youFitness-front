@@ -8,7 +8,7 @@ import { totalXp } from '../../domain/rules/eventosXp';
 import { crearRepositoriosLocales } from '../../data/adapters/local/repositoriosLocales';
 import type { Repositorios } from '../../data/repositories';
 import { almacenEnMemoria } from '../../platform/almacen';
-import { anotarSerie, iniciarSesion, terminarSesion } from './sesion';
+import { anotarCierre, anotarSerie, iniciarSesion, terminarSesion } from './sesion';
 
 const DIA = (n: number, h = 18) => new Date(2026, 7, n, h, 0);
 
@@ -128,6 +128,47 @@ test('terminar paga base más series de una sola vez', async () => {
   assert.equal(r.xpGanado, 90, 'sin racha previa no hay multiplicador');
   assert.equal(r.sesion.terminada, true);
   assert.equal(r.sesion.volumenTotal, 1600);
+});
+
+test('cerrar dos veces la misma sesión NO paga el entreno dos veces', async () => {
+  const { repos, usuarioId, banca } = await montar();
+  const s = await iniciarSesion(repos, usuarioId, {}, DIA(6));
+  await anotar(repos, usuarioId, s.id, banca, { reps: 5, pesoKg: 80 });
+
+  const actual = (await repos.sesiones.obtener(usuarioId, s.id))!;
+  const primera = await terminarSesion(repos, usuarioId, actual, { esfuerzoPercibido: 7, nota: null }, DIA(6, 19));
+  assert.ok(primera);
+
+  const yaCerrada = (await repos.sesiones.obtener(usuarioId, s.id))!;
+  const segunda = await terminarSesion(
+    repos,
+    usuarioId,
+    yaCerrada,
+    { esfuerzoPercibido: 9, nota: 'otra' },
+    DIA(6, 20),
+  );
+
+  assert.equal(segunda, null, 'una sesión ya terminada no se vuelve a cerrar');
+  // 80 de base + una serie a 2,5, redondeado al final = 83.
+  assert.equal(totalXp(await repos.xp.listar(usuarioId)), 83, 'un solo pago');
+});
+
+test('el esfuerzo y la nota se pueden editar después sin tocar el XP', async () => {
+  const { repos, usuarioId, banca } = await montar();
+  const s = await iniciarSesion(repos, usuarioId, {}, DIA(6));
+  await anotar(repos, usuarioId, s.id, banca, { reps: 5, pesoKg: 80 });
+
+  const actual = (await repos.sesiones.obtener(usuarioId, s.id))!;
+  await terminarSesion(repos, usuarioId, actual, { esfuerzoPercibido: null, nota: null }, DIA(6, 19));
+
+  const xpAntes = totalXp(await repos.xp.listar(usuarioId));
+  await anotarCierre(repos, usuarioId, s.id, { esfuerzoPercibido: 8, nota: 'Buen día' });
+
+  const guardada = await repos.sesiones.obtener(usuarioId, s.id);
+  assert.equal(guardada?.esfuerzoPercibido, 8);
+  assert.equal(guardada?.nota, 'Buen día');
+  assert.equal(guardada?.terminada, true);
+  assert.equal(totalXp(await repos.xp.listar(usuarioId)), xpAntes, 'el XP no se mueve');
 });
 
 test('el primer entreno de un ejercicio no genera récords', async () => {

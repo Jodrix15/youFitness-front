@@ -12,6 +12,7 @@ sin servidor no hay sincronización, así que cada instalación es independiente
 - Especificación funcional: [`docs/YouFitness-especificacion.md`](docs/YouFitness-especificacion.md)
 - Decisiones técnicas: [`docs/ARQUITECTURA.md`](docs/ARQUITECTURA.md)
 - Desplegar en Vercel: [`docs/DESPLIEGUE.md`](docs/DESPLIEGUE.md)
+- Guion de pruebas en el móvil: [`docs/PRUEBAS.md`](docs/PRUEBAS.md)
 - Mockups: [`mockups/`](mockups/)
 
 ---
@@ -38,7 +39,7 @@ Para el móvil sin simulador, instalar **Expo Go** y escanear el QR.
 
 ```bash
 npm run typecheck   # TypeScript en modo strict
-npm test            # 192 pruebas de dominio y de la capa de datos
+npm test            # 198 pruebas de dominio y de la capa de datos
 ```
 
 ---

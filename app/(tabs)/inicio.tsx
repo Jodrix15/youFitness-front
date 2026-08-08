@@ -86,6 +86,7 @@ export default function InicioRoute() {
       nivel={estado.nivel}
       onPeso={irAPeso}
       onCheckin={irACheckin}
+      onPerfil={() => router.push('/perfil')}
       pie={atajosDesarrollo}
     />
   ) : (

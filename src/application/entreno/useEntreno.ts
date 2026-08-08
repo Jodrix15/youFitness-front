@@ -18,6 +18,7 @@ import { totalizarSesion, type TotalesSesion } from '../../domain/rules/volumen'
 import { useRepositorios } from '../../data/contenedor';
 import { idsDelDispositivo } from '../../platform/id';
 import {
+  anotarCierre,
   anotarSerie,
   borrarSerie,
   descartarSesion,
@@ -59,6 +60,11 @@ export type EstadoEntreno = {
     sesion: Sesion,
     cierre: { esfuerzoPercibido: number | null; nota: string | null },
   ) => Promise<ResultadoSesion | null>;
+  /** Guarda esfuerzo y nota de una sesión ya cerrada, sin volver a pagar XP. */
+  guardarCierre: (
+    sesionId: Uuid,
+    cierre: { esfuerzoPercibido: number | null; nota: string | null },
+  ) => Promise<void>;
   descartar: (sesionId: Uuid) => Promise<void>;
 
   recargar: () => Promise<void>;
@@ -157,6 +163,12 @@ export function useEntreno(usuarioId: Uuid | null): EstadoEntreno {
       if (!usuarioId) return;
       const fecha = hoy();
 
+      // Se relee del almacén antes de escribir: dos toques seguidos llegarían
+      // aquí con el mismo objeto en memoria y pagarían el ascenso dos veces.
+      const actuales = await repos.escaleras.listar(usuarioId);
+      const vigente = actuales.find((e) => e.id === escalera.id);
+      if (!vigente || vigente.escalonActual !== escalera.escalonActual) return;
+
       await repos.escaleras.actualizar(usuarioId, escalera.id, {
         escalonActual: escalera.escalonActual + 1,
         fechaUltimoAscenso: fecha,
@@ -220,6 +232,11 @@ export function useEntreno(usuarioId: Uuid | null): EstadoEntreno {
       const r = await terminarSesion(repos, usuarioId, sesion, cierre);
       await recargar();
       return r;
+    },
+    guardarCierre: async (sesionId, cierre) => {
+      if (!usuarioId) return;
+      await anotarCierre(repos, usuarioId, sesionId, cierre);
+      await recargar();
     },
     descartar: async (sesionId) => {
       await conUsuario((id) => descartarSesion(repos, id, sesionId))();

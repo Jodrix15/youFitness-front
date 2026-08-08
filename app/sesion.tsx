@@ -42,7 +42,12 @@ export default function SesionRoute() {
         ejercicios={estado.porId}
         onSalir={volver}
         onGuardarCierre={(esfuerzo, nota) => {
-          void estado.terminar(resultado.sesion, { esfuerzoPercibido: esfuerzo, nota });
+          // `guardarCierre`, no `terminar`: la sesión ya está cerrada y volver a
+          // terminarla escribiría un segundo evento de XP por el mismo entreno.
+          void estado.guardarCierre(resultado.sesion.id, {
+            esfuerzoPercibido: esfuerzo,
+            nota,
+          });
         }}
       />
     );

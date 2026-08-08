@@ -147,6 +147,10 @@ export async function terminarSesion(
 ): Promise<ResultadoSesion | null> {
   if (sesion.series.length === 0) return null;
 
+  // Cerrar dos veces la misma sesión pagaría el entreno dos veces. Para editar
+  // el esfuerzo o la nota después está `anotarCierre`.
+  if (sesion.terminada) return null;
+
   const listaEjercicios = await repos.ejercicios.listar(usuarioId);
   const porId = new Map(listaEjercicios.map((e) => [e.id, e]));
 
@@ -225,6 +229,22 @@ function magnitudDe(s: Serie, clase: 'peso' | 'reps' | 'segundos' | 'volumen'): 
     case 'volumen':
       return s.volumen;
   }
+}
+
+/**
+ * Anota el esfuerzo percibido y la nota de una sesión YA terminada.
+ *
+ * Va aparte de `terminarSesion` a propósito: el resumen se rellena después de
+ * cerrar, y si esa pantalla llamara a terminar otra vez se escribiría un segundo
+ * evento de XP por el mismo entreno.
+ */
+export async function anotarCierre(
+  repos: Repositorios,
+  usuarioId: Uuid,
+  sesionId: Uuid,
+  cierre: { esfuerzoPercibido: number | null; nota: string | null },
+): Promise<void> {
+  await repos.sesiones.actualizar(usuarioId, sesionId, cierre);
 }
 
 /** Descarta una sesión abierta sin registrar nada. */

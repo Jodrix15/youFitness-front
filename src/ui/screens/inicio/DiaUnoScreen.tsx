@@ -14,6 +14,7 @@ type Props = {
   nivel: EstadoNivel;
   onPeso: () => void;
   onCheckin: () => void;
+  onPerfil: () => void;
   /** Bloque extra al final. Hoy solo lo usan los atajos de desarrollo. */
   pie?: ReactNode;
 };
@@ -28,12 +29,18 @@ type Props = {
  * concreta de lo que vas a conseguir es lo que sostiene las dos primeras
  * semanas, que son las que se abandonan.
  */
-export function DiaUnoScreen({ nombre, nivel, onPeso, onCheckin, pie }: Props) {
+export function DiaUnoScreen({ nombre, nivel, onPeso, onCheckin, onPerfil, pie }: Props) {
   const styles = useStyles();
 
   return (
     <Screen>
-      <CabeceraInicio nombre={nombre} subtitulo="Tu primer día" nivel={nivel.nivel} diasDeRacha={0} />
+      <CabeceraInicio
+        nombre={nombre}
+        subtitulo="Tu primer día"
+        nivel={nivel.nivel}
+        diasDeRacha={0}
+        onPerfil={onPerfil}
+      />
 
       <XpBar estado={nivel} />
 
