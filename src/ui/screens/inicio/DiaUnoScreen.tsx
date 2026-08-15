@@ -1,4 +1,3 @@
-import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import type { EstadoNivel } from '../../../domain/rules/xp';
@@ -15,8 +14,6 @@ type Props = {
   onPeso: () => void;
   onCheckin: () => void;
   onPerfil: () => void;
-  /** Bloque extra al final. Hoy solo lo usan los atajos de desarrollo. */
-  pie?: ReactNode;
 };
 
 /**
@@ -29,7 +26,7 @@ type Props = {
  * concreta de lo que vas a conseguir es lo que sostiene las dos primeras
  * semanas, que son las que se abandonan.
  */
-export function DiaUnoScreen({ nombre, nivel, onPeso, onCheckin, onPerfil, pie }: Props) {
+export function DiaUnoScreen({ nombre, nivel, onPeso, onCheckin, onPerfil }: Props) {
   const styles = useStyles();
 
   return (
@@ -111,8 +108,6 @@ export function DiaUnoScreen({ nombre, nivel, onPeso, onCheckin, onPerfil, pie }
       <Text variant="small" tone="faint" center style={styles.promesa}>
         {'No te voy a inventar gráficas con dos datos.\nLo que ves siempre será real.'}
       </Text>
-
-      {pie}
     </Screen>
   );
 }

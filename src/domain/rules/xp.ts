@@ -18,37 +18,66 @@ export type Rango =
 
 export type DefinicionNivel = {
   nivel: number;
+  /** XP acumulado a partir del cual se tiene este nivel. */
   xpMinimo: number;
   rango: Rango;
   icono: string;
 };
 
+/**
+ * LA CURVA. Cada nivel cuesta bastante más que el anterior, como en Pokémon.
+ *
+ * Los saltos son 300, 900, 1.800, 2.800, 4.000, 5.400, 7.000, 8.800, 10.800,
+ * 13.000, 15.400, 18.000, 20.800, 23.800 y 27.000. Nunca decrecen: antes sí lo
+ * hacían —del 6 al 7 pedía 5.000 y del 7 al 8 solo 3.000—, y eso hacía que la
+ * barra fuera más fácil justo cuando debía costar más.
+ *
+ * POR QUÉ IMPORTA que crezca así: con un coste plano, un mes flojo y un mes
+ * bueno se parecen en la barra. Con coste creciente, mantener el mismo ritmo de
+ * siempre hace que la barra avance cada vez menos, y eso es exactamente la
+ * señal que se busca: el estancamiento se ve solo. Para seguir subiendo hay que
+ * subir el listón —más peso, más series, más días cerrados—, no repetir.
+ *
+ * Los rangos agrupan varios niveles y no cambian: Leyenda sigue siendo el 16.
+ */
 export const NIVELES: readonly DefinicionNivel[] = [
   { nivel: 1, xpMinimo: 0, rango: 'Iniciado', icono: '🌱' },
   { nivel: 2, xpMinimo: 300, rango: 'Iniciado', icono: '🌱' },
-  { nivel: 3, xpMinimo: 800, rango: 'Aprendiz', icono: '🥉' },
-  { nivel: 4, xpMinimo: 1500, rango: 'Aprendiz', icono: '🥉' },
-  { nivel: 5, xpMinimo: 2800, rango: 'Constante', icono: '🥈' },
-  { nivel: 6, xpMinimo: 5000, rango: 'Constante', icono: '🥈' },
-  { nivel: 7, xpMinimo: 10000, rango: 'Guerrero de Hierro', icono: '🛡️' },
-  { nivel: 8, xpMinimo: 13000, rango: 'Guerrero de Hierro', icono: '🛡️' },
-  { nivel: 9, xpMinimo: 18000, rango: 'Veterano', icono: '⚔️' },
-  { nivel: 10, xpMinimo: 23000, rango: 'Veterano', icono: '⚔️' },
-  { nivel: 11, xpMinimo: 27000, rango: 'Veterano', icono: '⚔️' },
-  { nivel: 12, xpMinimo: 32000, rango: 'Élite', icono: '🏅' },
-  { nivel: 13, xpMinimo: 39000, rango: 'Élite', icono: '🏅' },
-  { nivel: 14, xpMinimo: 46000, rango: 'Élite', icono: '🏅' },
-  { nivel: 15, xpMinimo: 53000, rango: 'Élite', icono: '🏅' },
-  { nivel: 16, xpMinimo: 60000, rango: 'Leyenda', icono: '👑' },
+  { nivel: 3, xpMinimo: 1200, rango: 'Aprendiz', icono: '🥉' },
+  { nivel: 4, xpMinimo: 3000, rango: 'Aprendiz', icono: '🥉' },
+  { nivel: 5, xpMinimo: 5800, rango: 'Constante', icono: '🥈' },
+  { nivel: 6, xpMinimo: 9800, rango: 'Constante', icono: '🥈' },
+  { nivel: 7, xpMinimo: 15200, rango: 'Guerrero de Hierro', icono: '🛡️' },
+  { nivel: 8, xpMinimo: 22200, rango: 'Guerrero de Hierro', icono: '🛡️' },
+  { nivel: 9, xpMinimo: 31000, rango: 'Veterano', icono: '⚔️' },
+  { nivel: 10, xpMinimo: 41800, rango: 'Veterano', icono: '⚔️' },
+  { nivel: 11, xpMinimo: 54800, rango: 'Veterano', icono: '⚔️' },
+  { nivel: 12, xpMinimo: 70200, rango: 'Élite', icono: '🏅' },
+  { nivel: 13, xpMinimo: 88200, rango: 'Élite', icono: '🏅' },
+  { nivel: 14, xpMinimo: 109000, rango: 'Élite', icono: '🏅' },
+  { nivel: 15, xpMinimo: 132800, rango: 'Élite', icono: '🏅' },
+  { nivel: 16, xpMinimo: 159800, rango: 'Leyenda', icono: '👑' },
 ] as const;
+
+export const NIVEL_MAXIMO = NIVELES[NIVELES.length - 1]!.nivel;
 
 export type EstadoNivel = {
   nivel: number;
   rango: Rango;
   icono: string;
+  /** XP de por vida. Es lo que se acumula de verdad. */
   xpTotal: number;
+  /** Umbral en el que empezó este nivel. */
   xpNivelActual: number;
+  /** Umbral del siguiente nivel. `null` en el máximo. */
   xpSiguienteNivel: number | null;
+  /**
+   * XP DENTRO DEL NIVEL ACTUAL. Vuelve a cero en cada subida: es el número que
+   * pinta la barra, y el que hace que subir de nivel se note.
+   */
+  xpEnNivel: number;
+  /** Lo que cuesta ENTERO este nivel. `null` en el máximo. */
+  xpParaSubir: number | null;
   /** 0..1. Vale 1 cuando ya no hay nivel superior. */
   progreso: number;
   xpRestante: number | null;
@@ -73,8 +102,10 @@ export function estadoNivel(xpTotal: number): EstadoNivel {
   const base = actual.xpMinimo;
   const techo = siguiente?.xpMinimo ?? null;
 
-  const progreso =
-    techo == null ? 1 : Math.max(0, Math.min(1, (xp - base) / Math.max(1, techo - base)));
+  const xpParaSubir = techo == null ? null : techo - base;
+  const xpEnNivel = techo == null ? xp - base : Math.min(xp - base, xpParaSubir!);
+
+  const progreso = xpParaSubir == null ? 1 : Math.max(0, Math.min(1, xpEnNivel / xpParaSubir));
 
   return {
     nivel: actual.nivel,
@@ -83,9 +114,23 @@ export function estadoNivel(xpTotal: number): EstadoNivel {
     xpTotal: xp,
     xpNivelActual: base,
     xpSiguienteNivel: techo,
+    xpEnNivel,
+    xpParaSubir,
     progreso,
     xpRestante: techo == null ? null : Math.max(0, techo - xp),
   };
+}
+
+/**
+ * Qué fracción (0..1) del nivel actual vale una cantidad de XP.
+ *
+ * Es la lectura de «¿esto se ha notado?». Los mismos 200 XP llenan dos tercios
+ * del nivel 2 y un céntimo del 16. Sirve para enseñar en Inicio cuánto ha movido
+ * la barra el día de hoy, sin tener que hacer la división a ojo.
+ */
+export function fraccionDeNivel(xp: number, estado: EstadoNivel): number {
+  if (estado.xpParaSubir == null || estado.xpParaSubir <= 0) return 0;
+  return Math.max(0, xp) / estado.xpParaSubir;
 }
 
 export type ProximoRango = {

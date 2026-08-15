@@ -23,7 +23,12 @@ export default function AjustesRoute() {
     <AjustesScreen
       estado={estado}
       onAtras={() => (router.canGoBack() ? router.back() : router.replace('/inicio'))}
-      onReiniciar={() => {
+      /**
+       * Eliminar la cuenta es la ÚNICA puerta que borra datos, y por eso también
+       * es la única forma de repetir el onboarding: sin perfil no hay nada que
+       * enseñar, así que la app arranca por Bienvenida como el primer día.
+       */
+      onEliminarCuenta={() => {
         void (async () => {
           await repos.ajustes.reiniciarTodo();
           router.replace('/bienvenida');

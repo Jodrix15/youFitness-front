@@ -144,3 +144,51 @@ test('si hoy aún no está completo, la racha se cuenta desde ayer', () => {
   // El día no ha terminado: sería absurdo romper la racha a mediodía.
   assert.equal(rachaDiasCompletos(comidas, HOY), 2);
 });
+
+test('un desliz anotado como cena cubre la cena del día', () => {
+  const d = componerDia(
+    [
+      comida(HOY, 'desayuno', { protPorciones: 1 }),
+      comida(HOY, 'comida', { protPorciones: 1, verdPorciones: 2 }),
+      comida(HOY, 'cena', {}, true),
+    ],
+    HOY,
+  );
+
+  assert.equal(d.principalesRegistradas, 3, 'la pizza de cena es la cena');
+  assert.deepEqual(d.faltan, []);
+  assert.equal(d.completo, true);
+  assert.equal(d.deslices, 1);
+});
+
+test('cubrir la comida con un desliz no regala raciones ni proteína', () => {
+  const d = componerDia([comida(HOY, 'cena', { hidrPorciones: 3, protPorciones: 2 }, true)], HOY);
+
+  assert.equal(d.principalesRegistradas, 1, 'la cena está registrada');
+  assert.equal(d.hidratos.raciones, 0, 'pero no suma a la composición');
+  assert.equal(d.verdura.raciones, 0);
+  assert.equal(d.proteina.raciones, 0, 'un desliz nunca cuenta como comida con proteína');
+});
+
+test('un desliz de tipo snack sigue sin ocupar ninguna comida principal', () => {
+  const d = componerDia([comida(HOY, 'desayuno'), comida(HOY, 'snack', {}, true)], HOY);
+  assert.equal(d.principalesRegistradas, 1);
+  assert.deepEqual(d.faltan, ['comida', 'cena']);
+});
+
+test('repetir una comida no infla el contador', () => {
+  const d = componerDia([comida(HOY, 'cena'), comida(HOY, 'cena')], HOY);
+  assert.equal(d.principalesRegistradas, 1, 'dos cenas siguen siendo una cena');
+});
+
+test('un desliz como cena mantiene viva la racha de días completos', () => {
+  const comidas = [
+    comida('2026-08-05', 'desayuno'),
+    comida('2026-08-05', 'comida'),
+    comida('2026-08-05', 'cena'),
+    comida(HOY, 'desayuno'),
+    comida(HOY, 'comida'),
+    comida(HOY, 'cena', {}, true),
+  ];
+  assert.equal(rachaDiasCompletos(comidas, HOY), 2);
+});

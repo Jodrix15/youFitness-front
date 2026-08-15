@@ -1,11 +1,9 @@
-import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import type { EstadoInicio } from '../../../application/inicio/useInicio';
 import { XP } from '../../../domain/rules/xp';
 import {
   Anillo,
-  BarraComposicion,
   CabeceraInicio,
   Card,
   ListItem,
@@ -28,8 +26,6 @@ type Props = {
   onPerfil: () => void;
   /** Abre un día concreto en el historial. */
   onDia: (fecha: string) => void;
-  /** Bloque extra al final. Hoy solo lo usan los atajos de desarrollo. */
-  pie?: ReactNode;
 };
 
 /**
@@ -39,6 +35,10 @@ type Props = {
  * cumplidos. De momento son de ejemplo y se marcan como tales — apagados y con
  * una etiqueta que dice de qué bloque dependen. Un dato inventado sin avisar
  * rompería el principio de que lo que se ve siempre es real.
+ *
+ * El desglose de raciones del día (proteína, verdura, hidratos) NO vive aquí:
+ * está en el Diario de comidas y en el historial, que es donde se va a mirar con
+ * calma. Inicio responde «¿qué me falta hoy?», no «¿cómo he comido?».
  */
 export function InicioScreen({
   nombre,
@@ -48,7 +48,6 @@ export function InicioScreen({
   onComida,
   onPerfil,
   onDia,
-  pie,
 }: Props) {
   const styles = useStyles();
   const theme = useTheme();
@@ -76,7 +75,7 @@ export function InicioScreen({
         }
       />
 
-      <XpBar estado={nivel} proximoRango={proximoRango} />
+      <XpBar estado={nivel} proximoRango={proximoRango} xpHoy={xpHoy} />
 
       <View style={styles.bloqueRacha}>
         <TiraRacha dias={semana} onDia={onDia} />
@@ -119,38 +118,6 @@ export function InicioScreen({
           Los pasos siguen siendo de ejemplo: leerlos de verdad necesita una
           build nativa.
         </Text>
-      </Card>
-
-      <Card>
-        <View style={styles.filaTitulo}>
-          <Text variant="overline" tone="faint">
-            Composición de hoy
-          </Text>
-          <Text variant="small" tone="faint">
-            {comidas.faltan.length === 0 ? 'día completo' : `faltan ${comidas.faltan.length}`}
-          </Text>
-        </View>
-        <View style={styles.composicion}>
-          <BarraComposicion
-            icono="✋"
-            nombre="Proteína"
-            detalle={comidas.proteina.detalle}
-            valor={comidas.proteina.progreso}
-          />
-          <BarraComposicion
-            icono="✊"
-            nombre="Verdura"
-            detalle={comidas.verdura.detalle}
-            valor={comidas.verdura.progreso}
-          />
-          <BarraComposicion
-            icono="🤲"
-            nombre="Hidratos"
-            detalle={comidas.hidratos.detalle}
-            valor={comidas.hidratos.progreso}
-            tono="warning"
-          />
-        </View>
       </Card>
 
       {misiones.length > 0 ? (
@@ -232,8 +199,6 @@ export function InicioScreen({
           }
         />
       </Card>
-
-      {pie}
     </Screen>
   );
 }
@@ -252,11 +217,7 @@ const useStyles = makeStyles((t) =>
       alignItems: 'flex-start',
       marginTop: t.spacing.sm,
     },
-    composicion: { gap: t.spacing.md, marginTop: t.spacing.xs },
     ejemplo: { opacity: 0.5 },
     derechaMision: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.md },
-    filaDesliz: { flexDirection: 'row', gap: t.spacing.md, alignItems: 'center' },
-    iconoDesliz: { fontSize: 20, lineHeight: 26 },
-    textoDesliz: { flex: 1, gap: 2 },
   }),
 );

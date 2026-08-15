@@ -3,8 +3,7 @@ import { useCallback } from 'react';
 
 import { useInicio } from '../../src/application/inicio/useInicio';
 import { useSesion } from '../../src/application/session/useSesion';
-import { useRepositorios } from '../../src/data/contenedor';
-import { Button, Card, Screen, Text } from '../../src/ui/components';
+import { Button, Screen, Text } from '../../src/ui/components';
 import { DiaUnoScreen } from '../../src/ui/screens/inicio/DiaUnoScreen';
 import { InicioScreen } from '../../src/ui/screens/inicio/InicioScreen';
 
@@ -14,10 +13,14 @@ import { InicioScreen } from '../../src/ui/screens/inicio/InicioScreen';
  * La misma ruta sirve las dos: sin ningún registro se muestra el estado de día
  * 1, que ofrece un solo camino. En cuanto hay algo que contar, se pasa a la
  * pantalla completa. Son dos estados de la misma pantalla, no dos secciones.
+ *
+ * Aquí NO hay atajos de «repetir onboarding» ni «borrar todo». Los había
+ * mientras no existía Ajustes, y eran una mina a un toque de la pantalla que más
+ * se abre. Borrar los datos es ahora una sola puerta, con confirmación, dentro
+ * de Ajustes → Eliminar mi cuenta.
  */
 export default function InicioRoute() {
-  const repos = useRepositorios();
-  const { perfil, cargando: cargandoSesion, recargar: recargarSesion } = useSesion();
+  const { perfil, cargando: cargandoSesion } = useSesion();
   const estado = useInicio(perfil?.usuarioId ?? null, perfil?.objetivoVerduraRaciones);
   const { recargar } = estado;
 
@@ -52,34 +55,6 @@ export default function InicioRoute() {
   const irAPeso = () => router.push('/peso');
   const irACheckin = () => router.push('/checkin');
 
-  // Atajos temporales. Desaparecen cuando exista la pantalla de Ajustes.
-  const atajosDesarrollo = (
-    <Card variant="dashed">
-      <Text variant="overline" tone="faint">
-        Solo para desarrollo
-      </Text>
-      <Button
-        label="Repetir el onboarding"
-        variant="secondary"
-        size="sm"
-        onPress={() => router.push('/bienvenida')}
-      />
-      <Button
-        label="Borrar todo y empezar de cero"
-        variant="danger"
-        size="sm"
-        onPress={() => {
-          void (async () => {
-            await repos.ajustes.reiniciarTodo();
-            await recargarSesion();
-            await recargar();
-            router.replace('/bienvenida');
-          })();
-        }}
-      />
-    </Card>
-  );
-
   return estado.esDiaUno ? (
     <DiaUnoScreen
       nombre={perfil.nombre}
@@ -87,7 +62,6 @@ export default function InicioRoute() {
       onPeso={irAPeso}
       onCheckin={irACheckin}
       onPerfil={() => router.push('/perfil')}
-      pie={atajosDesarrollo}
     />
   ) : (
     <InicioScreen
@@ -98,7 +72,6 @@ export default function InicioRoute() {
       onComida={() => router.push('/comida')}
       onPerfil={() => router.push('/perfil')}
       onDia={(fecha) => router.push(`/progreso?fecha=${fecha}`)}
-      pie={atajosDesarrollo}
     />
   );
 }

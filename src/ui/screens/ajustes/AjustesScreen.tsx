@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import {
@@ -27,7 +28,8 @@ import { makeStyles } from '../../theme';
 type Props = {
   estado: EstadoAjustes;
   onAtras: () => void;
-  onReiniciar: () => void;
+  /** Borra todos los datos y devuelve al onboarding. */
+  onEliminarCuenta: () => void;
 };
 
 const DIAS: readonly Segment<PrimerDiaSemana>[] = [
@@ -51,9 +53,19 @@ const NIVELES_INTENSIDAD: readonly Segment<IntensidadGamificacion>[] = INTENSIDA
  * Todo lo que aquí se guarda vive en el perfil, así que entra en la copia de
  * seguridad como cualquier otro dato.
  */
-export function AjustesScreen({ estado, onAtras, onReiniciar }: Props) {
+export function AjustesScreen({ estado, onAtras, onEliminarCuenta }: Props) {
   const styles = useStyles();
   const { perfil, copia } = estado;
+
+  /**
+   * Confirmación en dos pasos, dentro de la propia pantalla.
+   *
+   * No se usa un diálogo del sistema porque en web no es fiable y porque un
+   * `confirm()` se despacha con un clic reflejo. Obligar a leer un segundo
+   * bloque, con el botón de cancelar primero, es lo que separa «lo he pulsado
+   * sin querer» de «lo quiero hacer».
+   */
+  const [confirmando, setConfirmando] = useState(false);
 
   if (!perfil) return null;
 
@@ -345,16 +357,46 @@ export function AjustesScreen({ estado, onAtras, onReiniciar }: Props) {
         />
         <FilaAjuste
           icono="🗑️"
-          titulo="Borrar todo"
-          descripcion="Irreversible. Haz una copia antes."
-          onPress={onReiniciar}
+          titulo="Eliminar mi cuenta"
+          descripcion="Borra el perfil y todos los registros. Volverás a empezar por el onboarding."
+          onPress={() => setConfirmando((v) => !v)}
           derecha={
             <Text variant="caption" tone="danger">
-              ›
+              {confirmando ? '⌄' : '›'}
             </Text>
           }
         />
       </Card>
+
+      {confirmando ? (
+        <Card variant="danger">
+          <Text variant="caption" weight="bold">
+            ¿Seguro que quieres eliminar la cuenta?
+          </Text>
+          <Text variant="small" tone="muted">
+            Se borra todo: perfil, peso, comidas, entrenos, check-ins y el log de
+            XP entero. No hay servidor del que recuperarlo, así que esto no se
+            puede deshacer. Si quieres conservar el historial, exporta una copia
+            antes: podrás restaurarla en la cuenta nueva.
+          </Text>
+          <View style={styles.botones}>
+            <Button
+              label="Cancelar"
+              variant="secondary"
+              size="sm"
+              style={styles.crecer}
+              onPress={() => setConfirmando(false)}
+            />
+            <Button
+              label="Sí, eliminar"
+              variant="danger"
+              size="sm"
+              style={styles.crecer}
+              onPress={onEliminarCuenta}
+            />
+          </View>
+        </Card>
+      ) : null}
 
       <Text variant="small" tone="faint" center style={styles.version}>
         YouFitness · versión 0.1

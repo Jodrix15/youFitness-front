@@ -1,4 +1,4 @@
-import { useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect } from 'react';
 
 import { useHistorial } from '../../src/application/historial/useHistorial';
@@ -25,9 +25,19 @@ export default function ProgresoRoute() {
     }, [recargar]),
   );
 
-  // Al llegar desde la tira de racha de Inicio, se abre directamente ese día.
+  /**
+   * Al llegar desde la tira de racha de Inicio, se abre directamente ese día.
+   *
+   * El parámetro se CONSUME: se limpia en cuanto se ha usado. Si se quedara en
+   * la ruta, este efecto volvería a llevarte al día cada vez que algo hiciera
+   * render, y cambiar a mes, año o todo sería imposible — la vista rebotaba al
+   * día al instante. Un parámetro de navegación es una orden que se ejecuta una
+   * vez, no un estado que se mantiene.
+   */
   useEffect(() => {
-    if (fecha && /^\d{4}-\d{2}-\d{2}$/.test(fecha)) verDia(fecha);
+    if (!fecha || !/^\d{4}-\d{2}-\d{2}$/.test(fecha)) return;
+    verDia(fecha);
+    router.setParams({ fecha: '' });
   }, [fecha, verDia]);
 
   if (cargando || estado.cargando || !perfil) {

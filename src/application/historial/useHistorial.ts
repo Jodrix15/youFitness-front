@@ -117,6 +117,30 @@ export function useHistorial(usuarioId: Uuid | null): EstadoHistorial {
     [fuentes.comidas, fuentes.sesiones, rutinas, tema],
   );
 
+  /**
+   * IDENTIDAD ESTABLE, y no es cosmético.
+   *
+   * Estas funciones viajan a la ruta de Progreso, que las usa como dependencia
+   * de un `useEffect` para abrir el día que llega por parámetro. Si se crearan
+   * nuevas en cada render, ese efecto se dispararía en TODOS los renders y
+   * devolvería la vista a «día» cada vez que se pulsara mes, año o todo: la
+   * pantalla se quedaba clavada en el día y no había forma de salir.
+   */
+  const verDia = useCallback((f: string) => {
+    setFecha(f);
+    setNivel('dia');
+  }, []);
+
+  const cambiarMes = useCallback((a: number, m: number) => {
+    setFecha(`${a}-${String(m).padStart(2, '0')}-01`);
+    setNivel('mes');
+  }, []);
+
+  const cambiarAnio = useCallback((a: number) => {
+    setFecha(`${a}-01-01`);
+    setNivel('anio');
+  }, []);
+
   return {
     cargando,
     nivel,
@@ -140,18 +164,9 @@ export function useHistorial(usuarioId: Uuid | null): EstadoHistorial {
       [semaforoDe],
     ),
 
-    verDia: (f) => {
-      setFecha(f);
-      setNivel('dia');
-    },
-    cambiarMes: (a, m) => {
-      setFecha(`${a}-${String(m).padStart(2, '0')}-01`);
-      setNivel('mes');
-    },
-    cambiarAnio: (a) => {
-      setFecha(`${a}-01-01`);
-      setNivel('anio');
-    },
+    verDia,
+    cambiarMes,
+    cambiarAnio,
 
     dia: useMemo(() => resumirDia(fuentes, fecha), [fuentes, fecha]),
     mes: useMemo(() => resumirMes(fuentes, anio, mes), [fuentes, anio, mes]),

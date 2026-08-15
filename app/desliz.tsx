@@ -35,7 +35,7 @@ export default function DeslizRoute() {
           setGuardando(true);
           setMensaje(null);
           try {
-            const r = await estado.guardarDesliz(datos.descripcion, {
+            const r = await estado.guardarDesliz(datos.descripcion, datos.tipo, {
               categoria: datos.categoria,
               cantidad: datos.cantidad,
               sustituyoComida: datos.sustituyoComida,

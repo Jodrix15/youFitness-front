@@ -195,3 +195,20 @@ test('el presupuesto se reinicia con la semana natural', async () => {
   );
   assert.equal(nuevaSemana.xpPenalizado, 0);
 });
+
+test('el desliz guarda la comida en la que ocurrió, y por defecto es un extra', async () => {
+  const { repos, usuarioId } = await montar();
+
+  const extra = await registrarDesliz(repos, usuarioId, { descripcion: 'Donut', detalle: DETALLE }, DIA(6, 17));
+  assert.equal(extra.comida.tipo, 'snack', 'sin decir nada, es un extra entre horas');
+
+  const cena = await registrarDesliz(
+    repos,
+    usuarioId,
+    { descripcion: 'Pizza entera', tipo: 'cena', detalle: DETALLE },
+    DIA(7, 21),
+  );
+  assert.equal(cena.comida.tipo, 'cena');
+  assert.equal(cena.comida.esDesliz, true, 'sigue siendo un desliz, no una cena normal');
+  assert.equal(cena.comida.hidrPorciones, 0, 'y no inventa raciones');
+});

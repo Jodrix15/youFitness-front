@@ -1,8 +1,9 @@
 import { StyleSheet, View } from 'react-native';
 
 import type { EstadoNivel, ProximoRango } from '../../domain/rules/xp';
+import { fraccionDeNivel } from '../../domain/rules/xp';
 import { makeStyles } from '../theme';
-import { entero } from '../format';
+import { decimal, entero } from '../format';
 import { Card } from './Card';
 import { ProgressBar } from './ProgressBar';
 import { Text } from './Text';
@@ -14,6 +15,8 @@ type Props = {
    */
   estado: EstadoNivel;
   proximoRango?: ProximoRango | null;
+  /** XP ganado hoy, para decir cuánto ha movido la barra. */
+  xpHoy?: number;
   /** Línea extra bajo la barra, para pantallas sin siguiente rango que mostrar. */
   pie?: string;
 };
@@ -23,12 +26,17 @@ type Props = {
  *
  *   🛡️ NIVEL 7 · GUERRERO DE HIERRO                      78%
  *   ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░
- *   2.340 / 3.000 XP                     660 XP → Veterano
+ *   5.460 / 7.000 XP                   1.540 XP → Veterano
+ *
+ * Los números de la izquierda son EL XP DENTRO DEL NIVEL, no el de por vida: al
+ * subir vuelven a cero y la barra empieza de nuevo. El total acumulado no se
+ * pierde —vive en el log de eventos y se ve en Perfil—, pero enseñarlo aquí
+ * haría que la barra pareciera avanzar cuando en realidad estás estancado.
  *
  * A la derecha va el siguiente RANGO, no el siguiente nivel: subir de nivel pasa
  * a menudo, cambiar de rango es el hito que se celebra.
  */
-export function XpBar({ estado, proximoRango, pie }: Props) {
+export function XpBar({ estado, proximoRango, xpHoy, pie }: Props) {
   const styles = useStyles();
 
   return (
@@ -49,9 +57,9 @@ export function XpBar({ estado, proximoRango, pie }: Props) {
 
       <View style={styles.fila}>
         <Text variant="small" tone="faint">
-          {estado.xpSiguienteNivel == null
-            ? `${entero(estado.xpTotal)} XP`
-            : `${entero(estado.xpTotal)} / ${entero(estado.xpSiguienteNivel)} XP`}
+          {estado.xpParaSubir == null
+            ? `${entero(estado.xpTotal)} XP · nivel máximo`
+            : `${entero(estado.xpEnNivel)} / ${entero(estado.xpParaSubir)} XP`}
         </Text>
         {proximoRango ? (
           <Text variant="small" weight="bold" tone="warning">
@@ -60,6 +68,12 @@ export function XpBar({ estado, proximoRango, pie }: Props) {
         ) : null}
       </View>
 
+      {xpHoy != null && xpHoy > 0 && estado.xpParaSubir != null ? (
+        <Text variant="small" tone="faint">
+          {`Hoy has llenado ${porcentaje(fraccionDeNivel(xpHoy, estado))} de este nivel.`}
+        </Text>
+      ) : null}
+
       {pie ? (
         <Text variant="small" tone="faint">
           {pie}
@@ -67,6 +81,20 @@ export function XpBar({ estado, proximoRango, pie }: Props) {
       ) : null}
     </Card>
   );
+}
+
+/**
+ * Porcentaje honesto en la parte baja de la escala.
+ *
+ * Redondear a entero convertiría un 0,4 % en «0 %», que parece un error de la
+ * app en vez de lo que es: un día que casi no ha movido una barra que ya cuesta
+ * mucho. Por debajo del 1 % se enseña un decimal.
+ */
+function porcentaje(fraccion: number): string {
+  const pct = fraccion * 100;
+  if (pct >= 10) return `un ${entero(pct)} %`;
+  if (pct >= 1) return `un ${decimal(pct, 1)} %`;
+  return `un ${decimal(pct, 2)} %`;
 }
 
 const useStyles = makeStyles((t) =>

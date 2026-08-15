@@ -39,7 +39,7 @@ Para el móvil sin simulador, instalar **Expo Go** y escanear el QR.
 
 ```bash
 npm run typecheck   # TypeScript en modo strict
-npm test            # 198 pruebas de dominio y de la capa de datos
+npm test            # 207 pruebas de dominio y de la capa de datos
 ```
 
 ---
@@ -70,6 +70,15 @@ npm test            # 198 pruebas de dominio y de la capa de datos
 Registrar el peso o cerrar el día escribe un evento en el log de XP; el nivel,
 el rango y la racha se derivan de ahí. Nada de eso se guarda como contador.
 
+**La barra de XP funciona como en Pokémon.** Se vacía en cada subida de nivel y
+el siguiente cuesta bastante más: los saltos van de 300 a 27.000 XP y nunca
+decrecen. Es lo que hace que el estancamiento se vea solo — repetir el mismo mes
+mueve la barra cada vez menos, y para seguir subiendo hay que subir el listón.
+
+**Borrar los datos es una sola puerta:** Ajustes → Eliminar mi cuenta, con
+confirmación. Antes había atajos de «repetir onboarding» y «borrar todo» en la
+pantalla de Inicio, que es la que más se abre.
+
 Queda de ejemplo el anillo de pasos, pintado apagado y con la etiqueta a la
 vista. Vive en `src/ui/screens/inicio/datosDeEjemplo.ts` y **ese fichero se
 borra** cuando exista la lectura real de pasos, que necesita build nativa.
@@ -81,10 +90,15 @@ borra** cuando exista la lectura real de pasos, que necesita build nativa.
 | 11 | Diario de comidas | ✅ navegable por días, con edición y borrado |
 | 12 | Añadir comida | ✅ cuatro contadores de raciones y saciedad |
 | 13 | Mis recetas | ✅ sin lotes cocinados, se pueden añadir después |
-| 14 | Registrar desliz | ✅ contexto, presupuesto semanal y patrones |
+| 14 | Registrar desliz | ✅ en qué comida fue, contexto, presupuesto y patrones |
 
 Sin calorías ni macros en gramos. Se registra la **forma del plato** en raciones
 medidas con la mano, que es la única unidad que se sostiene a los seis meses.
+
+**Un desliz no es siempre un extra.** El donut puede ser el desayuno y la pizza,
+la cena, así que se elige en qué comida fue. Si es una de las tres principales,
+esa comida queda cubierta —la app no te dirá que falta la cena que acabas de
+anotar— pero no suma raciones ni pinta el día de verde en el semáforo.
 
 **Bloque 4 · Entrenamiento — implementado.**
 
@@ -107,7 +121,7 @@ de las dominadas de hoy.
 | # | Pantalla | Estado |
 |---|---|---|
 | 36 | Perfil | ✅ rango, camino, de dónde sale tu XP y totales de por vida |
-| 37 | Ajustes | ✅ modo estricto, presupuesto y copias de seguridad |
+| 37 | Ajustes | ✅ modo estricto, presupuesto, copias y eliminar la cuenta |
 | 31 | Historial · un día | ✅ |
 | 32 | Historial · mes | ✅ calendario navegable sin límite |
 | 33 | Historial · año | ✅ mapa de calor de 365 días |

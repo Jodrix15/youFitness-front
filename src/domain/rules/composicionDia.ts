@@ -28,7 +28,10 @@ export type ResumenGrupo = {
 export type ComposicionDia = {
   fecha: FechaISO;
   comidas: Comida[];
-  /** Comidas principales registradas, sin contar snacks ni deslices. */
+  /**
+   * Comidas principales cubiertas hoy, de 0 a 3. Los snacks no cuentan; un
+   * desliz anotado como desayuno, comida o cena SÍ.
+   */
   principalesRegistradas: number;
   /** Qué comidas principales faltan por registrar. */
   faltan: TipoComida[];
@@ -50,7 +53,16 @@ export function componerDia(
   const delDia = comidas.filter((c) => c.fecha === fecha && c.borradoEn == null);
   const normales = delDia.filter((c) => !c.esDesliz);
 
-  const principales = normales.filter((c) => COMIDAS_PRINCIPALES.includes(c.tipo));
+  /**
+   * UN DESLIZ TAMBIÉN OCUPA SU COMIDA.
+   *
+   * Si cenaste pizza y la anotaste como cena, la cena está registrada: seguir
+   * diciendo «te falta la cena» sería la app ignorando lo que le acabas de
+   * contar, y el castigo por haber sido honesto. Lo que el desliz no hace es
+   * sumar raciones —la composición se calcula solo con `normales`— ni pintar el
+   * día de verde: el semáforo del historial lo marca en rojo igual.
+   */
+  const principales = delDia.filter((c) => COMIDAS_PRINCIPALES.includes(c.tipo));
   const tiposRegistrados = new Set(principales.map((c) => c.tipo));
   const faltan = COMIDAS_PRINCIPALES.filter((t) => !tiposRegistrados.has(t));
 
@@ -59,12 +71,13 @@ export function componerDia(
 
   // La proteína se mide en COMIDAS que la llevan, no en raciones totales:
   // repartirla a lo largo del día importa más que el total acumulado.
-  const conProteina = principales.filter((c) => c.protPorciones > 0).length;
+  const conProteina = principales.filter((c) => !c.esDesliz && c.protPorciones > 0).length;
 
   return {
     fecha,
     comidas: delDia,
-    principalesRegistradas: principales.length,
+    // Los tipos cubiertos, no las filas: dos cenas siguen siendo una cena.
+    principalesRegistradas: tiposRegistrados.size,
     faltan,
     completo: faltan.length === 0,
     proteina: {
@@ -104,7 +117,8 @@ export function rachaDiasCompletos(comidas: readonly Comida[], fechaHoy: FechaIS
   const porFecha = new Map<FechaISO, Set<TipoComida>>();
 
   for (const c of comidas) {
-    if (c.borradoEn != null || c.esDesliz) continue;
+    if (c.borradoEn != null) continue;
+    // Igual que en `componerDia`: un desliz anotado como cena cubre la cena.
     if (!COMIDAS_PRINCIPALES.includes(c.tipo)) continue;
     const set = porFecha.get(c.fecha) ?? new Set<TipoComida>();
     set.add(c.tipo);

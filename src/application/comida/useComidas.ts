@@ -7,6 +7,7 @@ import type {
   NuevaReceta,
   NuevoDeslizDetalle,
   Receta,
+  TipoComida,
 } from '../../domain/models/comida';
 import type { Uuid } from '../../domain/models/comunes';
 import { componerDia, rachaDiasCompletos, type ComposicionDia } from '../../domain/rules/composicionDia';
@@ -42,6 +43,7 @@ export type EstadoComidas = {
   buscarComida: (id: Uuid) => Comida | null;
   guardarDesliz: (
     descripcion: string,
+    tipo: TipoComida,
     detalle: Omit<NuevoDeslizDetalle, 'comidaId'>,
   ) => Promise<ResultadoComida | null>;
   borrarComida: (id: Uuid) => Promise<void>;
@@ -109,9 +111,13 @@ export function useComidas(
   );
 
   const guardarDesliz = useCallback(
-    async (descripcion: string, detalle: Omit<NuevoDeslizDetalle, 'comidaId'>) => {
+    async (
+      descripcion: string,
+      tipo: TipoComida,
+      detalle: Omit<NuevoDeslizDetalle, 'comidaId'>,
+    ) => {
       if (!usuarioId) return null;
-      const r = await registrarDesliz(repos, usuarioId, { descripcion, detalle });
+      const r = await registrarDesliz(repos, usuarioId, { descripcion, tipo, detalle });
       await recargar();
       return r;
     },

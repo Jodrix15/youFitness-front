@@ -1,4 +1,9 @@
-import type { Comida, NuevaComida, NuevoDeslizDetalle } from '../../domain/models/comida';
+import type {
+  Comida,
+  NuevaComida,
+  NuevoDeslizDetalle,
+  TipoComida,
+} from '../../domain/models/comida';
 import type { Uuid } from '../../domain/models/comunes';
 import { presupuestoDeLaSemana, superaPresupuesto } from '../../domain/rules/deslices';
 import { penalizacion, recompensa } from '../../domain/rules/eventosXp';
@@ -68,12 +73,20 @@ export async function registrarComida(
  * Los dos eventos van separados a propósito. Si el castigo se descontara del
  * premio, confesar saldría a cuenta negativa y esconder el desliz pasaría a ser
  * la jugada óptima — que es exactamente lo que la app no puede permitirse.
+ *
+ * Un desliz NO es necesariamente un extra: el donut puede ser el desayuno y la
+ * pizza, la cena. Por eso lleva su propio `tipo`, como cualquier otra comida.
+ * Tratarlos todos como snack repartía mal el día —decía que faltaba la cena que
+ * acabas de anotar— y borraba el patrón más útil que hay aquí: en qué comida se
+ * te escapan las cosas.
  */
 export async function registrarDesliz(
   repos: Repositorios,
   usuarioId: Uuid,
   datos: {
     descripcion: string;
+    /** Desayuno, comida, cena o snack. Por defecto, extra. */
+    tipo?: TipoComida;
     detalle: Omit<NuevoDeslizDetalle, 'comidaId'>;
     fecha?: string;
   },
@@ -94,7 +107,7 @@ export async function registrarDesliz(
   const comida = await repos.comidas.crear(usuarioId, {
     fecha,
     hora,
-    tipo: 'snack',
+    tipo: datos.tipo ?? 'snack',
     descripcion: datos.descripcion,
     recetaId: null,
     protPorciones: 0,

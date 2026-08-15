@@ -5,10 +5,13 @@ import {
   CANTIDADES_DESLIZ,
   CARAS_EMOCION,
   CATEGORIAS_DESLIZ,
+  COMIDAS_PRINCIPALES,
   DISPARADORES,
+  TIPOS_COMIDA,
   type CantidadDesliz,
   type CategoriaDesliz,
   type Disparador,
+  type TipoComida,
 } from '../../../domain/models/comida';
 import type { AnalisisDeslices, EstadoPresupuesto } from '../../../domain/rules/deslices';
 import { UMBRAL_PATRONES } from '../../../domain/rules/deslices';
@@ -38,6 +41,7 @@ type Props = {
   mensaje: string | null;
   onGuardar: (datos: {
     descripcion: string;
+    tipo: TipoComida;
     categoria: CategoriaDesliz;
     cantidad: CantidadDesliz;
     sustituyoComida: boolean;
@@ -59,12 +63,26 @@ const SUSTITUCION: readonly Segment<'sustituyo' | 'anadido'>[] = [
   { value: 'anadido', label: 'Fue añadido' },
 ];
 
+/** El snack se llama «Extra» aquí: describe mejor lo que es fuera de horario. */
+const ETIQUETA_TIPO: Record<TipoComida, string> = {
+  desayuno: '🌅 Desayuno',
+  comida: '🍽️ Comida',
+  cena: '🌙 Cena',
+  snack: '🥨 Extra',
+};
+
 /**
  * Pantalla 14 · Registrar un desliz.
  *
  * Nunca pretendió contar calorías: captura CONTEXTO. Qué lo disparó, dónde,
  * cómo te sentiste después. Eso es lo que permite anticiparse la próxima vez;
  * la cifra de calorías del donut no permite hacer nada.
+ *
+ * Lo primero que se pregunta es EN QUÉ COMIDA fue. Un desliz no es siempre un
+ * extra entre horas: el donut puede ser el desayuno y la pizza, la cena. Darlo
+ * todo por snack hacía que la app te dijera que faltaba la cena que acabas de
+ * anotar, y escondía el dato más accionable de todos — si se te escapan por la
+ * mañana, el arreglo es el desayuno; si es de noche, el arreglo es otro.
  *
  * El texto de arriba dice explícitamente que no resta ni rompe rachas, porque
  * es lo que la gente teme al pulsar el botón, y ese miedo es lo que hace que
@@ -82,6 +100,7 @@ export function DeslizScreen({
   const styles = useStyles();
 
   const [descripcion, setDescripcion] = useState('');
+  const [tipo, setTipo] = useState<TipoComida>('snack');
   const [categoria, setCategoria] = useState<CategoriaDesliz>('dulce');
   const [cantidad, setCantidad] = useState<CantidadDesliz>('racion');
   const [sustitucion, setSustitucion] = useState<'sustituyo' | 'anadido'>('anadido');
@@ -91,6 +110,10 @@ export function DeslizScreen({
   const [nota, setNota] = useState('');
 
   const penalizara = modoEstricto && presupuesto.usados >= presupuesto.presupuesto;
+
+  // Si el desliz ES la comida, la pregunta de «¿sustituyó a una comida?» ya está
+  // contestada. Preguntarlo dos veces solo invita a contestarse a uno mismo.
+  const esPrincipal = COMIDAS_PRINCIPALES.includes(tipo);
 
   return (
     <Screen
@@ -124,9 +147,10 @@ export function DeslizScreen({
             onPress={() =>
               onGuardar({
                 descripcion: descripcion.trim() || 'Desliz',
+                tipo,
                 categoria,
                 cantidad,
-                sustituyoComida: sustitucion === 'sustituyo',
+                sustituyoComida: esPrincipal ? true : sustitucion === 'sustituyo',
                 disparador,
                 emocionDespues: emocion,
                 lugar: lugar.trim() || null,
@@ -145,6 +169,27 @@ export function DeslizScreen({
         <Text variant="caption" tone="muted">
           Esto <Text weight="bold">no resta XP ni rompe ninguna racha</Text>. Sirve
           para encontrar patrones y anticiparte la próxima vez.
+        </Text>
+      </Card>
+
+      <Card>
+        <Text variant="overline" tone="faint">
+          ¿Qué comida ha sido?
+        </Text>
+        <ChipRow>
+          {TIPOS_COMIDA.map((t) => (
+            <Chip
+              key={t.valor}
+              label={ETIQUETA_TIPO[t.valor]}
+              selected={tipo === t.valor}
+              onPress={() => setTipo(t.valor)}
+            />
+          ))}
+        </ChipRow>
+        <Text variant="small" tone="faint">
+          {esPrincipal
+            ? 'Cuenta como esa comida del día: no te va a decir que falta. Las raciones se quedan a cero, que es lo que pasó.'
+            : 'Un extra fuera de las tres comidas. No ocupa el sitio de ninguna.'}
         </Text>
       </Card>
 
@@ -175,12 +220,14 @@ export function DeslizScreen({
         <SegmentedControl segments={CANTIDADES} value={cantidad} onChange={setCantidad} />
       </Card>
 
-      <Card>
-        <Text variant="overline" tone="faint">
-          ¿Fue en lugar de una comida?
-        </Text>
-        <SegmentedControl segments={SUSTITUCION} value={sustitucion} onChange={setSustitucion} />
-      </Card>
+      {!esPrincipal ? (
+        <Card>
+          <Text variant="overline" tone="faint">
+            ¿Fue en lugar de una comida?
+          </Text>
+          <SegmentedControl segments={SUSTITUCION} value={sustitucion} onChange={setSustitucion} />
+        </Card>
+      ) : null}
 
       <Card>
         <Text variant="overline" tone="faint">

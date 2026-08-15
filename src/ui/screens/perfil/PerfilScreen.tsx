@@ -87,10 +87,17 @@ export function PerfilScreen({ estado, onAjustes, onHistorial, onAtras }: Props)
 
         <ProgressBar value={nivel.progreso} tone="xp" destacada style={styles.barra100} />
 
+        {/* Dentro del nivel, no de por vida: la barra de arriba mide esto. */}
+        <Text variant="small" tone="faint" center>
+          {nivel.xpParaSubir == null
+            ? `${entero(nivel.xpTotal)} XP · nivel máximo`
+            : `${entero(nivel.xpEnNivel)} / ${entero(nivel.xpParaSubir)} XP para el nivel ${nivel.nivel + 1}`}
+        </Text>
+
         <Text variant="small" tone="faint" center>
           {proximoRango
-            ? `${entero(nivel.xpTotal)} / ${entero(proximoRango.xpRestante + nivel.xpTotal)} XP para ${proximoRango.rango}`
-            : `${entero(nivel.xpTotal)} XP · rango máximo`}
+            ? `${entero(proximoRango.xpRestante)} XP más para ${proximoRango.rango} · ${entero(nivel.xpTotal)} XP de por vida`
+            : `${entero(nivel.xpTotal)} XP de por vida · rango máximo`}
         </Text>
 
         <View style={styles.chapas}>

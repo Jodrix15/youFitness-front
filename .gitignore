@@ -12,3 +12,4 @@ expo-env.d.ts
 backend/target/
 backend/.gradle/
 backend/build/
+.test-build/
