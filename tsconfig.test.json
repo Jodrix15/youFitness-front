@@ -27,6 +27,10 @@
     "src/application/comida/registrarComida.ts",
     "src/application/comida/registrarComida.test.ts",
     "src/application/entreno/sesion.ts",
-    "src/application/entreno/sesion.test.ts"
+    "src/application/entreno/sesion.test.ts",
+    "src/application/nube/cuandoSubir.ts",
+    "src/application/nube/cuandoSubir.test.ts",
+    "src/data/adapters/supabase/config.ts",
+    "src/data/adapters/supabase/config.test.ts"
   ]
 }

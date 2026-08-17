@@ -10,10 +10,8 @@ import type {
 import { ETIQUETA_SEMAFORO, type EstadoTema } from '../../../domain/rules/temas';
 import { colorSemaforo, colorSemaforoSolido } from './semaforo';
 import {
-  BarraComposicion,
   CalendarioMes,
   Card,
-  InsigniasPorciones,
   ListItem,
   MapaCalor,
   Screen,
@@ -38,7 +36,7 @@ const TEMAS: readonly Segment<FiltroTema>[] = [
 ];
 
 type Props = {
-  estado: EstadoHistorial;
+  estado: EstadoHistorial & { onEditarDia: (fecha: string) => void };
 };
 
 /**
@@ -173,6 +171,26 @@ function VistaDia({ estado }: Props) {
         <FilaTema nombre="Entrenos" icono="🏋️" estado={temasDelDia.entrenos} />
       </Card>
 
+      {/*
+        * El historial es de lectura, pero desde un día concreto tiene que haber
+        * una puerta para arreglarlo: descubrir en el mapa de calor que un
+        * miércoles está mal y no poder tocarlo desde ahí obliga a ir a Comida y
+        * volver a buscar la fecha a mano.
+        */}
+      <Card variant="dashed">
+        <ListItem
+          icono="✎"
+          titulo="Editar este día"
+          subtitulo="Comidas y deslices de esa fecha"
+          onPress={() => estado.onEditarDia(dia.fecha)}
+          derecha={
+            <Text variant="small" weight="bold" tone="accent">
+              Abrir →
+            </Text>
+          }
+        />
+      </Card>
+
       {!dia.tieneAlgo ? (
         <Card variant="dashed">
           <Text variant="caption" tone="muted">
@@ -219,21 +237,6 @@ function VistaDia({ estado }: Props) {
             </Text>
           </View>
 
-          <BarraComposicion
-            icono="✋"
-            nombre="Proteína"
-            detalle={dia.comidas.proteina.detalle}
-            valor={dia.comidas.proteina.progreso}
-          />
-          <BarraComposicion
-            icono="✊"
-            nombre="Verdura"
-            detalle={dia.comidas.verdura.detalle}
-            valor={dia.comidas.verdura.progreso}
-          />
-
-          <View style={styles.separador} />
-
           {dia.comidas.comidas.map((c) => (
             <View key={c.id} style={styles.comida}>
               <Text variant="small" tone={c.esDesliz ? 'danger' : 'muted'}>
@@ -242,7 +245,6 @@ function VistaDia({ estado }: Props) {
               <Text variant="caption" weight="bold">
                 {c.descripcion}
               </Text>
-              <InsigniasPorciones comida={c} />
             </View>
           ))}
         </Card>
@@ -614,7 +616,6 @@ const useStyles = makeStyles((t) =>
       justifyContent: 'space-between',
       gap: t.spacing.sm,
     },
-    separador: { height: 1, backgroundColor: t.colors.border, marginVertical: t.spacing.xs },
     comida: { gap: 2, paddingVertical: t.spacing.xs },
     tresColumnas: { flexDirection: 'row', gap: t.spacing.md },
     columna: { flex: 1, alignItems: 'center' },

@@ -2,6 +2,11 @@
 
 Esta carpeta está vacía a propósito. Documenta la ruta de salida, no una promesa.
 
+> **No confundir con `../supabase/`**, que sí está implementado. Aquello es una
+> copia de seguridad automática: sube un fichero y ya. Esto de aquí sería
+> SINCRONIZACIÓN —los mismos datos vivos en varios dispositivos—, que es un
+> problema distinto y mucho más caro.
+
 ## Qué iría aquí
 
 Una implementación de las mismas interfaces de `src/data/repositories/index.ts`,

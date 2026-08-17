@@ -11,6 +11,10 @@ type Props = {
   autoFocus?: boolean;
   maxLength?: number;
   ayuda?: string;
+  /** Oculta lo tecleado. Para contraseñas. */
+  secreto?: boolean;
+  /** Ajusta teclado y autocorrección. Un correo con mayúscula inicial no entra. */
+  tipo?: 'texto' | 'correo';
 };
 
 export function TextField({
@@ -21,10 +25,13 @@ export function TextField({
   autoFocus = false,
   maxLength,
   ayuda,
+  secreto = false,
+  tipo = 'texto',
 }: Props) {
   const styles = useStyles();
   const theme = useTheme();
   const relleno = value.length > 0;
+  const sinAyudasDelTeclado = secreto || tipo === 'correo';
 
   return (
     <View style={styles.wrap}>
@@ -40,6 +47,10 @@ export function TextField({
         placeholderTextColor={theme.colors.textFaint}
         autoFocus={autoFocus}
         maxLength={maxLength}
+        secureTextEntry={secreto}
+        keyboardType={tipo === 'correo' ? 'email-address' : 'default'}
+        autoCapitalize={sinAyudasDelTeclado ? 'none' : 'sentences'}
+        autoCorrect={!sinAyudasDelTeclado}
         style={[styles.input, relleno && { borderColor: theme.colors.accent }]}
         selectionColor={theme.colors.accent}
       />

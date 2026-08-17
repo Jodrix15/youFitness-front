@@ -50,5 +50,12 @@ export default function ProgresoRoute() {
     );
   }
 
-  return <HistorialScreen estado={estado} />;
+  return (
+    <HistorialScreen
+      estado={{
+        ...estado,
+        onEditarDia: (f) => router.push(`/comida?fecha=${f}`),
+      }}
+    />
+  );
 }

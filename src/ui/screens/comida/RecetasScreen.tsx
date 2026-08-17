@@ -1,14 +1,12 @@
 import { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { GRUPOS, ICONOS_RECETA, type Receta } from '../../../domain/models/comida';
+import { ICONOS_RECETA, type Receta } from '../../../domain/models/comida';
 import {
   Button,
   Card,
   Chip,
   ChipRow,
-  ContadorPorciones,
-  InsigniasPorciones,
   ListItem,
   Screen,
   Text,
@@ -16,8 +14,6 @@ import {
 } from '../../components';
 import { entero } from '../../format';
 import { makeStyles } from '../../theme';
-
-type Porciones = { prot: number; verd: number; hidr: number; gras: number };
 
 type Props = {
   recetas: readonly Receta[];
@@ -27,7 +23,6 @@ type Props = {
     icono: string;
     ingredientes: string;
     notas: string | null;
-    porciones: Porciones;
   }) => void;
   onBorrar: (id: string) => void;
   onAtras: () => void;
@@ -51,7 +46,6 @@ export function RecetasScreen({ recetas, onUsar, onCrear, onBorrar, onAtras }: P
   const [icono, setIcono] = useState<string>(ICONOS_RECETA[0]);
   const [ingredientes, setIngredientes] = useState('');
   const [notas, setNotas] = useState('');
-  const [porciones, setPorciones] = useState<Porciones>({ prot: 0, verd: 0, hidr: 0, gras: 0 });
 
   const filtradas = useMemo(() => {
     const q = busqueda.trim().toLowerCase();
@@ -66,26 +60,17 @@ export function RecetasScreen({ recetas, onUsar, onCrear, onBorrar, onAtras }: P
     [recetas],
   );
 
-  const clavePorcion: Record<string, keyof Porciones> = {
-    protPorciones: 'prot',
-    verdPorciones: 'verd',
-    hidrPorciones: 'hidr',
-    grasPorciones: 'gras',
-  };
-
   function crear() {
     onCrear({
       nombre: nombre.trim(),
       icono,
       ingredientes: ingredientes.trim(),
       notas: notas.trim() || null,
-      porciones,
     });
     setCreando(false);
     setNombre('');
     setIngredientes('');
     setNotas('');
-    setPorciones({ prot: 0, verd: 0, hidr: 0, gras: 0 });
   }
 
   return (
@@ -153,23 +138,6 @@ export function RecetasScreen({ recetas, onUsar, onCrear, onBorrar, onAtras }: P
             maxLength={140}
           />
 
-          <Text variant="overline" tone="faint">
-            Composición de una ración
-          </Text>
-          {GRUPOS.map((g) => {
-            const clave = clavePorcion[g.campo]!;
-            return (
-              <ContadorPorciones
-                key={g.clave}
-                icono={g.icono}
-                nombre={g.nombre}
-                medida={g.medida}
-                valor={porciones[clave]}
-                onChange={(v) => setPorciones((p) => ({ ...p, [clave]: v }))}
-              />
-            );
-          })}
-
           <Button label="Guardar receta" onPress={crear} disabled={nombre.trim().length === 0} />
         </Card>
       ) : null}
@@ -205,15 +173,6 @@ export function RecetasScreen({ recetas, onUsar, onCrear, onBorrar, onAtras }: P
               </Text>
             ) : null}
           </View>
-
-          <InsigniasPorciones
-            comida={{
-              protPorciones: r.protPorciones,
-              verdPorciones: r.verdPorciones,
-              hidrPorciones: r.hidrPorciones,
-              grasPorciones: r.grasPorciones,
-            }}
-          />
 
           {r.ingredientes ? (
             <Text variant="small" tone="faint">

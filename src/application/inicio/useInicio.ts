@@ -26,7 +26,7 @@ export type EstadoInicio = {
   xpHoy: number;
   eventos: XpEvento[];
   misiones: Mision[];
-  /** Composición real del día. Alimenta el anillo de comidas y sus barras. */
+  /** Qué comidas del día están cubiertas. Alimenta el anillo de comidas. */
   comidasDeHoy: ComposicionDia;
   pesajeRegistradoHoy: boolean;
   checkinCerradoHoy: boolean;
@@ -41,10 +41,7 @@ export type EstadoInicio = {
  * Nivel, rango y racha son SIEMPRE derivados del log de eventos. No hay ningún
  * contador guardado que pueda quedar desincronizado con la realidad.
  */
-export function useInicio(
-  usuarioId: Uuid | null,
-  objetivoVerdura?: number,
-): EstadoInicio {
+export function useInicio(usuarioId: Uuid | null): EstadoInicio {
   const repos = useRepositorios();
   const [cargando, setCargando] = useState(true);
   const [eventos, setEventos] = useState<XpEvento[]>([]);
@@ -100,10 +97,7 @@ export function useInicio(
         }),
       [objetivos, pesajeHoy, checkinHoy],
     ),
-    comidasDeHoy: useMemo(
-      () => componerDia(comidas, fechaHoy, objetivoVerdura),
-      [comidas, fechaHoy, objetivoVerdura],
-    ),
+    comidasDeHoy: useMemo(() => componerDia(comidas, fechaHoy), [comidas, fechaHoy]),
     pesajeRegistradoHoy: pesajeHoy,
     checkinCerradoHoy: checkinHoy,
     esDiaUno: eventos.length === 0,

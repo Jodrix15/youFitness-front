@@ -210,5 +210,69 @@ test('el desliz guarda la comida en la que ocurrió, y por defecto es un extra',
   );
   assert.equal(cena.comida.tipo, 'cena');
   assert.equal(cena.comida.esDesliz, true, 'sigue siendo un desliz, no una cena normal');
-  assert.equal(cena.comida.hidrPorciones, 0, 'y no inventa raciones');
+});
+
+test('un desliz se guarda en el día que se le diga, no siempre en hoy', async () => {
+  const { repos, usuarioId } = await montar();
+
+  // Miércoles 5, anotado con la app abierta en ese día aunque hoy sea jueves 6.
+  const r = await registrarDesliz(
+    repos,
+    usuarioId,
+    { descripcion: 'Cerveza', tipo: 'cena', detalle: DETALLE },
+    DIA(5, 22),
+  );
+
+  assert.equal(r.comida.fecha, '2026-08-05');
+
+  const guardadas = await repos.comidas.listarPorFecha(usuarioId, '2026-08-05');
+  assert.equal(guardadas.length, 1, 'aparece en el diario de ese día');
+  assert.equal(guardadas[0]?.descripcion, 'Cerveza');
+
+  const deHoy = await repos.comidas.listarPorFecha(usuarioId, '2026-08-06');
+  assert.equal(deHoy.length, 0, 'y no se cuela en hoy');
+});
+
+test('el XP del desliz se anota en el día del desliz, no en el de registro', async () => {
+  const { repos, usuarioId } = await montar();
+
+  await registrarDesliz(
+    repos,
+    usuarioId,
+    { descripcion: 'Cerveza', detalle: DETALLE },
+    DIA(3, 21),
+  );
+
+  const eventos = await repos.xp.listar(usuarioId);
+  assert.equal(eventos.length, 1);
+  assert.equal(
+    eventos[0]?.fecha,
+    '2026-08-03',
+    'si el XP cayera en hoy, el historial de ese día mentiría',
+  );
+});
+
+test('el presupuesto se cuenta en la semana del desliz, no en la semana en curso', async () => {
+  const { repos, usuarioId } = await montar(true);
+
+  // Lunes 3 y martes 4: son la misma semana natural, así que gastan presupuesto.
+  await registrarDesliz(repos, usuarioId, { descripcion: 'A', detalle: DETALLE }, DIA(3));
+  await registrarDesliz(repos, usuarioId, { descripcion: 'B', detalle: DETALLE }, DIA(4));
+
+  const tercero = await registrarDesliz(
+    repos,
+    usuarioId,
+    { descripcion: 'C', detalle: DETALLE },
+    DIA(5),
+  );
+  assert.ok(tercero.xpPenalizado < 0, 'el tercero de esa semana sí penaliza');
+
+  // Lunes siguiente: semana nueva, presupuesto nuevo.
+  const nueva = await registrarDesliz(
+    repos,
+    usuarioId,
+    { descripcion: 'D', detalle: DETALLE },
+    DIA(10),
+  );
+  assert.equal(nueva.xpPenalizado, 0);
 });

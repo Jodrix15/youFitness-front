@@ -1,13 +1,15 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useComidas } from '../src/application/comida/useComidas';
 import { useSesion } from '../src/application/session/useSesion';
 import type { TipoComida } from '../src/domain/models/comida';
+import { hoy as hoyISO } from '../src/domain/rules/fechas';
 import { Screen, Text } from '../src/ui/components';
 import { AnadirComidaScreen } from '../src/ui/screens/comida/AnadirComidaScreen';
 
 const TIPOS_VALIDOS: readonly string[] = ['desayuno', 'comida', 'cena', 'snack'];
+const ES_FECHA = /^\d{4}-\d{2}-\d{2}$/;
 
 /**
  * Sirve para crear y para corregir.
@@ -24,9 +26,18 @@ export default function ComidaNuevaRoute() {
     id?: string;
   }>();
   const { perfil, cargando } = useSesion();
-  const estado = useComidas(perfil?.usuarioId ?? null, perfil?.objetivoVerduraRaciones);
+  const estado = useComidas(perfil?.usuarioId ?? null);
   const [guardando, setGuardando] = useState(false);
   const [mensaje, setMensaje] = useState<string | null>(null);
+
+  const hoy = hoyISO();
+  const edicion = id ? estado.buscarComida(id) : null;
+  const dia = edicion?.fecha ?? (fecha && ES_FECHA.test(fecha) ? fecha : hoy);
+
+  const { irADia } = estado;
+  useEffect(() => {
+    irADia(dia);
+  }, [irADia, dia]);
 
   if (cargando || estado.cargando || !perfil) {
     return (
@@ -38,12 +49,13 @@ export default function ComidaNuevaRoute() {
     );
   }
 
-  const edicion = id ? estado.buscarComida(id) : null;
   const tipoInicial = tipo && TIPOS_VALIDOS.includes(tipo) ? (tipo as TipoComida) : undefined;
   const volver = () => (router.canGoBack() ? router.back() : router.replace('/comida'));
 
   return (
     <AnadirComidaScreen
+      fecha={dia}
+      hoy={hoy}
       tipoInicial={tipoInicial}
       edicion={edicion}
       recetas={estado.recetas}
@@ -69,10 +81,6 @@ export default function ComidaNuevaRoute() {
               tipo: datos.tipo,
               descripcion: datos.descripcion,
               recetaId: datos.recetaId,
-              protPorciones: datos.porciones.prot,
-              verdPorciones: datos.porciones.verd,
-              hidrPorciones: datos.porciones.hidr,
-              grasPorciones: datos.porciones.gras,
               saciedad: datos.saciedad,
               nota: null,
             };
@@ -80,7 +88,7 @@ export default function ComidaNuevaRoute() {
             if (edicion) {
               await estado.editarComida(edicion.id, campos);
             } else {
-              await estado.guardarComida(campos, fecha);
+              await estado.guardarComida(campos, dia);
             }
             volver();
           } finally {
@@ -96,10 +104,6 @@ export default function ComidaNuevaRoute() {
             raciones: 1,
             ingredientes: '',
             notas: null,
-            protPorciones: datos.porciones.prot,
-            verdPorciones: datos.porciones.verd,
-            hidrPorciones: datos.porciones.hidr,
-            grasPorciones: datos.porciones.gras,
           });
           setMensaje('Guardada como receta. La próxima vez, un toque.');
         })();

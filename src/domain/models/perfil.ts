@@ -27,8 +27,6 @@ export type Perfil = Entidad & {
   modoEstricto: boolean;
   intensidadGamificacion: IntensidadGamificacion;
   presupuestoDeslicesSemana: number;
-  /** Raciones de verdura al día que se consideran objetivo. */
-  objetivoVerduraRaciones: number;
   /**
    * Oculta el número del peso y deja solo la tendencia.
    *
@@ -55,7 +53,6 @@ export const PERFIL_POR_DEFECTO = {
   modoEstricto: false,
   intensidadGamificacion: 'normal' as IntensidadGamificacion,
   presupuestoDeslicesSemana: 2,
-  objetivoVerduraRaciones: 4,
   modoCompasivo: false,
   copiaAutomatica: true,
 } as const;

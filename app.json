@@ -27,6 +27,13 @@
     "plugins": ["expo-router"],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "supabase": {
+        "url": "PEGA_AQUI_TU_PROJECT_URL",
+        "anonKey": "PEGA_AQUI_TU_CLAVE_ANON",
+        "bucket": "copias"
+      }
     }
   }
 }

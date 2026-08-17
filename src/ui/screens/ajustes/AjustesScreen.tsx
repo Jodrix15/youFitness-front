@@ -11,6 +11,12 @@ import { PRESUPUESTO_SEMANAL } from '../../../domain/rules/deslices';
 import type { EstadoAjustes } from '../../../application/ajustes/useAjustes';
 import { DIAS_AVISO_COPIA } from '../../../application/ajustes/useAjustes';
 import {
+  antiguedad,
+  DIAS_COPIA_VIEJA,
+  HORAS_ENTRE_COPIAS,
+} from '../../../application/nube/cuandoSubir';
+import type { EstadoNube } from '../../../application/nube/useNube';
+import {
   Aviso,
   Button,
   Card,
@@ -20,6 +26,7 @@ import {
   Screen,
   SegmentedControl,
   Text,
+  TextField,
   type Segment,
 } from '../../components';
 import { entero, kg } from '../../format';
@@ -27,6 +34,7 @@ import { makeStyles } from '../../theme';
 
 type Props = {
   estado: EstadoAjustes;
+  nube: EstadoNube;
   onAtras: () => void;
   /** Borra todos los datos y devuelve al onboarding. */
   onEliminarCuenta: () => void;
@@ -53,7 +61,7 @@ const NIVELES_INTENSIDAD: readonly Segment<IntensidadGamificacion>[] = INTENSIDA
  * Todo lo que aquí se guarda vive en el perfil, así que entra en la copia de
  * seguridad como cualquier otro dato.
  */
-export function AjustesScreen({ estado, onAtras, onEliminarCuenta }: Props) {
+export function AjustesScreen({ estado, nube, onAtras, onEliminarCuenta }: Props) {
   const styles = useStyles();
   const { perfil, copia } = estado;
 
@@ -207,6 +215,14 @@ export function AjustesScreen({ estado, onAtras, onEliminarCuenta }: Props) {
         </Aviso>
       </Card>
 
+      {/* ── Copia en la nube ──────────────────────────────────────────── */}
+
+      <Text variant="overline" tone="faint">
+        Copia en la nube
+      </Text>
+
+      <SeccionNube nube={nube} />
+
       {/* ── Recordatorios ─────────────────────────────────────────────── */}
 
       <Text variant="overline" tone="faint">
@@ -275,22 +291,6 @@ export function AjustesScreen({ estado, onAtras, onEliminarCuenta }: Props) {
 
         <View style={styles.bloque}>
           <Text variant="caption" weight="bold">
-            Raciones de verdura al día
-          </Text>
-          <ChipRow>
-            {[3, 4, 5, 6].map((n) => (
-              <Chip
-                key={n}
-                label={entero(n)}
-                selected={perfil.objetivoVerduraRaciones === n}
-                onPress={() => void estado.cambiarPerfil({ objetivoVerduraRaciones: n })}
-              />
-            ))}
-          </ChipRow>
-        </View>
-
-        <View style={styles.bloque}>
-          <Text variant="caption" weight="bold">
             Presupuesto de deslices
           </Text>
           <Text variant="small" tone="faint">
@@ -327,16 +327,30 @@ export function AjustesScreen({ estado, onAtras, onEliminarCuenta }: Props) {
       </Text>
 
       <Card>
-        <FilaAjuste
-          icono="📱"
-          titulo="Todo en el dispositivo"
-          descripcion="No hay servidor ni cuenta. Nada sale de aquí."
-          derecha={
-            <Text variant="caption" weight="bold" tone="success">
-              ✓
-            </Text>
-          }
-        />
+        {/*
+          * Este texto tiene que decir la verdad SIEMPRE. Mientras no actives la
+          * nube, no hay servidor ni cuenta y así se dice. En cuanto entras con
+          * tu correo deja de ser cierto, y dejarlo puesto convertiría la
+          * pantalla de privacidad en el sitio donde la app miente.
+          */}
+        {nube.sesion ? (
+          <FilaAjuste
+            icono="☁️"
+            titulo="En el móvil y en tu cuenta de la nube"
+            descripcion={`Los registros viven en el móvil. Cada ${entero(HORAS_ENTRE_COPIAS)} h se sube una copia a tu proyecto de Supabase, por HTTPS y solo accesible con tu cuenta.`}
+          />
+        ) : (
+          <FilaAjuste
+            icono="📱"
+            titulo="Todo en el dispositivo"
+            descripcion="No hay servidor ni cuenta. Nada sale de aquí."
+            derecha={
+              <Text variant="caption" weight="bold" tone="success">
+                ✓
+              </Text>
+            }
+          />
+        )}
         <FilaAjuste
           icono="🚶"
           titulo="Pasos"
@@ -402,6 +416,211 @@ export function AjustesScreen({ estado, onAtras, onEliminarCuenta }: Props) {
         YouFitness · versión 0.1
       </Text>
     </Screen>
+  );
+}
+
+/**
+ * Sección de copia en la nube.
+ *
+ * TRES ESTADOS, y cada uno enseña exactamente una cosa que hacer: sin
+ * configurar, sin cuenta, y funcionando. La versión con cuenta no pide nada al
+ * usuario porque no hay nada que pedirle — solo cuenta cuándo fue la última
+ * copia, que es el único dato con el que se puede decidir si preocuparse.
+ */
+function SeccionNube({ nube }: { nube: EstadoNube }) {
+  const styles = useStyles();
+  const [correo, setCorreo] = useState('');
+  const [contrasena, setContrasena] = useState('');
+  const [confirmandoRestaurar, setConfirmandoRestaurar] = useState(false);
+
+  const avisos = (
+    <>
+      {nube.mensaje ? (
+        <Text variant="small" tone="accent">
+          {nube.mensaje}
+        </Text>
+      ) : null}
+      {nube.error ? (
+        <Text variant="small" tone="danger">
+          {nube.error}
+        </Text>
+      ) : null}
+    </>
+  );
+
+  if (!nube.disponible) {
+    return (
+      <Card>
+        <FilaAjuste
+          icono="☁️"
+          titulo="Copia automática en la nube"
+          descripcion={`Subiría una copia sola cada ${entero(HORAS_ENTRE_COPIAS)} h. No tendrías que acordarte de exportar nunca más.`}
+          valor={false}
+          pendiente="Falta pegar las dos claves de Supabase en app.json · instrucciones en src/data/adapters/supabase/LEEME.md"
+        />
+      </Card>
+    );
+  }
+
+  if (nube.cargando) {
+    return (
+      <Card>
+        <Text variant="small" tone="faint">
+          Comprobando…
+        </Text>
+      </Card>
+    );
+  }
+
+  if (!nube.sesion) {
+    const puede = correo.trim().includes('@') && contrasena.length >= 6;
+
+    return (
+      <Card variant="accent">
+        <Text variant="caption" tone="muted">
+          Entra <Text weight="bold">una vez</Text> con un correo y una contraseña.
+          A partir de ahí la copia se hace sola y no vuelves a tocar nada. El
+          correo no se usa para escribirte: es lo único que permite reconocerte el
+          día que instales la app en un móvil nuevo.
+        </Text>
+
+        <TextField
+          label="Correo"
+          value={correo}
+          onChangeText={setCorreo}
+          placeholder="tu@correo.com"
+          tipo="correo"
+          maxLength={120}
+        />
+        <TextField
+          label="Contraseña"
+          value={contrasena}
+          onChangeText={setContrasena}
+          placeholder="Mínimo 6 caracteres"
+          secreto
+          maxLength={72}
+          ayuda="Apúntala donde guardes las demás. Sin ella no hay forma de recuperar la copia."
+        />
+
+        <View style={styles.botones}>
+          <Button
+            label="Crear cuenta"
+            variant="secondary"
+            size="sm"
+            style={styles.crecer}
+            onPress={() => void nube.crearCuenta(correo, contrasena)}
+            disabled={!puede || nube.trabajando}
+          />
+          <Button
+            label="Entrar"
+            size="sm"
+            style={styles.crecer}
+            onPress={() => void nube.entrar(correo, contrasena)}
+            disabled={!puede}
+            loading={nube.trabajando}
+          />
+        </View>
+
+        {avisos}
+      </Card>
+    );
+  }
+
+  const dias =
+    nube.ultimaSubida != null
+      ? (Date.now() - new Date(nube.ultimaSubida).getTime()) / 86_400_000
+      : null;
+  const vieja = dias == null || dias >= DIAS_COPIA_VIEJA;
+
+  return (
+    <Card variant={vieja ? 'danger' : 'accent'}>
+      <View style={styles.filaTitulo}>
+        <View style={styles.textos}>
+          <Text variant="caption" weight="bold">
+            Última copia en la nube
+          </Text>
+          <Text variant="small" tone="faint">
+            {nube.ultimaSubida
+              ? `${antiguedad(nube.ultimaSubida)}${nube.info ? ` · ${entero(nube.info.tamanoKb)} KB` : ''}`
+              : 'Se subirá sola en cuanto haya conexión'}
+          </Text>
+        </View>
+        <Chip
+          label={vieja ? 'Pendiente' : 'Al día'}
+          selected
+          tone={vieja ? 'danger' : 'accent'}
+        />
+      </View>
+
+      <View style={styles.separador} />
+
+      <FilaAjuste
+        icono="👤"
+        titulo={nube.sesion.correo}
+        descripcion={`Automática cada ${entero(HORAS_ENTRE_COPIAS)} h, al abrir la app`}
+      />
+
+      <View style={styles.botones}>
+        <Button
+          label="Subir ahora"
+          variant="secondary"
+          size="sm"
+          style={styles.crecer}
+          onPress={() => void nube.subirAhora()}
+          loading={nube.trabajando}
+        />
+        <Button
+          label="Restaurar"
+          variant="secondary"
+          size="sm"
+          style={styles.crecer}
+          onPress={() => setConfirmandoRestaurar((v) => !v)}
+          disabled={nube.trabajando}
+        />
+      </View>
+
+      {/* Restaurar es destructivo: sustituye lo del móvil. Se confirma. */}
+      {confirmandoRestaurar ? (
+        <>
+          <Text variant="small" tone="muted">
+            Restaurar sustituye lo que hay en este móvil por la copia de la nube.
+            Lo que hayas registrado después de esa copia se pierde. No se
+            fusionan: mezclar dos historiales produce duplicados que no verías
+            hasta meses después.
+          </Text>
+          <View style={styles.botones}>
+            <Button
+              label="Cancelar"
+              variant="secondary"
+              size="sm"
+              style={styles.crecer}
+              onPress={() => setConfirmandoRestaurar(false)}
+            />
+            <Button
+              label="Sí, restaurar"
+              variant="danger"
+              size="sm"
+              style={styles.crecer}
+              onPress={() => void nube.restaurar()}
+              loading={nube.trabajando}
+            />
+          </View>
+        </>
+      ) : null}
+
+      {avisos}
+
+      <FilaAjuste
+        titulo="Cerrar sesión"
+        descripcion="La copia se queda guardada en la nube"
+        onPress={() => void nube.salir()}
+        derecha={
+          <Text variant="caption" tone="accent">
+            ›
+          </Text>
+        }
+      />
+    </Card>
   );
 }
 

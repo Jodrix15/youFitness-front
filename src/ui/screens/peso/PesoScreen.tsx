@@ -11,6 +11,7 @@ import {
   AvisoUmbral,
   Button,
   Card,
+  DiaDeRegistro,
   NumberField,
   Screen,
   SegmentedControl,
@@ -18,6 +19,7 @@ import {
   type Segment,
 } from '../../components';
 import { GraficaPeso } from '../../components/GraficaPeso';
+import { hoy } from '../../../domain/rules/fechas';
 import { aNumero, conSigno, decimal, entero, kg } from '../../format';
 import { makeStyles } from '../../theme';
 
@@ -108,7 +110,11 @@ export function PesoScreen({ perfil, estado, onAtras }: Props) {
               ←
             </Text>
           </Pressable>
-          <Text variant="title">Peso</Text>
+          {/* Un pesaje es de hoy y solo de hoy: pesarse dos veces corrige. */}
+          <View style={styles.tituloBarra}>
+            <Text variant="title">Peso</Text>
+            <DiaDeRegistro fecha={hoy()} hoy={hoy()} />
+          </View>
         </View>
       }
     >
@@ -314,6 +320,7 @@ const useStyles = makeStyles((t) =>
       paddingTop: t.spacing.sm,
       paddingBottom: t.spacing.md,
     },
+    tituloBarra: { flex: 1, gap: 2 },
     filaTendencia: {
       flexDirection: 'row',
       alignItems: 'center',

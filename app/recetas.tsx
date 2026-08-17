@@ -7,7 +7,7 @@ import { RecetasScreen } from '../src/ui/screens/comida/RecetasScreen';
 
 export default function RecetasRoute() {
   const { perfil, cargando } = useSesion();
-  const estado = useComidas(perfil?.usuarioId ?? null, perfil?.objetivoVerduraRaciones);
+  const estado = useComidas(perfil?.usuarioId ?? null);
 
   if (cargando || estado.cargando || !perfil) {
     return (
@@ -29,10 +29,6 @@ export default function RecetasRoute() {
             tipo: 'comida',
             descripcion: receta.nombre,
             recetaId: receta.id,
-            protPorciones: receta.protPorciones,
-            verdPorciones: receta.verdPorciones,
-            hidrPorciones: receta.hidrPorciones,
-            grasPorciones: receta.grasPorciones,
             saciedad: null,
             nota: null,
           });
@@ -46,10 +42,6 @@ export default function RecetasRoute() {
           raciones: 1,
           ingredientes: datos.ingredientes,
           notas: datos.notas,
-          protPorciones: datos.porciones.prot,
-          verdPorciones: datos.porciones.verd,
-          hidrPorciones: datos.porciones.hidr,
-          grasPorciones: datos.porciones.gras,
         });
       }}
       onBorrar={(id) => void estado.borrarReceta(id)}

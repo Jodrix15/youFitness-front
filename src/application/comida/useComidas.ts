@@ -21,6 +21,14 @@ import { hoy } from '../../domain/rules/fechas';
 import { useRepositorios } from '../../data/contenedor';
 import { registrarComida, registrarDesliz, type ResultadoComida } from './registrarComida';
 
+export type DatosDesliz = {
+  descripcion: string;
+  tipo: TipoComida;
+  /** Día en el que se guarda. Sin él, hoy. */
+  fecha?: string;
+  detalle: Omit<NuevoDeslizDetalle, 'comidaId'>;
+};
+
 export type EstadoComidas = {
   cargando: boolean;
   fecha: string;
@@ -41,22 +49,23 @@ export type EstadoComidas = {
     cambios: Partial<NuevaComida>,
   ) => Promise<void>;
   buscarComida: (id: Uuid) => Comida | null;
-  guardarDesliz: (
-    descripcion: string,
-    tipo: TipoComida,
-    detalle: Omit<NuevoDeslizDetalle, 'comidaId'>,
-  ) => Promise<ResultadoComida | null>;
+  guardarDesliz: (datos: DatosDesliz) => Promise<ResultadoComida | null>;
+  /**
+   * Corregir un desliz NO toca el XP, igual que corregir una comida: los 15
+   * puntos se pagaron por anotarlo, y arreglar la categoría no es un registro
+   * nuevo. Si se cambia de día, el evento de XP se queda donde se ganó — el log
+   * es inmutable, y reescribir el pasado para que cuadre con una corrección de
+   * hoy es justo lo que ese principio existe para impedir.
+   */
+  editarDesliz: (comidaId: Uuid, datos: DatosDesliz) => Promise<void>;
+  buscarDetalleDesliz: (comidaId: Uuid) => DeslizDetalle | null;
   borrarComida: (id: Uuid) => Promise<void>;
   crearReceta: (datos: NuevaReceta) => Promise<Receta | null>;
   borrarReceta: (id: Uuid) => Promise<void>;
   recargar: () => Promise<void>;
 };
 
-export function useComidas(
-  usuarioId: Uuid | null,
-  /** Objetivo de verdura del perfil. Configurable desde Ajustes. */
-  objetivoVerdura?: number,
-): EstadoComidas {
+export function useComidas(usuarioId: Uuid | null): EstadoComidas {
   const repos = useRepositorios();
   const [cargando, setCargando] = useState(true);
   const [todas, setTodas] = useState<Comida[]>([]);
@@ -111,15 +120,26 @@ export function useComidas(
   );
 
   const guardarDesliz = useCallback(
-    async (
-      descripcion: string,
-      tipo: TipoComida,
-      detalle: Omit<NuevoDeslizDetalle, 'comidaId'>,
-    ) => {
+    async (datos: DatosDesliz) => {
       if (!usuarioId) return null;
-      const r = await registrarDesliz(repos, usuarioId, { descripcion, tipo, detalle });
+      const r = await registrarDesliz(repos, usuarioId, datos);
       await recargar();
       return r;
+    },
+    [repos, usuarioId, recargar],
+  );
+
+  const editarDesliz = useCallback(
+    async (comidaId: Uuid, datos: DatosDesliz) => {
+      if (!usuarioId) return;
+      await repos.comidas.actualizar(usuarioId, comidaId, {
+        descripcion: datos.descripcion,
+        tipo: datos.tipo,
+        ...(datos.fecha ? { fecha: datos.fecha } : {}),
+        nota: datos.detalle.nota,
+      });
+      await repos.comidas.guardarDetalleDesliz(usuarioId, { ...datos.detalle, comidaId });
+      await recargar();
     },
     [repos, usuarioId, recargar],
   );
@@ -157,10 +177,7 @@ export function useComidas(
     fecha,
     irADia: setFecha,
     todas,
-    dia: useMemo(
-      () => componerDia(todas, fecha, objetivoVerdura),
-      [todas, fecha, objetivoVerdura],
-    ),
+    dia: useMemo(() => componerDia(todas, fecha), [todas, fecha]),
     rachaCompletos: useMemo(() => rachaDiasCompletos(todas, hoy()), [todas]),
     presupuesto: useMemo(() => presupuestoDeLaSemana(todas, fecha), [todas, fecha]),
     analisis: useMemo(() => analizarDeslices(todas, detalles), [todas, detalles]),
@@ -170,6 +187,8 @@ export function useComidas(
     editarComida,
     buscarComida: (id: Uuid) => todas.find((c) => c.id === id) ?? null,
     guardarDesliz,
+    editarDesliz,
+    buscarDetalleDesliz: (id: Uuid) => detalles.find((d) => d.comidaId === id) ?? null,
     borrarComida,
     crearReceta,
     borrarReceta,

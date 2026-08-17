@@ -8,10 +8,9 @@ import type { Entidad, FechaISO, Uuid } from './comunes';
  * autorregistro subestima entre un 20 y un 50 %. Sumar cifras inventadas no da
  * una cifra buena, y contar es la causa número uno de abandono.
  *
- * Lo que sí se registra es la FORMA del plato, en raciones medidas con la mano.
- * Tu mano escala con tu cuerpo, así que la medida se ajusta sola: no es exacta,
- * pero es consistente contigo, y eso es lo único que hace falta para ver
- * cambios.
+ * TAMPOCO SE REGISTRA YA LA COMPOSICIÓN DEL PLATO (proteína, verdura, hidratos
+ * y grasa en raciones): retirada por decisión de producto. Lo que queda es qué
+ * comiste, cuándo, y cómo te dejó — que es con lo que de verdad se hace algo.
  */
 export type TipoComida = 'desayuno' | 'comida' | 'cena' | 'snack';
 
@@ -21,11 +20,19 @@ export type Comida = Entidad & {
   hora: string | null;
   descripcion: string;
   recetaId: Uuid | null;
-  /** 0..3 raciones de cada grupo. */
-  protPorciones: number;
-  verdPorciones: number;
-  hidrPorciones: number;
-  grasPorciones: number;
+  /**
+   * Raciones por grupo, de la época en que se registraba la forma del plato.
+   *
+   * Se quedan como opcionales por el mismo motivo que los eventos `habito_*`
+   * siguen en el modelo de XP: las comidas ya registradas los tienen dentro, y
+   * una copia de seguridad anterior también. Quitarlos del tipo no borraría esos
+   * números —seguirían en el almacén—, solo haría que dejaran de poder leerse el
+   * día que se quiera volver atrás. Nada nuevo los escribe.
+   */
+  protPorciones?: number;
+  verdPorciones?: number;
+  hidrPorciones?: number;
+  grasPorciones?: number;
   /** 1..5, de «con hambre» a «demasiado». */
   saciedad: number | null;
   nota: string | null;
@@ -39,54 +46,6 @@ export type Comida = Entidad & {
 };
 
 export type NuevaComida = Omit<Comida, keyof Entidad>;
-
-export type GrupoAlimento = 'proteina' | 'verdura' | 'hidratos' | 'grasa';
-
-export type DefinicionGrupo = {
-  clave: GrupoAlimento;
-  nombre: string;
-  icono: string;
-  medida: string;
-  ejemplos: string;
-  campo: 'protPorciones' | 'verdPorciones' | 'hidrPorciones' | 'grasPorciones';
-};
-
-export const GRUPOS: readonly DefinicionGrupo[] = [
-  {
-    clave: 'proteina',
-    nombre: 'Proteína',
-    icono: '✋',
-    medida: '1 palma ≈ 1 ración',
-    ejemplos: 'La palma sin dedos: pollo, pescado, huevos, legumbre',
-    campo: 'protPorciones',
-  },
-  {
-    clave: 'verdura',
-    nombre: 'Verdura',
-    icono: '✊',
-    medida: '1 puño ≈ 1 ración',
-    ejemplos: 'El puño cerrado: cualquier verdura o ensalada',
-    campo: 'verdPorciones',
-  },
-  {
-    clave: 'hidratos',
-    nombre: 'Hidratos',
-    icono: '🤲',
-    medida: '1 mano ahuecada',
-    ejemplos: 'La mano ahuecada: arroz, pasta, pan, patata',
-    campo: 'hidrPorciones',
-  },
-  {
-    clave: 'grasa',
-    nombre: 'Grasa añadida',
-    icono: '👍',
-    medida: '1 pulgar ≈ 1 cda',
-    ejemplos: 'El pulgar: aceite, mantequilla, frutos secos',
-    campo: 'grasPorciones',
-  },
-] as const;
-
-export const MAX_PORCIONES = 3;
 
 export const TIPOS_COMIDA: readonly { valor: TipoComida; etiqueta: string; icono: string }[] = [
   { valor: 'desayuno', etiqueta: 'Desayuno', icono: '🌅' },
@@ -176,10 +135,11 @@ export type Receta = Entidad & {
   raciones: number;
   ingredientes: string;
   notas: string | null;
-  protPorciones: number;
-  verdPorciones: number;
-  hidrPorciones: number;
-  grasPorciones: number;
+  /** Igual que en `Comida`: histórico, ya no se escribe. */
+  protPorciones?: number;
+  verdPorciones?: number;
+  hidrPorciones?: number;
+  grasPorciones?: number;
   vecesUsada: number;
 };
 

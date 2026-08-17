@@ -4,6 +4,8 @@ App personal de registro de salud con gamificación. Peso, alimentación,
 entrenamiento, hábitos y estado mental, todo alimentando una única barra de XP.
 
 Funciona **sin conexión y sin servidor**. Los datos viven en el dispositivo.
+Opcionalmente puede subir sola una copia de seguridad a Supabase, para no tener
+que acordarse de exportarla: [`src/data/adapters/supabase/LEEME.md`](src/data/adapters/supabase/LEEME.md).
 
 **Plataforma objetivo: móvil.** La versión web sigue compilando y se usa como
 vista previa rápida durante el desarrollo, pero no es un objetivo del proyecto:
@@ -39,7 +41,7 @@ Para el móvil sin simulador, instalar **Expo Go** y escanear el QR.
 
 ```bash
 npm run typecheck   # TypeScript en modo strict
-npm test            # 207 pruebas de dominio y de la capa de datos
+npm test            # 218 pruebas de dominio y de la capa de datos
 ```
 
 ---
@@ -88,12 +90,32 @@ borra** cuando exista la lectura real de pasos, que necesita build nativa.
 | # | Pantalla | Estado |
 |---|---|---|
 | 11 | Diario de comidas | ✅ navegable por días, con edición y borrado |
-| 12 | Añadir comida | ✅ cuatro contadores de raciones y saciedad |
+| 12 | Añadir comida | ✅ qué has comido, desde receta si quieres, y saciedad |
 | 13 | Mis recetas | ✅ sin lotes cocinados, se pueden añadir después |
-| 14 | Registrar desliz | ✅ en qué comida fue, contexto, presupuesto y patrones |
+| 14 | Registrar desliz | ✅ fechado, editable, en qué comida fue, contexto y patrones |
 
-Sin calorías ni macros en gramos. Se registra la **forma del plato** en raciones
-medidas con la mano, que es la única unidad que se sostiene a los seis meses.
+Sin calorías ni macros en gramos, y **sin desglosar el plato**. Hubo una época en
+que se registraba su forma en raciones medidas con la mano —proteína, verdura,
+hidratos y grasa—; se retiró por decisión de producto. Lo que queda es qué
+comiste, cuándo y cómo te dejó, que es con lo que de verdad se hace algo.
+
+Los campos de raciones **siguen en el modelo, opcionales**, por el mismo motivo
+que los eventos `habito_*`: las comidas ya registradas los tienen dentro y una
+copia de seguridad anterior también. Nada nuevo los escribe, pero quitarlos del
+tipo haría imposible leerlos el día que se quiera volver atrás.
+
+**Toda pantalla de registro dice en qué día guarda**, en una línea bajo el
+título: apagada si es hoy, en color y con la flecha si no. Es la misma que la
+cabecera del diario, y es una línea y no un recuadro porque los trescientos días
+al año en que la fecha es la obvia también se ve. El día se elige una sola vez,
+en el calendario del diario de Comida, y lo heredan añadir comida y anotar
+desliz; ellas solo lo muestran. Repetir el selector en cada pantalla daría dos
+sitios donde cambiar lo mismo. Antes el desliz caía siempre en hoy aunque
+estuvieras mirando un martes de hace tres semanas: no fallaba nada, el dato
+simplemente aterrizaba en el día que no era y no te enterabas hasta mucho
+después. Un desliz corregido se abre en **su** pantalla, con categoría y
+disparador, no en el editor de comidas. Y desde un día del historial hay un
+atajo para abrirlo en Comida y tocarlo.
 
 **Un desliz no es siempre un extra.** El donut puede ser el desayuno y la pizza,
 la cena, así que se elige en qué comida fue. Si es una de las tres principales,
@@ -146,8 +168,22 @@ ninguno, amarillo uno, rojo los dos. Dos reglas que evitan que el color mienta:
 
 **La copia de seguridad ya funciona.** Exporta un JSON legible sin la app y
 puede restaurarse. Hay además una copia automática semanal dentro del propio
-dispositivo, que protege de un fallo de la app pero **no** de perder el móvil:
-para eso hay que descargar el fichero y guardarlo en otro sitio.
+dispositivo, que protege de un fallo de la app pero **no** de perder el móvil.
+
+**Y ya no hace falta acordarse.** Con Supabase configurado, la app sube esa misma
+copia sola cada 12 horas al arrancar. Entras una vez con un correo y no vuelves a
+tocar nada. Sigue siendo un respaldo, **no** sincronización: dos dispositivos no
+comparten datos, y por eso mismo no hay conflictos que puedan corromper nada. La
+sección de Ajustes sale apagada, con el motivo a la vista, mientras no se
+configure; sin configurar, no hay servidor ni cuenta y nada sale del móvil.
+
+Dos salvaguardas que hacen que el respaldo sea un respaldo:
+
+- **Una instalación vacía nunca pisa la copia buena.** Si no hay perfil, no se
+  sube. Sin esto, instalar en un móvil nuevo para restaurar podría destruir el
+  respaldo antes de que te diera tiempo a usarlo.
+- **Eliminar la cuenta cierra antes la sesión de la nube**, para que el móvil
+  recién vaciado no se suba encima de la copia que existe para volver atrás.
 
 **La función de hábitos se retiró** por decisión de producto. Los tipos de evento
 `habito_*` siguen en el modelo de XP a propósito: una copia de seguridad anterior

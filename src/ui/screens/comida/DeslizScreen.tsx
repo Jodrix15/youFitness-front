@@ -10,6 +10,8 @@ import {
   TIPOS_COMIDA,
   type CantidadDesliz,
   type CategoriaDesliz,
+  type Comida,
+  type DeslizDetalle,
   type Disparador,
   type TipoComida,
 } from '../../../domain/models/comida';
@@ -23,7 +25,9 @@ import {
   Card,
   Chip,
   ChipRow,
+  DiaDeRegistro,
   EscalaEmoji,
+  ListItem,
   Screen,
   SegmentedControl,
   Text,
@@ -34,11 +38,17 @@ import { entero } from '../../format';
 import { makeStyles } from '../../theme';
 
 type Props = {
+  /** Día en el que se va a guardar. Lo hereda del diario, no es siempre hoy. */
+  fecha: string;
+  hoy: string;
+  /** Desliz que se está corrigiendo, con su detalle. `null` para uno nuevo. */
+  edicion?: { comida: Comida; detalle: DeslizDetalle | null } | null;
   presupuesto: EstadoPresupuesto;
   analisis: AnalisisDeslices;
   modoEstricto: boolean;
   guardando: boolean;
   mensaje: string | null;
+  onBorrar?: () => void;
   onGuardar: (datos: {
     descripcion: string;
     tipo: TipoComida;
@@ -89,25 +99,32 @@ const ETIQUETA_TIPO: Record<TipoComida, string> = {
  * dejen de registrar.
  */
 export function DeslizScreen({
+  fecha,
+  hoy,
+  edicion = null,
   presupuesto,
   analisis,
   modoEstricto,
   guardando,
   mensaje,
+  onBorrar,
   onGuardar,
   onCancelar,
 }: Props) {
   const styles = useStyles();
+  const d = edicion?.detalle ?? null;
 
-  const [descripcion, setDescripcion] = useState('');
-  const [tipo, setTipo] = useState<TipoComida>('snack');
-  const [categoria, setCategoria] = useState<CategoriaDesliz>('dulce');
-  const [cantidad, setCantidad] = useState<CantidadDesliz>('racion');
-  const [sustitucion, setSustitucion] = useState<'sustituyo' | 'anadido'>('anadido');
-  const [disparador, setDisparador] = useState<Disparador | null>(null);
-  const [emocion, setEmocion] = useState<number | null>(null);
-  const [lugar, setLugar] = useState('');
-  const [nota, setNota] = useState('');
+  const [descripcion, setDescripcion] = useState(edicion?.comida.descripcion ?? '');
+  const [tipo, setTipo] = useState<TipoComida>(edicion?.comida.tipo ?? 'snack');
+  const [categoria, setCategoria] = useState<CategoriaDesliz>(d?.categoria ?? 'dulce');
+  const [cantidad, setCantidad] = useState<CantidadDesliz>(d?.cantidad ?? 'racion');
+  const [sustitucion, setSustitucion] = useState<'sustituyo' | 'anadido'>(
+    d?.sustituyoComida ? 'sustituyo' : 'anadido',
+  );
+  const [disparador, setDisparador] = useState<Disparador | null>(d?.disparador ?? null);
+  const [emocion, setEmocion] = useState<number | null>(d?.emocionDespues ?? null);
+  const [lugar, setLugar] = useState(d?.lugar ?? '');
+  const [nota, setNota] = useState(d?.nota ?? '');
 
   const penalizara = modoEstricto && presupuesto.usados >= presupuesto.presupuesto;
 
@@ -130,9 +147,10 @@ export function DeslizScreen({
               ←
             </Text>
           </Pressable>
-          <Text variant="title" style={styles.tituloBarra}>
-            Anotar desliz
-          </Text>
+          <View style={styles.tituloBarra}>
+            <Text variant="title">{edicion ? 'Corregir desliz' : 'Anotar desliz'}</Text>
+            <DiaDeRegistro fecha={fecha} hoy={hoy} />
+          </View>
         </View>
       }
       footer={
@@ -143,7 +161,11 @@ export function DeslizScreen({
             </Text>
           ) : null}
           <Button
-            label={`Guardar · +${entero(XP.registrarDesliz)} XP por registrarlo`}
+            label={
+              edicion
+                ? 'Guardar cambios'
+                : `Guardar · +${entero(XP.registrarDesliz)} XP por registrarlo`
+            }
             onPress={() =>
               onGuardar({
                 descripcion: descripcion.trim() || 'Desliz',
@@ -165,12 +187,14 @@ export function DeslizScreen({
         </>
       }
     >
-      <Card variant="accent">
-        <Text variant="caption" tone="muted">
-          Esto <Text weight="bold">no resta XP ni rompe ninguna racha</Text>. Sirve
-          para encontrar patrones y anticiparte la próxima vez.
-        </Text>
-      </Card>
+      {edicion ? null : (
+        <Card variant="accent">
+          <Text variant="caption" tone="muted">
+            Esto <Text weight="bold">no resta XP ni rompe ninguna racha</Text>. Sirve
+            para encontrar patrones y anticiparte la próxima vez.
+          </Text>
+        </Card>
+      )}
 
       <Card>
         <Text variant="overline" tone="faint">
@@ -292,7 +316,23 @@ export function DeslizScreen({
         />
       ) : null}
 
-      {penalizara ? (
+      {edicion && onBorrar ? (
+        <Card variant="dashed">
+          <ListItem
+            icono="🗑️"
+            titulo="Eliminar este desliz"
+            subtitulo="Desaparece del diario. El XP que dio se queda: no se devuelve."
+            onPress={onBorrar}
+            derecha={
+              <Text variant="small" tone="danger" weight="bold">
+                Borrar
+              </Text>
+            }
+          />
+        </Card>
+      ) : null}
+
+      {!edicion && penalizara ? (
         <Aviso icono="⚠️" tono="danger">
           Este supera tu presupuesto semanal y, con el modo estricto activado,
           restará 25 XP aparte. Los 15 por registrarlo los ganas igual: el
@@ -313,6 +353,6 @@ const useStyles = makeStyles((t) =>
       paddingTop: t.spacing.sm,
       paddingBottom: t.spacing.md,
     },
-    tituloBarra: { flex: 1 },
+    tituloBarra: { flex: 1, gap: 2 },
   }),
 );

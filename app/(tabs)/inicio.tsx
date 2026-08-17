@@ -21,7 +21,7 @@ import { InicioScreen } from '../../src/ui/screens/inicio/InicioScreen';
  */
 export default function InicioRoute() {
   const { perfil, cargando: cargandoSesion } = useSesion();
-  const estado = useInicio(perfil?.usuarioId ?? null, perfil?.objetivoVerduraRaciones);
+  const estado = useInicio(perfil?.usuarioId ?? null);
   const { recargar } = estado;
 
   // Al volver de registrar algo, el XP y las misiones tienen que estar al día.

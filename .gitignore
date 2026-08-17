@@ -13,3 +13,4 @@ backend/target/
 backend/.gradle/
 backend/build/
 .test-build/
+_to_delete/

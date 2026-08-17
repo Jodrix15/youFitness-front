@@ -23,8 +23,15 @@ export type Copia = {
   datos: Record<string, unknown>;
 };
 
-/** Claves que NO se exportan porque describen el estado de las propias copias. */
-const NO_EXPORTABLES = ['ajustes:ultima_copia'];
+/**
+ * Claves que NO se exportan porque describen el estado de las propias copias.
+ *
+ * `nube:sesion` está aquí por seguridad, no por limpieza: contiene los tokens de
+ * acceso a la nube. Si viajaran dentro del JSON, cualquiera con el fichero
+ * entraría en la cuenta, y restaurar en otro móvil le daría la sesión de quien
+ * hizo la copia. Un backup no debe llevar credenciales dentro.
+ */
+const NO_EXPORTABLES = ['ajustes:ultima_copia', 'nube:sesion', 'nube:ultima_subida'];
 
 export async function exportar(almacen: Almacen): Promise<Copia> {
   const claves = (await almacen.clavesCon('')).filter((c) => !NO_EXPORTABLES.includes(c));

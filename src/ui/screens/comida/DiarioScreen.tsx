@@ -6,10 +6,8 @@ import type { EstadoComidas } from '../../../application/comida/useComidas';
 import type { Tendencia } from '../../../domain/rules/tendenciaPeso';
 import { hoy } from '../../../domain/rules/fechas';
 import {
-  BarraComposicion,
   BotonIcono,
   Card,
-  InsigniasPorciones,
   ListItem,
   Screen,
   SelectorFecha,
@@ -30,8 +28,8 @@ type Props = {
 /**
  * Pantalla 11 · Diario de comidas.
  *
- * Sin anillo de calorías ni barras de macros: composición del día en raciones y
- * racha de días completos.
+ * Sin anillo de calorías, sin barras de macros y sin desglose del plato: qué
+ * comiste, qué falta por registrar y la racha de días completos.
  *
  * El desliz aparece en ESTE MISMO timeline, marcado, no en una lista aparte. Es
  * lo que permite verlo en contexto: qué comiste antes, a qué hora, y si sustituyó
@@ -90,36 +88,12 @@ export function DiarioScreen({
       <Card variant="accent">
         <View style={styles.filaTitulo}>
           <Text variant="overline" tone="faint">
-            Composición de hoy
+            {esHoy ? 'Hoy' : 'Ese día'}
           </Text>
           <Text variant="small" weight="bold" tone={dia.completo ? 'accent' : 'muted'}>
             {`${entero(dia.principalesRegistradas)} de 3 comidas`}
           </Text>
         </View>
-
-        <View style={styles.barras}>
-          <BarraComposicion
-            icono="✋"
-            nombre="Proteína"
-            detalle={dia.proteina.detalle}
-            valor={dia.proteina.progreso}
-          />
-          <BarraComposicion
-            icono="✊"
-            nombre="Verdura"
-            detalle={dia.verdura.detalle}
-            valor={dia.verdura.progreso}
-          />
-          <BarraComposicion
-            icono="🤲"
-            nombre="Hidratos"
-            detalle={dia.hidratos.detalle}
-            valor={dia.hidratos.progreso}
-            tono="warning"
-          />
-        </View>
-
-        <View style={styles.separador} />
 
         <View style={styles.filaTitulo}>
           <Text variant="small" tone="faint">
@@ -234,8 +208,6 @@ function FilaComida({ comida, onEditar }: { comida: Comida; onEditar: () => void
             )}
           </View>
 
-          <InsigniasPorciones comida={comida} />
-
           {comida.nota ? (
             <Text variant="small" tone="faint">
               {comida.nota}
@@ -267,12 +239,6 @@ const useStyles = makeStyles((t) =>
       alignItems: 'center',
       justifyContent: 'space-between',
       gap: t.spacing.sm,
-    },
-    barras: { gap: t.spacing.md, marginTop: t.spacing.xs },
-    separador: {
-      height: 1,
-      backgroundColor: t.colors.border,
-      marginVertical: t.spacing.xs,
     },
     bloqueComida: { gap: t.spacing.sm },
     descripcion: { flex: 1 },

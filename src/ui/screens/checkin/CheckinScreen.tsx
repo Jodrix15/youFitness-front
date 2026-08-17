@@ -13,6 +13,7 @@ import {
   Card,
   Chip,
   ChipRow,
+  DiaDeRegistro,
   EscalaEmoji,
   EscalaNumerica,
   Estrellas,
@@ -20,6 +21,7 @@ import {
   Screen,
   Text,
 } from '../../components';
+import { hoy } from '../../../domain/rules/fechas';
 import { aNumero, entero } from '../../format';
 import { makeStyles, useTheme } from '../../theme';
 
@@ -107,9 +109,11 @@ export function CheckinScreen({ estado, modoEstricto, onCerrado, onAtras }: Prop
               ←
             </Text>
           </Pressable>
-          <Text variant="title" style={styles.tituloBarra}>
-            Cerrar el día
-          </Text>
+          <View style={styles.tituloBarra}>
+            <Text variant="title">Cerrar el día</Text>
+            {/* Se cierra hoy. Uno por día: volver a cerrarlo corrige. */}
+            <DiaDeRegistro fecha={hoy()} hoy={hoy()} />
+          </View>
           <Text variant="caption" tone="muted">
             30 s
           </Text>
@@ -271,7 +275,7 @@ const useStyles = makeStyles((t) =>
       paddingTop: t.spacing.sm,
       paddingBottom: t.spacing.md,
     },
-    tituloBarra: { flex: 1 },
+    tituloBarra: { flex: 1, gap: 2 },
     dos: { flexDirection: 'row', gap: t.spacing.md, alignItems: 'flex-start' },
     mitad: { flex: 1 },
     filaCalidad: {

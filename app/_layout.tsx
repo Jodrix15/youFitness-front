@@ -2,6 +2,7 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import { CopiaNubeAutomatica } from '../src/application/nube/CopiaNubeAutomatica';
 import { RepositoriosProvider } from '../src/data/contenedor';
 import { ThemeProvider, defaultTheme } from '../src/ui/theme';
 
@@ -15,6 +16,7 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <ThemeProvider>
         <RepositoriosProvider>
+          <CopiaNubeAutomatica />
           <StatusBar style="light" />
           <Stack
             screenOptions={{
